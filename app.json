@@ -4,9 +4,9 @@
     "slug": "owl-lead-frontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/owl_lead.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/owl_lead.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,12 +21,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/owl_lead.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/owl_lead.png"
+    },
+    "description": "Owl Lead will lead you to safety when you are feeling unsafe at night in the streets of Melbourne.",
+    "githubUrl": "https://github.com/Naren-Sridharan/owl-lead-frontend"
   }
 }
