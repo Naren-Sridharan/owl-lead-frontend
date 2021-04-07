@@ -35,7 +35,7 @@ export default class Menu extends Component {
 							...styles.menu_button,
 							justifyContent: "center",
 							alignItems: "center",
-							top: 100,
+							top: 0,
 						}}
 					>
 						<Image
@@ -89,16 +89,16 @@ styles = StyleSheet.create({
 	menu: {
 		position: "absolute",
 		width: "100%",
-		height: "50%",
+		height: "30%",
 		bottom: 0,
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	menu_button: {
 		position: "absolute",
-		width: 100,
-		height: 100,
-		borderRadius: 100,
+		width: 75,
+		height: 75,
+		borderRadius: 75,
 		zIndex: 2,
 		backgroundColor: "rgba(132,21,132,0.9)",
 		opacity: 0.75,
@@ -106,8 +106,8 @@ styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	icon: {
-		width: 75,
-		height: 75,
+		width: 50,
+		height: 50,
 		opacity: 1,
 	},
 	buttons_view: {
