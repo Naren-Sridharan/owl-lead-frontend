@@ -58,20 +58,32 @@ export default class Map extends Component {
   // Function to get user location asynchornously
   _getLocationAsync = async () => {
     try{
+      // ask for location permission
       let { status } = await Location.requestPermissionsAsync();
+      
+      // if location permission is not granted
       if (status !== 'granted') {
+
+        // if this is the first time we are asking for permission
         if (this.state.location_access == null){
+
+          // note that permission has been denied
           this.setState({location_access: false});
-          this.state.errorMsg = 'Permission to access location was denied, personalized features will be disabled unless location access is reactivated in settings. Do you wish to change settings?';
+
+          // return to screen, as there is nothing to be done if location permission is denied
           return;
         }
+
+        // if it is not the first time asking for location and it has been denied so far
         if (!this.state.location_access){
+          
+          // Show an alert asking whether user want's to change location access in app settings
           Alert.alert("No Permission for Location Access",
-                      this.state.errorMsg,
+                      "Permission to access location was denied, personalized features will be disabled unless location access is reactivated in settings. Do you wish to change settings?",
                       [
                         {
                           text: 'Yes', 
-                          onPress: () => this.openSetting(),
+                          onPress: () => {this.openSetting();},
                         },
                         {
                           text: 'No',
@@ -82,10 +94,15 @@ export default class Map extends Component {
                       );
           return;
         }
+        else{
+          this.setState({location_access: true})
+        }
       }
 
+      // get current location
       let location = await Location.getCurrentPositionAsync({});
       
+      // update address on search bar to current location
       this.ref.current?.setAddressText("Current Location");
 
       // Center the map on the location we just fetched.
@@ -104,6 +121,7 @@ export default class Map extends Component {
     }
   };
 
+  // set new region
   onRegionChange = region => {
     this.setState({ region });
   };
@@ -133,8 +151,7 @@ export default class Map extends Component {
                   style={{...styles.marker, tintColor: marker.tintColor,}}
                 />
               </View>
-              {/*Create a popup with details for marker and 
-              with redirection button to google maps for directions*/}
+              {/*Create a popup with details for marker and with redirection button to google maps for directions*/}
               <Callout
                 style={styles.callout}
                 onPress={() => Linking.openURL(`https://www.google.com/maps/dir/?api=1` +
@@ -165,43 +182,51 @@ export default class Map extends Component {
           </Marker> : 
           <></>}
         </MapView>
+        {/* Show search bar for places autocomplete */}
         <GooglePlacesAutocomplete
-          ref={this.ref}
-          placeholder='Search'
-          minLength={2}
-          autoFocus={false}
-          returnKeyType={'search'}
-          keyboardAppearance={'light'}
-          listViewDisplayed='auto'
-          fetchDetails={true}
-          renderDescription={row => row.description}
-          getDefaultValue={() => ''}
-          styles={{
+          ref={this.ref}                              // Reference to be used to access input
+          placeholder='Search'                        // Show 'Search' in location search bar 
+          minLength={2}                               // Show autocomplete after 2 letters
+          autoFocus={false}                           // Don't focus on searchbar when page loads
+          returnKeyType={'search'}                    // return search results
+          fetchDetails={true}                         // fetch geometry details
+          renderDescription={row => row.description}  // show place name in each row of list
+          getDefaultValue={() => ''}                  // default value is empty
+          styles={{                                   // set styles
             textInputContainer: {width: '100%'}, 
             description: {fontWeight: 'bold'},
-            container: {position: 'absolute', background: 'transparent', width:'100%', height:'100%', top:30, left:10, right:10},
+            container: {
+              position: 'absolute', 
+              background: 'transparent', 
+              width:'100%', 
+              height:'100%', 
+              top:30, 
+              left:10, 
+              right:10
+            },
             listView: {width: '95%'}
           }}
-          onPress={(data, details = null) => {
-            this.setState({
+          onPress={(data, details = null) => {        // On selecting suggestion
+            this.setState({                           // Set location to that suggestion
               location: {
                 latitude: details.geometry.location.lat, 
                 longitude: details.geometry.location.lng
               }
             });
           }}
-          query={{
-            key: API_KEY,
-            language: 'en',
-            components: 'country:au',
+          query={{                                    // for querying
+            key: API_KEY,                             // use api key
+            language: 'en',                           // language english
+            components: 'country:au',                 // results only for australia
           }}
-          nearbyPlacesAPI='GooglePlacesSearch'
-          GoogleReverseGeocodingQuery={{}}
+          // sort places by distance
           GooglePlacesSearchQuery={{rankby: 'distance',}}
+          // when fetching details return geometric coordinates 
           GooglePlacesDetailsQuery={{fields: 'geometry',}}
-          filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3',]}
+          // don't show powered by google row in list
           enablePoweredByContainer={false}
           debounce={200}
+          // show a button for user to request using their current location instead
           renderRightButton={() => 
             <TouchableOpacity 
               onPress={this._getLocationAsync}
@@ -217,6 +242,7 @@ export default class Map extends Component {
   }
 }
 
+// create all general styles for each component in one constant stylesheet
 const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject
