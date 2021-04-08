@@ -101,9 +101,9 @@ export default class Map extends Component {
 						]
 					);
 					return;
-				} else {
-					this.setState({ location_access: true });
 				}
+			} else {
+				this.setState({ location_access: true });
 			}
 
 			// get current location
