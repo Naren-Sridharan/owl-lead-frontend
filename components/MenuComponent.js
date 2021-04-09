@@ -9,6 +9,7 @@ import {
 	Linking,
 	TouchableOpacity,
 } from "react-native";
+import { COLORS } from "../shared/constants";
 
 export default class Menu extends Component {
 	constructor(props) {
@@ -23,7 +24,12 @@ export default class Menu extends Component {
 			return (
 				<View style={styles.buttons_view}>
 					<TouchableOpacity
-						style={{ ...styles.menu_button, left: 10, bottom: 100 }}
+						style={{
+							...styles.menu_button,
+							left: 10,
+							bottom: 100,
+						}}
+						onPress={() => this.props.navigation.navigate("Anyone Around?")}
 					>
 						<Image
 							source={require("../assets/images/anyone_around.png")}
@@ -37,6 +43,7 @@ export default class Menu extends Component {
 							alignItems: "center",
 							top: 0,
 						}}
+						onPress={() => this.props.navigation.navigate("PSO Finder")}
 					>
 						<Image
 							source={require("../assets/images/pso_finder.png")}
@@ -45,6 +52,7 @@ export default class Menu extends Component {
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={{ ...styles.menu_button, right: 10, bottom: 100 }}
+						onPress={() => this.props.navigation.navigate("Emergency Call")}
 					>
 						<Image
 							source={require("../assets/images/emergency.png")}
@@ -54,7 +62,7 @@ export default class Menu extends Component {
 				</View>
 			);
 		} else {
-			return null;
+			return <></>;
 		}
 	}
 
@@ -100,8 +108,7 @@ styles = StyleSheet.create({
 		height: 75,
 		borderRadius: 75,
 		zIndex: 2,
-		backgroundColor: "rgba(132,21,132,0.9)",
-		opacity: 0.75,
+		backgroundColor: COLORS.lightPurple,
 		justifyContent: "center",
 		alignItems: "center",
 	},
@@ -125,7 +132,7 @@ styles = StyleSheet.create({
 		borderRightWidth: 110,
 		borderRightColor: "transparent",
 		borderTopWidth: 200,
-		borderTopColor: "#841584",
+		borderTopColor: COLORS.purple,
 		borderRadius: 110,
 		zIndex: 1,
 	},

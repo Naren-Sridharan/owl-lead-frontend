@@ -16,9 +16,10 @@ import { getDistance } from "geolib";
 import * as Location from "expo-location";
 import * as IntentLauncherAndroid from "expo-intent-launcher";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { API_KEY, COLORS, WIDTH, HEIGHT } from "../shared/constants";
 
-//Get the dimensions of the viewport
 const { width, height } = Dimensions.get("window");
+
 // set initial location region
 const INITIAL_REGION = {
 	latitude: -37.8186,
@@ -26,8 +27,6 @@ const INITIAL_REGION = {
 	latitudeDelta: 0.08,
 	longitudeDelta: 0.08 * (width / height),
 };
-
-const API_KEY = "AIzaSyCy_gaMIh9ugIJqylorjU0cJkqtlayk1qA";
 
 //create a class component for any Map used in Owl Lead's Features
 export default class Map extends Component {
@@ -40,7 +39,7 @@ export default class Map extends Component {
 		// initialize state with region, markers, user location and type of value being displayed
 		this.state = {
 			region: INITIAL_REGION,
-			markers: props.markers,
+			markers: !props.markers ? [] : props.markers,
 			marker_icon: props.marker_icon,
 			location: null,
 			location_access: null,
@@ -119,14 +118,14 @@ export default class Map extends Component {
 					longitude: location.coords.longitude,
 				},
 				region: {
+					...this.state.region,
 					latitude: location.coords.latitude,
 					longitude: location.coords.longitude,
-					latitudeDelta: INITIAL_REGION.latitudeDelta,
-					longitudeDelta: INITIAL_REGION.longitudeDelta,
 				},
 			});
 		} catch (error) {
 			alert(this.state.errorMsg);
+			console.log(error);
 		}
 	};
 
@@ -171,12 +170,17 @@ export default class Map extends Component {
 									}
 								>
 									<View>
-										<Text>{marker.title}</Text>
-										<Text>Place: {marker.description.place}</Text>
+										<Text>{marker.description.place}</Text>
+										{this.state.value_name ? (
+											<Text>
+												{this.state.value_name}: {marker.description.value}
+											</Text>
+										) : (
+											<Text></Text>
+										)}
 										<Text>
-											{this.state.value_name}: {marker.description.value}
+											{marker.level_name}: {marker.description.level}
 										</Text>
-										<Text>Level: {marker.description.level}</Text>
 										{this.state.location ? (
 											<Text>
 												Distance:{" "}
@@ -189,7 +193,7 @@ export default class Map extends Component {
 										)}
 										<Button
 											title="Directions"
-											color="#841584"
+											color={COLORS.purple}
 											accessibilityLabel="This button redirects you to google maps for directions to the location"
 										/>
 									</View>
@@ -203,8 +207,8 @@ export default class Map extends Component {
 								source={require("../assets/images/location.png")}
 								style={{
 									...styles.marker,
-									tintColor: "orange",
-									backgroundColor: "#841584",
+									tintColor: COLORS.orange,
+									backgroundColor: COLORS.purple,
 									borderRadius: 20,
 								}}
 							/>
@@ -295,7 +299,7 @@ const styles = StyleSheet.create({
 		width: 250,
 	},
 	button: {
-		backgroundColor: "#841584",
+		backgroundColor: COLORS.purple,
 		width: 40,
 		height: 45,
 		right: 20,
@@ -309,6 +313,6 @@ const styles = StyleSheet.create({
 		top: 5,
 		left: 3,
 		alignContent: "center",
-		tintColor: "orange",
+		tintColor: COLORS.orange,
 	},
 });
