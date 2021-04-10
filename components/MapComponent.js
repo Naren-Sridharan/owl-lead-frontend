@@ -16,7 +16,7 @@ import { getDistance } from "geolib";
 import * as Location from "expo-location";
 import * as IntentLauncherAndroid from "expo-intent-launcher";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { API_KEY, COLORS, WIDTH, HEIGHT } from "../shared/constants";
+import { API_KEY, COLORS } from "../shared/constants";
 
 const { width, height } = Dimensions.get("window");
 
@@ -29,7 +29,7 @@ const INITIAL_REGION = {
 };
 
 //create a class component for any Map used in Owl Lead's Features
-export default class Map extends Component {
+class Map extends Component {
 	// constructor to initialize map region and state with marker details
 	constructor(props) {
 		super(props);
@@ -316,3 +316,5 @@ const styles = StyleSheet.create({
 		tintColor: COLORS.orange,
 	},
 });
+
+export default Map;

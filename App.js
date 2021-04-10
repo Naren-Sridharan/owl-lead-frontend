@@ -1,10 +1,13 @@
 import "react-native-gesture-handler";
 import * as React from "react";
+
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 import reducer from "./redux/reducer";
+
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+
 import Home from "./screens/HomeScreen";
 import AnyoneAround from "./screens/AnyoneAroundScreen";
 import PSOFinder from "./screens/PSOFinderScreen";

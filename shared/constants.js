@@ -1,5 +1,5 @@
 // set server address
-export const server_address = "";
+export const server_address = "https://owl-lead-backend.herokuapp.com/";
 
 // API Key for google maps
 export const API_KEY = "AIzaSyCy_gaMIh9ugIJqylorjU0cJkqtlayk1qA";

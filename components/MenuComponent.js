@@ -1,26 +1,17 @@
 import React, { Component } from "react";
-import {
-	StyleSheet,
-	Image,
-	Dimensions,
-	Button,
-	Text,
-	View,
-	Linking,
-	TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Image, View, TouchableOpacity } from "react-native";
 import { COLORS } from "../shared/constants";
 
 export default class Menu extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			options_clicked: false,
+			show_options: false,
 		};
 	}
 
 	showOptions() {
-		if (this.state.options_clicked) {
+		if (this.state.show_options) {
 			return (
 				<View style={styles.buttons_view}>
 					<TouchableOpacity
@@ -72,7 +63,7 @@ export default class Menu extends Component {
 				<TouchableOpacity
 					onPress={() =>
 						this.setState({
-							options_clicked: !this.state.options_clicked,
+							show_options: !this.state.show_options,
 						})
 					}
 					style={{
@@ -123,17 +114,5 @@ styles = StyleSheet.create({
 		height: "75%",
 		justifyContent: "center",
 		alignItems: "center",
-	},
-	cone: {
-		width: 0,
-		height: 0,
-		borderLeftWidth: 110,
-		borderLeftColor: "transparent",
-		borderRightWidth: 110,
-		borderRightColor: "transparent",
-		borderTopWidth: 200,
-		borderTopColor: COLORS.purple,
-		borderRadius: 110,
-		zIndex: 1,
 	},
 });
