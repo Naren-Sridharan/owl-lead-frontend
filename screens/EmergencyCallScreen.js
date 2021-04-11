@@ -6,8 +6,10 @@ import { COLORS } from "../shared/constants";
 function EmergencyCall(props) {
 	return (
 		<View style={styles.container}>
-			{props.address.split(",").map((address_line) => (
-				<Text style={styles.text}>{address_line}</Text>
+			{props.address.split(",").map((address_line, key) => (
+				<Text key={key} style={styles.text}>
+					{address_line}
+				</Text>
 			))}
 		</View>
 	);

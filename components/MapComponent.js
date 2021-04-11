@@ -139,7 +139,9 @@ class Map extends Component {
 
 			this._ref.current?.setAddressText(address);
 		} catch (error) {
-			this._getLocationAsync();
+			if (this.props.location_access == null) {
+				this._getLocationAsync();
+			}
 		}
 	};
 

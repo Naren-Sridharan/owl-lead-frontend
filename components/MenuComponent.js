@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { StyleSheet, Image, View, TouchableOpacity } from "react-native";
+import {
+	StyleSheet,
+	Image,
+	View,
+	TouchableOpacity,
+	TouchableWithoutFeedback,
+	Modal,
+} from "react-native";
 import { COLORS } from "../shared/constants";
 
 export default class Menu extends Component {
@@ -32,7 +39,7 @@ export default class Menu extends Component {
 							...styles.menu_button,
 							justifyContent: "center",
 							alignItems: "center",
-							top: 0,
+							bottom: 200,
 						}}
 						onPress={() => this.props.navigation.navigate("PSO Finder")}
 					>
@@ -58,7 +65,7 @@ export default class Menu extends Component {
 	}
 
 	render() {
-		return (
+		const Menu = (
 			<View style={styles.menu}>
 				<TouchableOpacity
 					onPress={() =>
@@ -81,15 +88,26 @@ export default class Menu extends Component {
 				{this.showOptions()}
 			</View>
 		);
+
+		if (this.state.show_options) {
+			return (
+				<TouchableWithoutFeedback
+					style={{ flex: 1 }}
+					onPress={() => this.setState({ show_options: false })}
+				>
+					{Menu}
+				</TouchableWithoutFeedback>
+			);
+		} else {
+			return Menu;
+		}
 	}
 }
 
 styles = StyleSheet.create({
 	menu: {
-		position: "absolute",
+		flex: 1,
 		width: "100%",
-		height: "30%",
-		bottom: 0,
 		justifyContent: "center",
 		alignItems: "center",
 	},
@@ -111,7 +129,7 @@ styles = StyleSheet.create({
 	buttons_view: {
 		flex: 1,
 		width: "100%",
-		height: "75%",
+		height: 300,
 		justifyContent: "center",
 		alignItems: "center",
 	},
