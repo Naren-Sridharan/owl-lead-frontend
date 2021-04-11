@@ -31,6 +31,7 @@ export default function AnyoneAround({ navigation }) {
 				]}
 				marker_icon={require("../assets/images/anyone_around.png")}
 				value_name="Pedestrian Counts"
+				level_name="Traffic"
 			/>
 			<Menu navigation={navigation} />
 		</View>

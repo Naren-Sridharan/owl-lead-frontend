@@ -11,6 +11,8 @@ import {
 	Platform,
 	Alert,
 } from "react-native";
+import { connect } from "react-redux";
+import { actionCreators } from "../redux/actions";
 import MapView, { Marker, Callout } from "react-native-maps";
 import { getDistance } from "geolib";
 import * as Location from "expo-location";
@@ -34,17 +36,18 @@ class Map extends Component {
 	constructor(props) {
 		super(props);
 
-		this.ref = React.createRef();
+		Location.setGoogleApiKey(API_KEY);
+
+		this._ref = React.createRef();
 
 		// initialize state with region, markers, user location and type of value being displayed
 		this.state = {
 			region: INITIAL_REGION,
 			markers: !props.markers ? [] : props.markers,
 			marker_icon: props.marker_icon,
-			location: null,
-			location_access: null,
 			errorMsg: null,
 			value_name: props.value_name,
+			level_name: props.level_name,
 		};
 	}
 
@@ -59,7 +62,9 @@ class Map extends Component {
 	};
 
 	componentDidMount() {
-		this._getLocationAsync();
+		if (!this.props.location) {
+			this._getLocationAsync();
+		}
 	}
 
 	// Function to get user location asynchornously
@@ -71,16 +76,16 @@ class Map extends Component {
 			// if location permission is not granted
 			if (status !== "granted") {
 				// if this is the first time we are asking for permission
-				if (this.state.location_access == null) {
+				if (this.props.location_access == null) {
 					// note that permission has been denied
-					this.setState({ location_access: false });
+					this.props.denyLocationAccess();
 
 					// return to screen, as there is nothing to be done if location permission is denied
 					return;
 				}
 
 				// if it is not the first time asking for location and it has been denied so far
-				if (!this.state.location_access) {
+				if (!this.props.location_access) {
 					// Show an alert asking whether user want's to change location access in app settings
 					Alert.alert(
 						"No Permission for Location Access",
@@ -102,30 +107,39 @@ class Map extends Component {
 					return;
 				}
 			} else {
-				this.setState({ location_access: true });
+				this.props.allowLocationAccess();
 			}
 
 			// get current location
 			let location = await Location.getCurrentPositionAsync({});
 
-			// update address on search bar to current location
-			this.ref.current?.setAddressText("Current Location");
+			// set location globally
+			this.props.setLocation({
+				latitude: location.coords.latitude,
+				longitude: location.coords.longitude,
+			});
 
 			// Center the map on the location we just fetched.
 			this.setState({
-				location: {
-					latitude: location.coords.latitude,
-					longitude: location.coords.longitude,
-				},
 				region: {
 					...this.state.region,
-					latitude: location.coords.latitude,
-					longitude: location.coords.longitude,
+					...this.props.location,
 				},
 			});
+
+			let address = (
+				await Location.reverseGeocodeAsync(this.props.location, {
+					useGoogleMaps: true,
+				})
+			)[0];
+
+			address = `${address.name}, ${address.city}, ${address.region}, ${address.country}`;
+
+			this.props.setAddress(address);
+
+			this._ref.current?.setAddressText(address);
 		} catch (error) {
-			alert(this.state.errorMsg);
-			console.log(error);
+			this._getLocationAsync();
 		}
 	};
 
@@ -162,9 +176,9 @@ class Map extends Component {
 									onPress={() =>
 										Linking.openURL(
 											`https://www.google.com/maps/dir/?api=1` +
-												(!this.state.location
+												(!this.props.location
 													? ""
-													: `&origin=${this.state.location.latitude},${this.state.location.longitude}`) +
+													: `&origin=${this.props.location.latitude},${this.props.location.longitude}`) +
 												`&destination=${marker.latlng.latitude},${marker.latlng.longitude}`
 										)
 									}
@@ -176,15 +190,15 @@ class Map extends Component {
 												{this.state.value_name}: {marker.description.value}
 											</Text>
 										) : (
-											<Text></Text>
+											<></>
 										)}
 										<Text>
-											{marker.level_name}: {marker.description.level}
+											{this.state.level_name}: {marker.description.level}
 										</Text>
-										{this.state.location ? (
+										{this.props.location ? (
 											<Text>
 												Distance:{" "}
-												{getDistance(this.state.location, marker.latlng) /
+												{getDistance(this.props.location, marker.latlng) /
 													1000 +
 													" Km"}{" "}
 											</Text>
@@ -201,8 +215,8 @@ class Map extends Component {
 							</Marker>
 						))
 					}
-					{this.state.location ? (
-						<Marker coordinate={this.state.location}>
+					{this.props.location ? (
+						<Marker coordinate={this.props.location}>
 							<Image
 								source={require("../assets/images/location.png")}
 								style={{
@@ -219,14 +233,17 @@ class Map extends Component {
 				</MapView>
 				{/* Show search bar for places autocomplete */}
 				<GooglePlacesAutocomplete
-					ref={this.ref} // Reference to be used to access input
+					ref={this._ref} // Reference to be used to access input
+					textInputProps={{
+						onLayout: () =>
+							this._ref.current?.setAddressText(this.props.address),
+					}}
 					placeholder="Search" // Show 'Search' in location search bar
 					minLength={2} // Show autocomplete after 2 letters
 					autoFocus={false} // Don't focus on searchbar when page loads
 					returnKeyType={"search"} // return search results
 					fetchDetails={true} // fetch geometry details
 					renderDescription={(row) => row.description} // show place name in each row of list
-					getDefaultValue={() => ""} // default value is empty
 					styles={{
 						// set styles
 						textInputContainer: { width: "100%" },
@@ -243,14 +260,14 @@ class Map extends Component {
 						listView: { width: "95%" },
 					}}
 					onPress={(data, details = null) => {
-						// On selecting suggestion
-						this.setState({
-							// Set location to that suggestion
-							location: {
-								latitude: details.geometry.location.lat,
-								longitude: details.geometry.location.lng,
-							},
+						// On selecting suggestion, Set location to that suggestion
+						this.props.setLocation({
+							latitude: details.geometry.location.lat,
+							longitude: details.geometry.location.lng,
 						});
+
+						// update address on search bar to current location
+						this.props.setAddress(data.description);
 					}}
 					query={{
 						// for querying
@@ -317,4 +334,19 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default Map;
+const mapStateToProps = (state) => {
+	return {
+		location: state.location,
+		location_access: state.location_access,
+		address: state.address,
+	};
+};
+
+const mapDispatchToProps = (dispatch) => ({
+	setLocation: (location) => dispatch(actionCreators.setLocation(location)),
+	setAddress: (address) => dispatch(actionCreators.setAddress(address)),
+	allowLocationAccess: () => dispatch(actionCreators.allowLocationAccess()),
+	denyLocationAccess: () => dispatch(actionCreators.denyLocationAccess()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Map);
