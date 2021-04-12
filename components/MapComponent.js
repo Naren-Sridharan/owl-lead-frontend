@@ -14,7 +14,7 @@ import {
 import { connect } from "react-redux";
 import { actionCreators } from "../redux/actions";
 import MapView, { Marker, Callout } from "react-native-maps";
-import { getDistance } from "geolib";
+import { getDistance, isPointWithinRadius } from "geolib";
 import * as Location from "expo-location";
 import * as IntentLauncherAndroid from "expo-intent-launcher";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -24,10 +24,10 @@ const { width, height } = Dimensions.get("window");
 
 // set initial location region
 const INITIAL_REGION = {
-	latitude: -37.8186,
-	longitude: 144.9637,
-	latitudeDelta: 0.08,
-	longitudeDelta: 0.08 * (width / height),
+	latitude: -37.8138,
+	longitude: 144.9578,
+	latitudeDelta: 0.02,
+	longitudeDelta: 0.02 * (width / height),
 };
 
 //create a class component for any Map used in Owl Lead's Features
@@ -38,7 +38,8 @@ class Map extends Component {
 
 		Location.setGoogleApiKey(API_KEY);
 
-		this._ref = React.createRef();
+		this._searchRef = React.createRef();
+		this._mapRef = React.createRef();
 
 		// initialize state with region, markers, user location and type of value being displayed
 		this.state = {
@@ -62,7 +63,7 @@ class Map extends Component {
 	};
 
 	componentDidMount() {
-		if (!this.props.location) {
+		if (!this.props.location && this.props.location_access != false) {
 			this._getLocationAsync();
 		}
 	}
@@ -113,11 +114,31 @@ class Map extends Component {
 			// get current location
 			let location = await Location.getCurrentPositionAsync({});
 
-			// set location globally
-			this.props.setLocation({
+			location = {
 				latitude: location.coords.latitude,
 				longitude: location.coords.longitude,
-			});
+			};
+
+			isLocationOutside = !isPointWithinRadius(
+				location,
+				{
+					latitude: INITIAL_REGION.latitude,
+					longitude: INITIAL_REGION.longitude,
+				},
+				3000
+			);
+
+			if (isLocationOutside) {
+				this.props.denyLocationAccess();
+				Alert.alert(
+					"Unservicable Location",
+					"Sorry! We cannot serve the location you are currently at, as it is out of the city radius that we serve."
+				);
+				return;
+			}
+
+			// set location globally
+			this.props.setLocation(location);
 
 			// Center the map on the location we just fetched.
 			this.setState({
@@ -137,7 +158,7 @@ class Map extends Component {
 
 			this.props.setAddress(address);
 
-			this._ref.current?.setAddressText(address);
+			this._searchRef.current?.setAddressText(address);
 		} catch (error) {
 			if (this.props.location_access == null) {
 				this._getLocationAsync();
@@ -160,6 +181,24 @@ class Map extends Component {
 					provider={MapView.PROVIDER_GOOGLE}
 					initialRegion={INITIAL_REGION}
 					onRegionChange={this.onRegionChange}
+					ref={(ref) => (this._mapRef = ref)}
+					minZoomLevel={15}
+					onLayout={() =>
+						this._mapRef.setMapBoundaries(
+							{
+								latitude:
+									INITIAL_REGION.latitude + INITIAL_REGION.latitudeDelta / 2,
+								longitude:
+									INITIAL_REGION.longitude + INITIAL_REGION.longitudeDelta / 2,
+							},
+							{
+								latitude:
+									INITIAL_REGION.latitude - INITIAL_REGION.latitudeDelta / 2,
+								longitude:
+									INITIAL_REGION.longitude - INITIAL_REGION.longitudeDelta / 2,
+							}
+						)
+					}
 				>
 					{
 						// set up markers from state onto the map view
@@ -235,10 +274,12 @@ class Map extends Component {
 				</MapView>
 				{/* Show search bar for places autocomplete */}
 				<GooglePlacesAutocomplete
-					ref={this._ref} // Reference to be used to access input
+					ref={this._searchRef} // Reference to be used to access input
 					textInputProps={{
 						onLayout: () =>
-							this._ref.current?.setAddressText(this.props.address),
+							this.props.address
+								? this._searchRef.current?.setAddressText(this.props.address)
+								: "",
 					}}
 					placeholder="Search" // Show 'Search' in location search bar
 					minLength={2} // Show autocomplete after 2 letters
@@ -276,6 +317,9 @@ class Map extends Component {
 						key: API_KEY, // use api key
 						language: "en", // language english
 						components: "country:au", // results only for australia
+						location: `${INITIAL_REGION.latitude}, ${INITIAL_REGION.longitude}`,
+						radius: "3000", // 3km
+						strictbounds: true,
 					}}
 					// sort places by distance
 					GooglePlacesSearchQuery={{ rankby: "distance" }}
@@ -309,8 +353,8 @@ const styles = StyleSheet.create({
 		...StyleSheet.absoluteFillObject,
 	},
 	marker: {
-		height: 15,
-		width: 15,
+		height: 20,
+		width: 20,
 	},
 	callout: {
 		flex: -1,

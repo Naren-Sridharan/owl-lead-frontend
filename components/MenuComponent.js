@@ -27,7 +27,10 @@ export default class Menu extends Component {
 							left: 10,
 							bottom: 100,
 						}}
-						onPress={() => this.props.navigation.navigate("Anyone Around?")}
+						onPress={() => {
+							this.setState({ show_options: false });
+							this.props.navigation.navigate("Anyone Around?");
+						}}
 					>
 						<Image
 							source={require("../assets/images/anyone_around.png")}
@@ -41,7 +44,10 @@ export default class Menu extends Component {
 							alignItems: "center",
 							bottom: 200,
 						}}
-						onPress={() => this.props.navigation.navigate("PSO Finder")}
+						onPress={() => {
+							this.setState({ show_options: false });
+							this.props.navigation.navigate("PSO Finder");
+						}}
 					>
 						<Image
 							source={require("../assets/images/pso_finder.png")}
@@ -50,7 +56,10 @@ export default class Menu extends Component {
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={{ ...styles.menu_button, right: 10, bottom: 100 }}
-						onPress={() => this.props.navigation.navigate("Emergency Call")}
+						onPress={() => {
+							this.setState({ show_options: false });
+							this.props.navigation.navigate("Emergency Call");
+						}}
 					>
 						<Image
 							source={require("../assets/images/emergency.png")}
