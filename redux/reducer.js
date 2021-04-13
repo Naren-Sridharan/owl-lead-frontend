@@ -1,6 +1,7 @@
 import * as Types from "./types";
 
 const initialState = {
+	show_options: false,
 	location_access: null,
 	location: null,
 	address: null,
@@ -12,36 +13,40 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
 	switch (action.type) {
-		case Types.SET_LOCATION:
-			return {
-				...state,
-				isLoading: false,
-				errMess: null,
-				location: action.payload,
-			};
-
 		case Types.SET_ADDRESS:
 			return {
 				...state,
-				isLoading: false,
-				errMess: null,
 				address: action.payload,
+			};
+
+		case Types.SET_LOCATION:
+			return {
+				...state,
+				location: action.payload,
 			};
 
 		case Types.ALLOW_LOCATION_ACCESS:
 			return {
 				...state,
-				isLoading: false,
-				errMess: null,
 				location_access: true,
 			};
 
 		case Types.DENY_LOCATION_ACCESS:
 			return {
 				...state,
-				isLoading: false,
-				errMess: null,
 				location_access: false,
+			};
+
+		case Types.SHOW_OPTIONS:
+			return {
+				...state,
+				show_options: true,
+			};
+
+		case Types.HIDE_OPTIONS:
+			return {
+				...state,
+				show_options: false,
 			};
 
 		case Types.PEDESTRIAN_COUNTS_LOADING:

@@ -12,7 +12,7 @@ import {
 	Alert,
 } from "react-native";
 import { connect } from "react-redux";
-import { actionCreators } from "../redux/actions";
+import { Actions } from "../redux/actions";
 import MapView, { Marker, Callout } from "react-native-maps";
 import { getDistance, isPointWithinRadius } from "geolib";
 import * as Location from "expo-location";
@@ -70,6 +70,7 @@ class Map extends Component {
 
 	// Function to get user location asynchornously
 	_getLocationAsync = async () => {
+		this.closeOptions();
 		try {
 			// ask for location permission
 			let { status } = await Location.requestPermissionsAsync();
@@ -171,6 +172,9 @@ class Map extends Component {
 		this.setState({ region });
 	};
 
+	closeOptions = () =>
+		this.props.show_options ? this.props.hideOptions() : "";
+
 	// render map view
 	render() {
 		return (
@@ -181,6 +185,7 @@ class Map extends Component {
 					provider={MapView.PROVIDER_GOOGLE}
 					initialRegion={INITIAL_REGION}
 					onRegionChange={this.onRegionChange}
+					onPress={this.closeOptions}
 					ref={(ref) => (this._mapRef = ref)}
 					minZoomLevel={15}
 					onLayout={() =>
@@ -280,6 +285,7 @@ class Map extends Component {
 							this.props.address
 								? this._searchRef.current?.setAddressText(this.props.address)
 								: "",
+						onFocus: this.closeOptions,
 					}}
 					placeholder="Search" // Show 'Search' in location search bar
 					minLength={2} // Show autocomplete after 2 letters
@@ -385,14 +391,16 @@ const mapStateToProps = (state) => {
 		location: state.location,
 		location_access: state.location_access,
 		address: state.address,
+		show_options: state.show_options,
 	};
 };
 
 const mapDispatchToProps = (dispatch) => ({
-	setLocation: (location) => dispatch(actionCreators.setLocation(location)),
-	setAddress: (address) => dispatch(actionCreators.setAddress(address)),
-	allowLocationAccess: () => dispatch(actionCreators.allowLocationAccess()),
-	denyLocationAccess: () => dispatch(actionCreators.denyLocationAccess()),
+	setAddress: (address) => dispatch(Actions.setAddress(address)),
+	setLocation: (location) => dispatch(Actions.setLocation(location)),
+	allowLocationAccess: () => dispatch(Actions.allowLocationAccess()),
+	denyLocationAccess: () => dispatch(Actions.denyLocationAccess()),
+	hideOptions: () => dispatch(Actions.hideOptions()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Map);

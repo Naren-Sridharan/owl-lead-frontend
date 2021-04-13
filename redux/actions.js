@@ -1,10 +1,12 @@
 import * as Types from "./types";
 
-const actionCreators = {
+const Actions = {
 	setAddress: (address) => ({ type: Types.SET_ADDRESS, payload: address }),
 	setLocation: (location) => ({ type: Types.SET_LOCATION, payload: location }),
 	allowLocationAccess: () => ({ type: Types.ALLOW_LOCATION_ACCESS }),
 	denyLocationAccess: () => ({ type: Types.DENY_LOCATION_ACCESS }),
+	showOptions: () => ({ type: Types.SHOW_OPTIONS }),
+	hideOptions: () => ({ type: Types.HIDE_OPTIONS }),
 	pedestrianCountsLoading: () => ({
 		type: ActionTypes.PEDESTRIAN_COUNTS_LOADING,
 	}),
@@ -29,4 +31,4 @@ const actionCreators = {
 	}),
 };
 
-export { actionCreators };
+export { Actions };

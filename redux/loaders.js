@@ -1,9 +1,8 @@
 import { server_address } from "../shared/constants";
-import * as Types from "./types";
-import { actionCreators } from "./actions";
+import { Actions } from "./actions";
 
 export const fetchPedestrianCounts = () => (dispatch) => {
-	dispatch(actionCreators.pedestrianCountsLoading());
+	dispatch(Actions.pedestrianCountsLoading());
 	console.log("Loading");
 	return fetch(server_address + "pedestrian_counts")
 		.then(
@@ -23,16 +22,16 @@ export const fetchPedestrianCounts = () => (dispatch) => {
 		)
 		.then((response) => response.json())
 		.then((pedestrian_counts) =>
-			dispatch(actionCreators.addPedestrianCounts(pedestrian_counts))
+			dispatch(Actions.addPedestrianCounts(pedestrian_counts))
 		)
 		.catch((error) => {
-			dispatch(actionCreators.pedestrianCountsFailed(error.message));
+			dispatch(Actions.pedestrianCountsFailed(error.message));
 			console.log(error.message);
 		});
 };
 
 export const fetchPsoStations = () => (dispatch) => {
-	dispatch(actionCreators.psoStationsLoading());
+	dispatch(Actions.psoStationsLoading());
 	console.log("Loading");
 	return fetch(server_address + "pso_stations")
 		.then(
@@ -51,11 +50,9 @@ export const fetchPsoStations = () => (dispatch) => {
 			}
 		)
 		.then((response) => response.json())
-		.then((pso_stations) =>
-			dispatch(actionCreators.addPsoStations(pso_stations))
-		)
+		.then((pso_stations) => dispatch(Actions.addPsoStations(pso_stations)))
 		.catch((error) => {
-			dispatch(actionCreators.psoStationsFailed(error.message));
+			dispatch(Actions.psoStationsFailed(error.message));
 			console.log(error.message);
 		});
 };

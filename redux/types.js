@@ -1,8 +1,10 @@
 // small datum actions
+export const SET_ADDRESS = "SET_ADDRESS";
+export const SET_LOCATION = "SET_LOCATION";
 export const ALLOW_LOCATION_ACCESS = "ALLOW_LOCATION_ACCESS";
 export const DENY_LOCATION_ACCESS = "DENY_LOCATION_ACCESS";
-export const SET_LOCATION = "SET_LOCATION";
-export const SET_ADDRESS = "SET_ADDRESS";
+export const SHOW_OPTIONS = "SHOW_OPTIONS";
+export const HIDE_OPTIONS = "HIDE_OPTIONS";
 
 // big data actions
 export const PEDESTRIAN_COUNTS_LOADING = "PEDESTRIAN_COUNTS_LOADING";

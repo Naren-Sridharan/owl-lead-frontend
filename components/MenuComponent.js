@@ -1,86 +1,68 @@
 import React, { Component } from "react";
-import {
-	StyleSheet,
-	Image,
-	View,
-	TouchableOpacity,
-	TouchableWithoutFeedback,
-	Modal,
-} from "react-native";
+import { StyleSheet, Image, View, TouchableOpacity } from "react-native";
+import { connect } from "react-redux";
 import { COLORS } from "../shared/constants";
+import { Actions } from "../redux/actions";
 
-export default class Menu extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			show_options: false,
-		};
-	}
-
-	showOptions() {
-		if (this.state.show_options) {
-			return (
-				<View style={styles.buttons_view}>
-					<TouchableOpacity
-						style={{
-							...styles.menu_button,
-							left: 10,
-							bottom: 100,
-						}}
-						onPress={() => {
-							this.setState({ show_options: false });
-							this.props.navigation.navigate("Anyone Around?");
-						}}
-					>
-						<Image
-							source={require("../assets/images/anyone_around.png")}
-							style={styles.icon}
-						/>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={{
-							...styles.menu_button,
-							justifyContent: "center",
-							alignItems: "center",
-							bottom: 200,
-						}}
-						onPress={() => {
-							this.setState({ show_options: false });
-							this.props.navigation.navigate("PSO Finder");
-						}}
-					>
-						<Image
-							source={require("../assets/images/pso_finder.png")}
-							style={styles.icon}
-						/>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={{ ...styles.menu_button, right: 10, bottom: 100 }}
-						onPress={() => {
-							this.setState({ show_options: false });
-							this.props.navigation.navigate("Emergency Call");
-						}}
-					>
-						<Image
-							source={require("../assets/images/emergency.png")}
-							style={styles.icon}
-						/>
-					</TouchableOpacity>
-				</View>
-			);
-		} else {
-			return <></>;
-		}
-	}
-
+class Menu extends Component {
 	render() {
-		const Menu = (
+		const Options = (
+			<View style={styles.buttons_view}>
+				<TouchableOpacity
+					style={{
+						...styles.menu_button,
+						left: 10,
+						bottom: 100,
+					}}
+					onPress={() => {
+						this.props.hideOptions();
+						this.props.navigation.navigate("Anyone Around?");
+					}}
+				>
+					<Image
+						source={require("../assets/images/anyone_around.png")}
+						style={styles.icon}
+					/>
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={{
+						...styles.menu_button,
+						justifyContent: "center",
+						alignItems: "center",
+						bottom: 200,
+					}}
+					onPress={() => {
+						this.props.hideOptions();
+						this.props.navigation.navigate("PSO Finder");
+					}}
+				>
+					<Image
+						source={require("../assets/images/pso_finder.png")}
+						style={styles.icon}
+					/>
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={{ ...styles.menu_button, right: 10, bottom: 100 }}
+					onPress={() => {
+						this.props.hideOptions();
+						this.props.navigation.navigate("Emergency Call");
+					}}
+				>
+					<Image
+						source={require("../assets/images/emergency.png")}
+						style={styles.icon}
+					/>
+				</TouchableOpacity>
+			</View>
+		);
+
+		return (
 			<View style={styles.menu}>
 				<TouchableOpacity
 					onPress={() =>
-						this.setState({
-							show_options: !this.state.show_options,
-						})
+						this.props.show_options
+							? this.props.hideOptions()
+							: this.props.showOptions()
 					}
 					style={{
 						...styles.menu_button,
@@ -94,22 +76,9 @@ export default class Menu extends Component {
 						style={styles.icon}
 					/>
 				</TouchableOpacity>
-				{this.showOptions()}
+				{this.props.show_options ? Options : <></>}
 			</View>
 		);
-
-		if (this.state.show_options) {
-			return (
-				<TouchableWithoutFeedback
-					style={{ flex: 1 }}
-					onPress={() => this.setState({ show_options: false })}
-				>
-					{Menu}
-				</TouchableWithoutFeedback>
-			);
-		} else {
-			return Menu;
-		}
 	}
 }
 
@@ -143,3 +112,16 @@ styles = StyleSheet.create({
 		alignItems: "center",
 	},
 });
+
+const mapStateToProps = (state) => {
+	return {
+		show_options: state.show_options,
+	};
+};
+
+const mapDispatchToProps = (dispatch) => ({
+	showOptions: () => dispatch(Actions.showOptions()),
+	hideOptions: () => dispatch(Actions.hideOptions()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);
