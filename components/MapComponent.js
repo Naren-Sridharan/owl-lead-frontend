@@ -257,7 +257,7 @@ class Map extends Component {
 										)}
 										<Button
 											title="Directions"
-											color={COLORS.purple}
+											color={COLORS.dark}
 											accessibilityLabel="This button redirects you to google maps for directions to the location"
 										/>
 									</View>
@@ -274,8 +274,8 @@ class Map extends Component {
 								source={require("../assets/images/location.png")}
 								style={{
 									...styles.marker,
-									tintColor: COLORS.orange,
-									backgroundColor: COLORS.purple,
+									tintColor: COLORS.light,
+									backgroundColor: COLORS.dark,
 									borderRadius: 20,
 								}}
 							/>
@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
 		width: 250,
 	},
 	button: {
-		backgroundColor: COLORS.purple,
+		backgroundColor: COLORS.dark,
 		width: 40,
 		height: 45,
 		right: 20,
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
 		top: 5,
 		left: 3,
 		alignContent: "center",
-		tintColor: COLORS.orange,
+		tintColor: COLORS.light,
 	},
 });
 

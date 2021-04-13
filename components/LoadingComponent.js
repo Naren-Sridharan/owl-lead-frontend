@@ -5,7 +5,7 @@ import { COLORS } from "../shared/constants";
 export const Loading = () => {
 	return (
 		<View style={styles.loadingView}>
-			<ActivityIndicator size="large" color={COLORS.purple} />
+			<ActivityIndicator size="large" color={COLORS.dark} />
 			<Text style={styles.loadingText}>Loading . . .</Text>
 		</View>
 	);
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	loadingText: {
-		color: COLORS.orange,
+		color: COLORS.light,
 		fontSize: 14,
 		fontWeight: "bold",
 	},

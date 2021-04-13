@@ -1,16 +1,21 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { connect } from "react-redux";
-import { COLORS } from "../shared/constants";
+import { StyleSheet, Text, View, Linking } from "react-native";
+import { useSelector } from "react-redux";
+import { COLORS, EMERGENCY_NUMBER } from "../shared/constants";
 
-function EmergencyCall(props) {
+export default function EmergencyCall() {
+	const address = useSelector((state) => state.address);
+
+	Linking.openURL(`tel:${EMERGENCY_NUMBER}`);
+
 	return (
 		<View style={styles.container}>
-			{props.address.split(",").map((address_line, key) => (
-				<Text key={key} style={styles.text}>
-					{address_line}
-				</Text>
-			))}
+			<Text style={styles.text}>
+				{" "}
+				{`Calling ${EMERGENCY_NUMBER}! \n${
+					address ? address.split(",").join("\n") : ""
+				}`}
+			</Text>
 		</View>
 	);
 }
@@ -20,21 +25,12 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "center",
 		justifyContent: "center",
-		backgroundColor: COLORS.purple,
+		backgroundColor: COLORS.dark,
 	},
 	text: {
 		fontWeight: "bold",
-		fontSize: 42,
-		color: COLORS.orange,
+		fontSize: 24,
+		color: "red",
+		textAlign: "center",
 	},
 });
-
-const mapStateToProps = (state) => {
-	return {
-		location: state.location,
-		location_access: state.location_access,
-		address: state.address,
-	};
-};
-
-export default connect(mapStateToProps, null)(EmergencyCall);

@@ -6,7 +6,9 @@ export const API_KEY = "AIzaSyCy_gaMIh9ugIJqylorjU0cJkqtlayk1qA";
 
 // Theme Colors
 export const COLORS = {
-	lightPurple: "#9370db",
-	purple: "#841584",
-	orange: "#ff8c00",
+	dark: "#2d327a",
+	light: "#f6eea9",
 };
+
+// Emergency Number
+export const EMERGENCY_NUMBER = "";
