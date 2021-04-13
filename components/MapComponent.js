@@ -208,7 +208,11 @@ class Map extends Component {
 					{
 						// set up markers from state onto the map view
 						this.state.markers.map((marker, index) => (
-							<Marker key={index} coordinate={marker.latlng}>
+							<Marker
+								key={index}
+								coordinate={marker.latlng}
+								onPress={this.closeOptions}
+							>
 								<View>
 									{/*Make markers have a customized image with color*/}
 									<Image
@@ -262,7 +266,10 @@ class Map extends Component {
 						))
 					}
 					{this.props.location ? (
-						<Marker coordinate={this.props.location}>
+						<Marker
+							coordinate={this.props.location}
+							onPress={this.closeOptions}
+						>
 							<Image
 								source={require("../assets/images/location.png")}
 								style={{
