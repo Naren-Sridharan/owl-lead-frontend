@@ -14,11 +14,16 @@ import {
 import { connect } from "react-redux";
 import { Actions } from "../redux/actions";
 import MapView, { Marker, Callout } from "react-native-maps";
-import { getDistance, isPointWithinRadius } from "geolib";
+import { isPointWithinRadius } from "geolib";
 import * as Location from "expo-location";
 import * as IntentLauncherAndroid from "expo-intent-launcher";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { API_KEY, COLORS } from "../shared/constants";
+import {
+	API_KEY,
+	COLORS,
+	directions_server_address,
+} from "../shared/constants";
+import { fetchDistances } from "../shared/loaders";
 
 const { width, height } = Dimensions.get("window");
 
@@ -35,7 +40,7 @@ class Map extends Component {
 	// constructor to initialize map region and state with marker details
 	constructor(props) {
 		super(props);
-
+		console.log("Map Creation");
 		Location.setGoogleApiKey(API_KEY);
 
 		this._searchRef = React.createRef();
@@ -63,14 +68,41 @@ class Map extends Component {
 	};
 
 	componentDidMount() {
-		if (!this.props.location && this.props.location_access != false) {
-			this._getLocationAsync();
+		if (
+			this.props.location &&
+			this.state.markers.length &&
+			!this.state.markers[0].distance
+		) {
+			this._getDistances();
 		}
 	}
 
+	_getDistances = async () => {
+		if (!this.state.markers.length) {
+			return;
+		}
+
+		try {
+			let results = await fetchDistances(
+				this.props.location,
+				this.state.markers.map((marker) => marker.latlng)
+			);
+			this.setState({
+				markers: this.state.markers.map((marker, index) => ({
+					...marker,
+					distance: results[index].distance,
+					duration: results[index].duration,
+				})),
+			});
+		} catch (error) {
+			alert("Error getting distances");
+			console.log(error);
+		}
+	};
+
 	// Function to get user location asynchornously
 	_getLocationAsync = async () => {
-		this.closeOptions();
+		this.props.hideOptions();
 		try {
 			// ask for location permission
 			let { status } = await Location.requestPermissionsAsync();
@@ -160,6 +192,8 @@ class Map extends Component {
 			this.props.setAddress(address);
 
 			this._searchRef.current?.setAddressText(address);
+
+			this._getDistances();
 		} catch (error) {
 			if (this.props.location_access == null) {
 				this._getLocationAsync();
@@ -172,9 +206,6 @@ class Map extends Component {
 		this.setState({ region });
 	};
 
-	closeOptions = () =>
-		this.props.show_options ? this.props.hideOptions() : "";
-
 	// render map view
 	render() {
 		return (
@@ -185,7 +216,7 @@ class Map extends Component {
 					provider={MapView.PROVIDER_GOOGLE}
 					initialRegion={INITIAL_REGION}
 					onRegionChange={this.onRegionChange}
-					onPress={this.closeOptions}
+					onPress={this.props.hideOptions}
 					ref={(ref) => (this._mapRef = ref)}
 					minZoomLevel={15}
 					onLayout={() =>
@@ -211,7 +242,7 @@ class Map extends Component {
 							<Marker
 								key={index}
 								coordinate={marker.latlng}
-								onPress={this.closeOptions}
+								onPress={this.props.hideOptions}
 							>
 								<View>
 									{/*Make markers have a customized image with color*/}
@@ -225,7 +256,7 @@ class Map extends Component {
 									style={styles.callout}
 									onPress={() =>
 										Linking.openURL(
-											`https://www.google.com/maps/dir/?api=1` +
+											`${directions_server_address}` +
 												(!this.props.location
 													? ""
 													: `&origin=${this.props.location.latitude},${this.props.location.longitude}`) +
@@ -234,24 +265,24 @@ class Map extends Component {
 									}
 								>
 									<View>
-										<Text>{marker.description.place}</Text>
+										<Text>{marker.place}</Text>
 										{this.state.value_name ? (
 											<Text>
-												{this.state.value_name}: {marker.description.value}
+												{this.state.value_name}: {marker.value}
 											</Text>
 										) : (
 											<></>
 										)}
 										<Text>
-											{this.state.level_name}: {marker.description.level}
+											{this.state.level_name}: {marker.level}
 										</Text>
-										{this.props.location ? (
-											<Text>
-												Distance:{" "}
-												{getDistance(this.props.location, marker.latlng) /
-													1000 +
-													" Km"}{" "}
-											</Text>
+										{marker.distance ? (
+											<Text>Distance: {marker.distance} meters</Text>
+										) : (
+											<Text></Text>
+										)}
+										{marker.duration ? (
+											<Text>Duration: {marker.duration} minutes</Text>
 										) : (
 											<Text></Text>
 										)}
@@ -268,7 +299,7 @@ class Map extends Component {
 					{this.props.location ? (
 						<Marker
 							coordinate={this.props.location}
-							onPress={this.closeOptions}
+							onPress={this.props.hideOptions}
 						>
 							<Image
 								source={require("../assets/images/location.png")}
@@ -292,7 +323,7 @@ class Map extends Component {
 							this.props.address
 								? this._searchRef.current?.setAddressText(this.props.address)
 								: "",
-						onFocus: this.closeOptions,
+						onFocus: this.props.hideOptions,
 					}}
 					placeholder="Search" // Show 'Search' in location search bar
 					minLength={2} // Show autocomplete after 2 letters
@@ -324,6 +355,9 @@ class Map extends Component {
 
 						// update address on search bar to current location
 						this.props.setAddress(data.description);
+
+						// update distances
+						this._getDistances();
 					}}
 					query={{
 						// for querying
@@ -398,7 +432,6 @@ const mapStateToProps = (state) => {
 		location: state.location,
 		location_access: state.location_access,
 		address: state.address,
-		show_options: state.show_options,
 	};
 };
 

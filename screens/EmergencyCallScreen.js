@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Linking } from "react-native";
 import { useSelector } from "react-redux";
 import { COLORS, EMERGENCY_NUMBER } from "../shared/constants";
 
-export default function EmergencyCall() {
+export default EmergencyCall = ({ navigation }) => {
 	const address = useSelector((state) => state.address);
 
 	Linking.openURL(`tel:${EMERGENCY_NUMBER}`);
@@ -18,7 +18,7 @@ export default function EmergencyCall() {
 			</Text>
 		</View>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {

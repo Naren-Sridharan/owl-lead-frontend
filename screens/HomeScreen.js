@@ -6,7 +6,7 @@ import Menu from "../components/MenuComponent";
 export default function Home({ navigation }) {
 	return (
 		<View style={styles.container}>
-			<Map />
+			<Map navigation={navigation} />
 			<Menu navigation={navigation} />
 		</View>
 	);

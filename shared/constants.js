@@ -1,6 +1,14 @@
 // set server address
 export const server_address = "https://owl-lead-backend.herokuapp.com/";
 
+// set distance server address
+export const distance_server_address =
+	"https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial";
+
+// set directions server address
+export const directions_server_address =
+	"https://www.google.com/maps/dir/?api=1";
+
 // API Key for google maps
 export const API_KEY = "AIzaSyCy_gaMIh9ugIJqylorjU0cJkqtlayk1qA";
 
@@ -11,4 +19,4 @@ export const COLORS = {
 };
 
 // Emergency Number
-export const EMERGENCY_NUMBER = "";
+export const EMERGENCY_NUMBER = "000";

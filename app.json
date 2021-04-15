@@ -27,7 +27,7 @@
       }
     },
     "web": {
-      "favicon": "./assets/owl_lead.png"
+      "favicon": "./assets/images/owl_lead.png"
     },
     "description": "Owl Lead will lead you to safety when you are feeling unsafe at night in the streets of Melbourne.",
     "githubUrl": "https://github.com/Naren-Sridharan/owl-lead-frontend"
