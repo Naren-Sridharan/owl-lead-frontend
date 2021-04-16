@@ -158,8 +158,8 @@ export default function Map(props) {
 			let current_location = await Location.getCurrentPositionAsync({});
 
 			current_location = {
-				latitude: location.coords.latitude,
-				longitude: location.coords.longitude,
+				latitude: current_location.coords.latitude,
+				longitude: current_location.coords.longitude,
 			};
 
 			isLocationOutside = !isPointWithinRadius(
@@ -194,6 +194,7 @@ export default function Map(props) {
 			setAddress(current_address);
 		} catch (error) {
 			if (location_access == null) {
+				console.log(error);
 				getLocationAsync();
 			}
 		}
