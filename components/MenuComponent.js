@@ -86,6 +86,7 @@ styles = StyleSheet.create({
 		backgroundColor: COLORS.light,
 		justifyContent: "center",
 		alignItems: "center",
+		zIndex: 999,
 	},
 	icon: {
 		width: 50,

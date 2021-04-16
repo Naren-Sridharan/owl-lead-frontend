@@ -31,8 +31,8 @@ const { width, height } = Dimensions.get("window");
 const INITIAL_REGION = {
 	latitude: -37.8138,
 	longitude: 144.9578,
-	latitudeDelta: 0.02,
-	longitudeDelta: 0.02 * (width / height),
+	latitudeDelta: 0.03,
+	longitudeDelta: 0.03 * (width / height),
 };
 
 const openSetting = () => {
@@ -95,6 +95,12 @@ export default function Map(props) {
 	};
 
 	useEffect(() => {
+		// Center the map on the location we just fetched.
+		setRegion({
+			...region,
+			...location,
+		});
+
 		if (location && markers.length) {
 			getDistances();
 		}
@@ -177,12 +183,6 @@ export default function Map(props) {
 			// set location globally
 			setLocation(current_location);
 
-			// Center the map on the location we just fetched.
-			setRegion({
-				...region,
-				...location,
-			});
-
 			let current_address = (
 				await Location.reverseGeocodeAsync(location, {
 					useGoogleMaps: true,
@@ -214,16 +214,14 @@ export default function Map(props) {
 				onLayout={() =>
 					mapRef.setMapBoundaries(
 						{
-							latitude:
-								INITIAL_REGION.latitude + INITIAL_REGION.latitudeDelta / 2,
+							latitude: INITIAL_REGION.latitude + INITIAL_REGION.latitudeDelta,
 							longitude:
-								INITIAL_REGION.longitude + INITIAL_REGION.longitudeDelta / 2,
+								INITIAL_REGION.longitude + INITIAL_REGION.longitudeDelta,
 						},
 						{
-							latitude:
-								INITIAL_REGION.latitude - INITIAL_REGION.latitudeDelta / 2,
+							latitude: INITIAL_REGION.latitude - INITIAL_REGION.latitudeDelta,
 							longitude:
-								INITIAL_REGION.longitude - INITIAL_REGION.longitudeDelta / 2,
+								INITIAL_REGION.longitude - INITIAL_REGION.longitudeDelta,
 						}
 					)
 				}
@@ -235,6 +233,7 @@ export default function Map(props) {
 							key={index}
 							coordinate={marker.latlng}
 							onPress={hideOptions}
+							tracksViewChanges={false}
 						>
 							<View>
 								{/*Make markers have a customized image with color*/}
@@ -278,6 +277,7 @@ export default function Map(props) {
 									) : (
 										<Text></Text>
 									)}
+									<Text>Last updated: {marker.time}</Text>
 									<Button
 										title="Directions"
 										color={COLORS.dark}
@@ -289,14 +289,16 @@ export default function Map(props) {
 					))
 				}
 				{location ? (
-					<Marker coordinate={location} onPress={hideOptions}>
+					<Marker
+						coordinate={location}
+						onPress={hideOptions}
+						tracksViewChanges={false}
+					>
 						<Image
 							source={require("../assets/images/location.png")}
 							style={{
 								...styles.marker,
 								tintColor: COLORS.light,
-								backgroundColor: COLORS.dark,
-								borderRadius: 20,
 							}}
 						/>
 					</Marker>
@@ -328,6 +330,7 @@ export default function Map(props) {
 						top: 30,
 						left: 10,
 						right: 10,
+						zIndex: 999,
 					},
 					listView: { width: "95%" },
 				}}
@@ -383,6 +386,8 @@ const styles = StyleSheet.create({
 	marker: {
 		height: 20,
 		width: 20,
+		backgroundColor: COLORS.dark,
+		borderRadius: 20,
 	},
 	callout: {
 		flex: -1,

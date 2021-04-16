@@ -5,7 +5,7 @@ const initialState = {
 	location_access: null,
 	location: null,
 	address: null,
-	isLoading: true,
+	isLoading: false,
 	errMess: null,
 	pedestrian_counts: [],
 	pso_stations: [],
@@ -54,7 +54,6 @@ export default function reducer(state = initialState, action) {
 				...state,
 				isLoading: true,
 				errMess: null,
-				pedestrian_counts: [],
 			};
 
 		case Types.ADD_PEDESTRIAN_COUNTS:
@@ -70,7 +69,6 @@ export default function reducer(state = initialState, action) {
 				...state,
 				isLoading: false,
 				errMess: action.payload,
-				pedestrian_counts: [],
 			};
 
 		case Types.PSO_STATIONS_LOADING:
@@ -78,7 +76,6 @@ export default function reducer(state = initialState, action) {
 				...state,
 				isLoading: true,
 				errMess: null,
-				pso_stations: [],
 			};
 
 		case Types.ADD_PSO_STATIONS:
@@ -94,7 +91,6 @@ export default function reducer(state = initialState, action) {
 				...state,
 				isLoading: false,
 				errMess: action.payload,
-				pso_stations: [],
 			};
 
 		default:

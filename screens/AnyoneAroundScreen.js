@@ -1,42 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import Map from "../components/MapComponent";
 import Menu from "../components/MenuComponent";
 import PageTitle from "../components/PageTitleComponent";
+import Loading from "../components/LoadingComponent";
 
 export default AnyoneAround = ({ navigation }) => {
-	return (
-		<View style={styles.container}>
-			<Map
-				markers={[
-					{
-						latlng: { latitude: -37.8177, longitude: 144.9514 },
-						title: "Southern Cross Station",
-						value: 50,
-						place: "Spencer St, Docklands VIC 3008",
-						level: "LOW",
-						tintColor: "red",
-						distance: null,
-						duration: null,
-					},
-					{
-						latlng: { latitude: -37.8181, longitude: 144.9668 },
-						value: 100,
-						place: "Flinders St, Melbourne VIC 3000",
-						level: "HIGH",
-						tintColor: "green",
-						distance: null,
-						duration: null,
-					},
-				]}
-				marker_icon={require("../assets/images/anyone_around.png")}
-				value_name="Pedestrian Counts"
-				level_name="Traffic"
-			/>
-			<Menu navigation={navigation} />
-			<PageTitle text="Anyone Around?" />
-		</View>
-	);
+	const pedestrian_counts = useSelector((state) => state.pedestrian_counts);
+	const isLoading = useSelector((state) => state.isLoading);
+	const errMsg = useSelector((state) => state.errMsg);
+
+	if (isLoading) {
+		return <Loading />;
+	} else if (errMsg) {
+		return (
+			<View style={styles.container}>
+				<Text>{errMess}</Text>
+			</View>
+		);
+	} else {
+		return (
+			<View style={styles.container}>
+				<Map
+					markers={pedestrian_counts}
+					marker_icon={require("../assets/images/anyone_around.png")}
+					value_name="Pedestrian Counts"
+					level_name="Traffic"
+				/>
+				<Menu navigation={navigation} />
+				<PageTitle text="Anyone Around?" />
+			</View>
+		);
+	}
 };
 
 const styles = StyleSheet.create({

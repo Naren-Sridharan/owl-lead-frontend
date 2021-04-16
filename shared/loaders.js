@@ -3,8 +3,7 @@ import { Actions } from "../redux/actions";
 
 export const fetchPedestrianCounts = () => (dispatch) => {
 	dispatch(Actions.pedestrianCountsLoading());
-	console.log("Loading Pedestrian Counts");
-	return fetch(server_address + "pedestrian_counts")
+	return fetch(server_address + "anyone_around")
 		.then(
 			(response) => {
 				if (response.ok) {
@@ -21,16 +20,17 @@ export const fetchPedestrianCounts = () => (dispatch) => {
 			}
 		)
 		.then((response) => response.json())
-		.then((pedestrian_counts) =>
-			dispatch(Actions.addPedestrianCounts(pedestrian_counts))
-		)
+		.then((pedestrian_counts) => {
+			dispatch(Actions.addPedestrianCounts(pedestrian_counts));
+			return pedestrian_counts;
+		})
 		.catch((error) => {
 			dispatch(Actions.pedestrianCountsFailed(error.message));
-			console.log(error.message);
+			throw error;
 		});
 };
 
-export const fetchPsoStations = () => (dispatch) => {
+export const fetchPSOStations = () => (dispatch) => {
 	dispatch(Actions.psoStationsLoading());
 	console.log("Loading PSO Stations");
 	return fetch(server_address + "pso_stations")
@@ -53,41 +53,55 @@ export const fetchPsoStations = () => (dispatch) => {
 		.then((pso_stations) => dispatch(Actions.addPsoStations(pso_stations)))
 		.catch((error) => {
 			dispatch(Actions.distancesFailed(error.message));
-			console.log(error.message);
 		});
 };
 
-export const fetchDistances = (start, ends) => {
-	const request =
-		distance_server_address +
-		`&origins=${start.latitude},${start.longitude}` +
-		`&destinations=${ends
-			.map((end) => `${end.latitude},${end.longitude}`)
-			.join("|")}` +
-		`&key=${API_KEY}` +
-		`&mode=walking`;
-	return fetch(request)
-		.then(
-			(response) => {
-				if (response.ok) {
-					return response;
-				} else {
-					var error = new Error(response.status + ": " + response.statusText);
-					error.response = response;
-					throw error;
+export const fetchDistances = async (start, ends) => {
+	var i,
+		j,
+		temparray,
+		chunk = 25;
+
+	let results = [];
+
+	for (i = 0, j = ends.length; i < j; i += chunk) {
+		temparray = ends.slice(i, i + chunk);
+
+		const request =
+			distance_server_address +
+			`&origins=${start.latitude},${start.longitude}` +
+			`&destinations=${temparray
+				.map((end) => `${end.latitude},${end.longitude}`)
+				.join("|")}` +
+			`&key=${API_KEY}` +
+			`&mode=walking`;
+
+		let result = await fetch(request)
+			.then(
+				(response) => {
+					if (response.ok) {
+						return response;
+					} else {
+						var error = new Error(response.status + ": " + response.statusText);
+						error.response = response;
+						throw error;
+					}
+				},
+				(error) => {
+					var errMess = new Error(error.message);
+					throw errMess;
 				}
-			},
-			(error) => {
-				var errMess = new Error(error.message);
-				throw errMess;
-			}
-		)
-		.then((response) => response.json())
-		.then((json) => {
-			console.log(JSON.stringify(json));
-			return json.rows[0].elements.map((element) => ({
-				duration: Math.ceil(element.duration.value / 60),
-				distance: element.distance.value,
-			}));
-		});
+			)
+			.then((response) => response.json())
+			.then((json) => {
+				return json.rows[0].elements.map((element) => ({
+					duration: Math.ceil(element.duration.value / 60),
+					distance: element.distance.value,
+				}));
+			});
+
+		results.push(...result);
+	}
+
+	return results;
 };
