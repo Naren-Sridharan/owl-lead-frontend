@@ -1,7 +1,9 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import Map from "../components/MapComponent";
 import Menu from "../components/MenuComponent";
+import PageTitle from "../components/PageTitleComponent";
+import { COLORS } from "../shared/constants";
 
 export default PSOFinder = ({ navigation }) => {
 	return (
@@ -27,9 +29,9 @@ export default PSOFinder = ({ navigation }) => {
 				]}
 				level_name={"Safety"}
 				marker_icon={require("../assets/images/pso_finder.png")}
-				navigation={navigation}
 			/>
 			<Menu navigation={navigation} />
+			<PageTitle text="PSO Finder" />
 		</View>
 	);
 };

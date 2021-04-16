@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import Map from "../components/MapComponent";
 import Menu from "../components/MenuComponent";
+import PageTitle from "../components/PageTitleComponent";
 
 export default AnyoneAround = ({ navigation }) => {
 	return (
@@ -31,9 +32,9 @@ export default AnyoneAround = ({ navigation }) => {
 				marker_icon={require("../assets/images/anyone_around.png")}
 				value_name="Pedestrian Counts"
 				level_name="Traffic"
-				navigation={navigation}
 			/>
 			<Menu navigation={navigation} />
+			<PageTitle text="Anyone Around?" />
 		</View>
 	);
 };

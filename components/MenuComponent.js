@@ -34,14 +34,20 @@ export default Menu = ({ navigation }) => {
 	const buttons = (
 		<>
 			<MenuButton
+				onPress={onNewScreen("Home")}
+				button_style={{ top: "70%" }}
+				source={require("../assets/images/home.png")}
+				icon_style={{ tintColor: COLORS.dark }}
+			/>
+			<MenuButton
 				onPress={onNewScreen("Anyone Around?")}
-				button_style={{ top: "65%" }}
+				button_style={{ top: "55%" }}
 				source={require("../assets/images/anyone_around.png")}
 				icon_style={{ tintColor: COLORS.dark }}
 			/>
 			<MenuButton
 				onPress={onNewScreen("PSO Finder")}
-				button_style={{ top: "45%" }}
+				button_style={{ top: "40%" }}
 				source={require("../assets/images/pso_finder.png")}
 				icon_style={{ tintColor: COLORS.dark }}
 			/>

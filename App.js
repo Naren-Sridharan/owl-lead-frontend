@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 import reducer from "./redux/reducer";
 
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Home from "./screens/HomeScreen";
 import AnyoneAround from "./screens/AnyoneAroundScreen";
@@ -15,40 +15,34 @@ import EmergencyCall from "./screens/EmergencyCallScreen";
 import { COLORS } from "./shared/constants";
 
 const store = createStore(reducer);
-const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function App() {
-	const headerStyle = {
-		headerStyle: {
-			backgroundColor: COLORS.dark,
-		},
-		headerTintColor: COLORS.light,
-		headerTitleStyle: {
-			fontWeight: "bold",
-		},
+	const options = {
+		tabBarVisible: false,
 	};
 
 	return (
 		<Provider store={store}>
 			<NavigationContainer>
-				<Stack.Navigator initialRouteName="Home">
-					<Stack.Screen name="Home" component={Home} options={headerStyle} />
-					<Stack.Screen
+				<Tab.Navigator initialRouteName="Home">
+					<Tab.Screen name="Home" component={Home} options={options} />
+					<Tab.Screen
 						name="Anyone Around?"
 						component={AnyoneAround}
-						options={headerStyle}
+						options={options}
 					/>
-					<Stack.Screen
+					<Tab.Screen
 						name="PSO Finder"
 						component={PSOFinder}
-						options={headerStyle}
+						options={options}
 					/>
-					<Stack.Screen
+					<Tab.Screen
 						name="Emergency Call"
 						component={EmergencyCall}
-						options={{ ...headerStyle, headerTintColor: "red" }}
+						options={options}
 					/>
-				</Stack.Navigator>
+				</Tab.Navigator>
 			</NavigationContainer>
 		</Provider>
 	);
