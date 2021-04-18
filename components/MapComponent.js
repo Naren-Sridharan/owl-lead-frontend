@@ -146,10 +146,13 @@ function Map(props) {
 
 	useEffect(() => {
 		if (location && best) {
-			mapRef.fitToCoordinates([location, markers[best].latlng], {
-				edgePadding: { top: 20, right: 20, bottom: 20, left: 20 },
-				animated: false,
-			});
+			mapRef.fitToCoordinates(
+				[location, markers.filter((marker) => marker.id == best)[0].latlng],
+				{
+					edgePadding: { top: 20, right: 20, bottom: 20, left: 20 },
+					animated: false,
+				}
+			);
 		} else {
 			mapRef.animateToRegion(region);
 		}
