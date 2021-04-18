@@ -270,7 +270,7 @@ function Map(props) {
 									source={props.marker_icon}
 									style={{
 										...(best && marker.id == best
-											? styles.location_marker
+											? styles.recommendation_marker
 											: styles.marker),
 										tintColor: marker.tintColor,
 									}}
@@ -423,9 +423,15 @@ const styles = StyleSheet.create({
 	location_marker: {
 		height: 40,
 		width: 40,
-		borderRadius: 20,
+		borderRadius: 40,
+		backgroundColor: COLORS.dark,
+		tintColor: COLORS.light,
+	},
+	recommendation_marker: {
+		height: 40,
+		width: 40,
+		borderRadius: 40,
 		backgroundColor: COLORS.highlight,
-		tintColor: COLORS.dark,
 	},
 	callout: {
 		flex: -1,

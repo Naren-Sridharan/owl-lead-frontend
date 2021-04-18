@@ -16,7 +16,7 @@ export const API_KEY = "AIzaSyCy_gaMIh9ugIJqylorjU0cJkqtlayk1qA";
 export const COLORS = {
 	dark: "#2d327a",
 	light: "#f6eea9",
-	highlight: "#00ffff",
+	highlight: "#bdf772",
 };
 
 // Emergency Number
