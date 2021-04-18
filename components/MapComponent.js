@@ -87,17 +87,21 @@ function Map(props) {
 					(levelValue[x.level] == 1 && x.value > markers[closest].value))
 		);
 
-		return betters.length > 0
-			? betters[
-					betters.reduce(
-						(iSafe, x, i, arr) =>
-							x.value > arr[iSafe].value && x.duration < arr[iSafe].duration
-								? i
-								: iSafe,
-						0
-					)
-			  ].id
-			: markers[closest].id;
+		let local_best =
+			betters.length > 0
+				? betters[
+						betters.reduce(
+							(iSafe, x, i, arr) =>
+								x.value > arr[iSafe].value && x.duration < arr[iSafe].duration
+									? i
+									: iSafe,
+							0
+						)
+				  ].id
+				: markers[closest].id;
+
+		console.log(local_best);
+		return local_best;
 	};
 
 	const getDistances = async () => {
@@ -124,6 +128,7 @@ function Map(props) {
 		if (location && markers.length > 0) {
 			getDistances();
 			setBest(findBest());
+			console.log(best);
 		}
 
 		// Center the map on the location we just fetched.
@@ -140,7 +145,14 @@ function Map(props) {
 	}, [address]);
 
 	useEffect(() => {
-		mapRef.animateToRegion(region);
+		if (location && best) {
+			mapRef.fitToCoordinates([location, markers[best].latlng], {
+				edgePadding: { top: 20, right: 20, bottom: 20, left: 20 },
+				animated: false,
+			});
+		} else {
+			mapRef.animateToRegion(region);
+		}
 	}, [region]);
 
 	// Function to get user location asynchornously
@@ -260,9 +272,12 @@ function Map(props) {
 				{
 					// set up markers from state onto the map view
 					markers.map((marker, index) => {
+						if (marker.id == best) {
+							console.log(marker);
+						}
 						return (
 							<Marker
-								key={index}
+								key={marker.id}
 								coordinate={marker.latlng}
 								onPress={hideOptions}
 								tracksViewChanges={false}
@@ -428,12 +443,14 @@ const styles = StyleSheet.create({
 		borderRadius: 40,
 		backgroundColor: COLORS.dark,
 		tintColor: COLORS.light,
+		zIndex: 900,
 	},
 	recommendation_marker: {
 		height: 40,
 		width: 40,
 		borderRadius: 40,
 		backgroundColor: COLORS.highlight,
+		zIndex: 900,
 	},
 	callout: {
 		flex: -1,
