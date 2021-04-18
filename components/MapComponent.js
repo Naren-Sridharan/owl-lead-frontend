@@ -91,7 +91,9 @@ function Map(props) {
 			? betters[
 					betters.reduce(
 						(iSafe, x, i, arr) =>
-							x.duration < arr[iSafe].duration ? i : iSafe,
+							x.value > arr[iSafe].value && x.duration < arr[iSafe].duration
+								? i
+								: iSafe,
 						0
 					)
 			  ].id
