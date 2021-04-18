@@ -19,8 +19,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 TaskManager.defineTask(FETCH_PEDESTRIAN_COUNTS, async () => {
 	try {
+		console.log("Background Fetch Pedestrian Counts initiated");
 		const dispatch = useDispatch();
 		const newData = dispatch(fetchPedestrianCounts());
+		console.log(
+			"Background Fetch Pedestrian Counts Completed: ",
+			newData ? "Sucessful" : "Unsuccessful"
+		);
 		return newData
 			? BackgroundFetch.Result.NewData
 			: BackgroundFetch.Result.NoData;

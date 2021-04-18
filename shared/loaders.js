@@ -3,7 +3,7 @@ import { Actions } from "../redux/actions";
 
 export const fetchPedestrianCounts = () => (dispatch) => {
 	dispatch(Actions.pedestrianCountsLoading());
-	return fetch(server_address + "anyone_around")
+	return fetch(server_address + "pedestrian_counts")
 		.then(
 			(response) => {
 				if (response.ok) {

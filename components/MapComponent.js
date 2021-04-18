@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, memo } from "react";
 import {
 	StyleSheet,
 	Image,
@@ -46,7 +46,7 @@ const openSetting = () => {
 };
 
 //create a class component for any Map used in Owl Lead's Features
-export default function Map(props) {
+function Map(props) {
 	// get properties used from redux store
 	const location = useSelector((state) => state.location);
 	const location_access = useSelector((state) => state.location_access);
@@ -55,6 +55,7 @@ export default function Map(props) {
 	// initialize state with region, markers, user location and type of value being displayed
 	const [region, setRegion] = useState(INITIAL_REGION);
 	const [markers, setMarkers] = useState(!props.markers ? [] : props.markers);
+	const [best, setBest] = useState(null);
 
 	// redux actions
 	const dispatch = useDispatch();
@@ -70,11 +71,34 @@ export default function Map(props) {
 
 	Location.setGoogleApiKey(API_KEY);
 
-	const getDistances = async () => {
-		if (!location || !markers.length) {
-			return;
-		}
+	const findBest = () => {
+		const levelValue = { LOW: -1, MODERATE: 0, HIGH: 1 };
 
+		const closest = markers.reduce(
+			(iMin, x, i, arr) => (x.distance < arr[iMin].distance ? i : iMin),
+			0
+		);
+
+		let betters = markers.filter(
+			(x) =>
+				x.duration <= 25 &&
+				x.id !== markers[closest].id &&
+				(levelValue[x.level] > levelValue[markers[closest].level] ||
+					(levelValue[x.level] == 1 && x.value > markers[closest].value))
+		);
+
+		return betters.length > 0
+			? betters[
+					betters.reduce(
+						(iSafe, x, i, arr) =>
+							x.distance < arr[iSafe].distance ? i : iSafe,
+						0
+					)
+			  ].id
+			: markers[closest].id;
+	};
+
+	const getDistances = async () => {
 		try {
 			let results = await fetchDistances(
 				location,
@@ -95,15 +119,16 @@ export default function Map(props) {
 	};
 
 	useEffect(() => {
+		if (location && markers.length > 0) {
+			getDistances();
+			setBest(findBest());
+		}
+
 		// Center the map on the location we just fetched.
 		setRegion({
 			...region,
 			...location,
 		});
-
-		if (location && markers.length) {
-			getDistances();
-		}
 	}, [location]);
 
 	useEffect(() => {
@@ -111,6 +136,10 @@ export default function Map(props) {
 			searchRef.current?.setAddressText(address);
 		}
 	}, [address]);
+
+	useEffect(() => {
+		mapRef.animateToRegion(region);
+	}, [region]);
 
 	// Function to get user location asynchornously
 	const getLocationAsync = async () => {
@@ -208,10 +237,9 @@ export default function Map(props) {
 				style={styles.map}
 				provider={MapView.PROVIDER_GOOGLE}
 				initialRegion={INITIAL_REGION}
-				onRegionChange={setRegion}
 				onPress={hideOptions}
 				ref={(ref) => (mapRef = ref)}
-				minZoomLevel={15}
+				minZoomLevel={13}
 				onLayout={() =>
 					mapRef.setMapBoundaries(
 						{
@@ -229,65 +257,70 @@ export default function Map(props) {
 			>
 				{
 					// set up markers from state onto the map view
-					markers.map((marker, index) => (
-						<Marker
-							key={index}
-							coordinate={marker.latlng}
-							onPress={hideOptions}
-							tracksViewChanges={false}
-						>
-							<View>
+					markers.map((marker, index) => {
+						return (
+							<Marker
+								key={index}
+								coordinate={marker.latlng}
+								onPress={hideOptions}
+								tracksViewChanges={false}
+							>
 								{/*Make markers have a customized image with color*/}
 								<Image
 									source={props.marker_icon}
-									style={{ ...styles.marker, tintColor: marker.tintColor }}
+									style={{
+										...(best && marker.id == best
+											? styles.location_marker
+											: styles.marker),
+										tintColor: marker.tintColor,
+									}}
 								/>
-							</View>
-							{/*Create a popup with details for marker and with redirection button to google maps for directions*/}
-							<Callout
-								style={styles.callout}
-								onPress={() =>
-									Linking.openURL(
-										`${directions_server_address}` +
-											(!location
-												? ""
-												: `&origin=${location.latitude},${location.longitude}`) +
-											`&destination=${marker.latlng.latitude},${marker.latlng.longitude}`
-									)
-								}
-							>
-								<View>
-									<Text>{marker.place}</Text>
-									{props.value_name ? (
+								{/*Create a popup with details for marker and with redirection button to google maps for directions*/}
+								<Callout
+									style={styles.callout}
+									onPress={() =>
+										Linking.openURL(
+											`${directions_server_address}` +
+												(!location
+													? ""
+													: `&origin=${location.latitude},${location.longitude}`) +
+												`&destination=${marker.latlng.latitude},${marker.latlng.longitude}`
+										)
+									}
+								>
+									<View>
+										<Text>{marker.place}</Text>
+										{props.value_name ? (
+											<Text>
+												{props.value_name}: {marker.value}
+											</Text>
+										) : (
+											<></>
+										)}
 										<Text>
-											{props.value_name}: {marker.value}
+											{props.level_name}: {marker.level}
 										</Text>
-									) : (
-										<></>
-									)}
-									<Text>
-										{props.level_name}: {marker.level}
-									</Text>
-									{marker.distance ? (
-										<Text>Distance: {marker.distance} meters</Text>
-									) : (
-										<Text></Text>
-									)}
-									{marker.duration ? (
-										<Text>Duration: {marker.duration} minutes</Text>
-									) : (
-										<Text></Text>
-									)}
-									<Text>Last updated: {marker.time}</Text>
-									<Button
-										title="Directions"
-										color={COLORS.dark}
-										accessibilityLabel="This button redirects you to google maps for directions to the location"
-									/>
-								</View>
-							</Callout>
-						</Marker>
-					))
+										{marker.distance ? (
+											<Text>Distance: {marker.distance} meters</Text>
+										) : (
+											<Text></Text>
+										)}
+										{marker.duration ? (
+											<Text>Duration: {marker.duration} minutes</Text>
+										) : (
+											<Text></Text>
+										)}
+										<Text>Last updated: {marker.time}</Text>
+										<Button
+											title="Directions"
+											color={COLORS.dark}
+											accessibilityLabel="This button redirects you to google maps for directions to the location"
+										/>
+									</View>
+								</Callout>
+							</Marker>
+						);
+					})
 				}
 				{location ? (
 					<Marker
@@ -297,10 +330,7 @@ export default function Map(props) {
 					>
 						<Image
 							source={require("../assets/images/location.png")}
-							style={{
-								...styles.marker,
-								tintColor: COLORS.light,
-							}}
+							style={styles.location_marker}
 						/>
 					</Marker>
 				) : (
@@ -385,10 +415,17 @@ const styles = StyleSheet.create({
 		...StyleSheet.absoluteFillObject,
 	},
 	marker: {
-		height: 20,
-		width: 20,
+		height: 25,
+		width: 25,
+		borderRadius: 25,
 		backgroundColor: COLORS.dark,
+	},
+	location_marker: {
+		height: 40,
+		width: 40,
 		borderRadius: 20,
+		backgroundColor: COLORS.highlight,
+		tintColor: COLORS.dark,
 	},
 	callout: {
 		flex: -1,
@@ -413,3 +450,5 @@ const styles = StyleSheet.create({
 		tintColor: COLORS.light,
 	},
 });
+
+export default memo(Map);

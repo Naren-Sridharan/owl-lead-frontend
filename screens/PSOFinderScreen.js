@@ -3,7 +3,6 @@ import { StyleSheet, View, Text } from "react-native";
 import Map from "../components/MapComponent";
 import Menu from "../components/MenuComponent";
 import PageTitle from "../components/PageTitleComponent";
-import { COLORS } from "../shared/constants";
 
 export default PSOFinder = ({ navigation }) => {
 	return (
@@ -17,6 +16,7 @@ export default PSOFinder = ({ navigation }) => {
 						tintColor: "red",
 						distance: null,
 						duration: null,
+						id: 1,
 					},
 					{
 						latlng: { latitude: -37.8181, longitude: 144.9668 },
@@ -25,6 +25,7 @@ export default PSOFinder = ({ navigation }) => {
 						tintColor: "green",
 						distance: null,
 						duration: null,
+						id: 2,
 					},
 				]}
 				level_name={"Safety"}
