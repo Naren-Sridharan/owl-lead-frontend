@@ -3,6 +3,7 @@ import { StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { COLORS } from "../shared/constants";
 import { Actions } from "../redux/actions";
+import { Linking } from "react-native";
 
 const MenuButton = ({
 	onPress,
