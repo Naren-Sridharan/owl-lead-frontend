@@ -292,7 +292,7 @@ function Map(props) {
 										...(best && marker.id == best
 											? styles.recommendation_marker
 											: styles.marker),
-										tintColor: marker.tintColor,
+										tintColor: COLORS.levels[marker.level],
 									}}
 								/>
 								{/*Create a popup with details for marker and with redirection button to google maps for directions*/}

@@ -17,6 +17,11 @@ export const COLORS = {
 	dark: "#2d327a",
 	light: "#f6eea9",
 	highlight: "#bdf772",
+	levels: {
+		LOW: "lightblue",
+		MODERATE: "yellow",
+		HIGH: "green",
+	},
 };
 
 // Emergency Number

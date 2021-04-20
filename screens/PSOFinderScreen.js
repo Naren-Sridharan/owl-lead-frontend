@@ -1,33 +1,16 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
+import { useSelector } from "react-redux";
 import Map from "../components/MapComponent";
 import Menu from "../components/MenuComponent";
 import PageTitle from "../components/PageTitleComponent";
 
 export default PSOFinder = ({ navigation, route }) => {
+	const pso_stations = useSelector((state) => state.pso_stations);
 	return (
 		<View style={styles.container}>
 			<Map
-				markers={[
-					{
-						latlng: { latitude: -37.8177, longitude: 144.9514 },
-						place: "Spencer St, Docklands VIC 3008",
-						level: "LOW",
-						tintColor: "red",
-						distance: null,
-						duration: null,
-						id: 1,
-					},
-					{
-						latlng: { latitude: -37.8181, longitude: 144.9668 },
-						place: "Flinders St, Melbourne VIC 3000",
-						level: "HIGH",
-						tintColor: "green",
-						distance: null,
-						duration: null,
-						id: 2,
-					},
-				]}
+				markers={pso_stations}
 				level_name={"Safety"}
 				marker_icon={require("../assets/images/pso_finder.png")}
 			/>

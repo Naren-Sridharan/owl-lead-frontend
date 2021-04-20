@@ -77,7 +77,9 @@ export default function App() {
 
 	React.useEffect(() => {
 		dispatch(fetchPedestrianCounts());
+		dispatch(fetchPSOStations());
 		registerBackgroundPedestrianCountsTask();
+		registerBackgroundPSOStationsTask();
 	}, []);
 
 	const options = {
