@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
 	},
 	textView: {
 		position: "absolute",
-		height: "10%",
+		height: 75,
 		top: "85%",
 		right: "4%",
 		left: "4%",

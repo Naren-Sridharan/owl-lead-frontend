@@ -71,7 +71,7 @@ function Map(props) {
 
 	Location.setGoogleApiKey(API_KEY);
 
-	const findBest = () => {
+	const findBest = async () => {
 		const levelValue = { LOW: -1, MODERATE: 0, HIGH: 1 };
 
 		const closest = markers.reduce(
@@ -100,8 +100,7 @@ function Map(props) {
 				  ].id
 				: markers[closest].id;
 
-		console.log(local_best);
-		return local_best;
+		setBest(local_best);
 	};
 
 	const getDistances = async () => {
@@ -127,8 +126,7 @@ function Map(props) {
 	useEffect(() => {
 		if (location && markers.length > 0) {
 			getDistances();
-			setBest(findBest());
-			console.log(best);
+			findBest();
 		}
 
 		// Center the map on the location we just fetched.
@@ -136,6 +134,8 @@ function Map(props) {
 			...region,
 			...location,
 		});
+
+		return () => console.log(best);
 	}, [location]);
 
 	useEffect(() => {
@@ -378,9 +378,9 @@ function Map(props) {
 						background: "transparent",
 						width: "100%",
 						height: "100%",
-						top: 30,
-						left: 10,
-						right: 10,
+						top: "10%",
+						left: "3%",
+						right: "3%",
 						zIndex: 999,
 					},
 					listView: { width: "95%" },

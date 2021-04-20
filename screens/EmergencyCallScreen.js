@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View, Linking } from "react-native";
 import { useSelector } from "react-redux";
 import { COLORS, EMERGENCY_NUMBER } from "../shared/constants";
@@ -6,8 +6,6 @@ import PageTitle from "../components/PageTitleComponent";
 
 export default EmergencyCall = ({ navigation }) => {
 	const address = useSelector((state) => state.address);
-
-	Linking.openURL(`tel:${EMERGENCY_NUMBER}`);
 
 	return (
 		<View style={styles.container}>

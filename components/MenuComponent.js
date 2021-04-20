@@ -66,8 +66,11 @@ export default Menu = ({ navigation }) => {
 				source={require("../assets/images/owl_lead.png")}
 			/>
 			<MenuButton
-				onPress={onNewScreen("Emergency Call")}
-				button_style={{ top: "25%" }}
+				onPress={() => {
+					Linking.openURL(`tel:${EMERGENCY_NUMBER}`);
+					onNewScreen("Emergency Call");
+				}}
+				button_style={{ top: "85%", left: "3%" }}
 				source={require("../assets/images/emergency_call.png")}
 			/>
 			{show_options ? buttons : <></>}
