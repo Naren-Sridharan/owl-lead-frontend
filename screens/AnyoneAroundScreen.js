@@ -6,7 +6,7 @@ import Menu from "../components/MenuComponent";
 import PageTitle from "../components/PageTitleComponent";
 import Loading from "../components/LoadingComponent";
 
-export default AnyoneAround = ({ navigation }) => {
+export default AnyoneAround = ({ navigation, route }) => {
 	const pedestrian_counts = useSelector((state) => state.pedestrian_counts);
 	const isLoading = useSelector((state) => state.isLoading);
 	const errMsg = useSelector((state) => state.errMsg);
@@ -28,8 +28,8 @@ export default AnyoneAround = ({ navigation }) => {
 					value_name="Pedestrian Counts"
 					level_name="Traffic"
 				/>
-				<Menu navigation={navigation} />
-				<PageTitle text="Anyone Around?" />
+				<Menu navigation={navigation} route={route} />
+				<PageTitle navigation={navigation} route={route} />
 			</View>
 		);
 	}

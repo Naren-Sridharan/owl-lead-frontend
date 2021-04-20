@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { COLORS } from "../shared/constants";
+import { COLORS, EMERGENCY_NUMBER } from "../shared/constants";
 import { Actions } from "../redux/actions";
 import { Linking } from "react-native";
 
@@ -69,10 +69,10 @@ export default Menu = ({ navigation }) => {
 			<MenuButton
 				onPress={() => {
 					Linking.openURL(`tel:${EMERGENCY_NUMBER}`);
-					onNewScreen("Emergency Call");
+					onNewScreen("Emergency")();
 				}}
 				button_style={{ top: "85%", left: "3%" }}
-				source={require("../assets/images/emergency_call.png")}
+				source={require("../assets/images/emergency.png")}
 			/>
 			{show_options ? buttons : <></>}
 		</>

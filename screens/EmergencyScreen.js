@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { COLORS, EMERGENCY_NUMBER } from "../shared/constants";
 import PageTitle from "../components/PageTitleComponent";
 
-export default EmergencyCall = ({ navigation }) => {
+export default Emergency = ({ navigation, route }) => {
 	const address = useSelector((state) => state.address);
 
 	return (
@@ -15,8 +15,8 @@ export default EmergencyCall = ({ navigation }) => {
 					address ? address.split(",").join("\n") : ""
 				}`}
 			</Text>
-			<Menu navigation={navigation} />
-			<PageTitle text="Emergency Call" />
+			<Menu navigation={navigation} route={route} />
+			<PageTitle navigation={navigation} route={route} />
 		</View>
 	);
 };

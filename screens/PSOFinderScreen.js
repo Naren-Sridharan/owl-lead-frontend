@@ -4,7 +4,7 @@ import Map from "../components/MapComponent";
 import Menu from "../components/MenuComponent";
 import PageTitle from "../components/PageTitleComponent";
 
-export default PSOFinder = ({ navigation }) => {
+export default PSOFinder = ({ navigation, route }) => {
 	return (
 		<View style={styles.container}>
 			<Map
@@ -31,8 +31,8 @@ export default PSOFinder = ({ navigation }) => {
 				level_name={"Safety"}
 				marker_icon={require("../assets/images/pso_finder.png")}
 			/>
-			<Menu navigation={navigation} />
-			<PageTitle text="PSO Finder" />
+			<Menu navigation={navigation} route={route} />
+			<PageTitle navigation={navigation} route={route} />
 		</View>
 	);
 };

@@ -32,7 +32,6 @@ export const fetchPedestrianCounts = () => (dispatch) => {
 
 export const fetchPSOStations = () => (dispatch) => {
 	dispatch(Actions.psoStationsLoading());
-	console.log("Loading PSO Stations");
 	return fetch(server_address + "pso_stations")
 		.then(
 			(response) => {

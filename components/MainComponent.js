@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../screens/HomeScreen";
 import AnyoneAround from "../screens/AnyoneAroundScreen";
 import PSOFinder from "../screens/PSOFinderScreen";
-import EmergencyCall from "../screens/EmergencyCallScreen";
+import Emergency from "../screens/EmergencyScreen";
 
 import * as TaskManager from "expo-task-manager";
 import * as BackgroundFetch from "expo-background-fetch";
@@ -94,11 +94,7 @@ export default function App() {
 					options={options}
 				/>
 				<Tab.Screen name="PSO Finder" component={PSOFinder} options={options} />
-				<Tab.Screen
-					name="Emergency Call"
-					component={EmergencyCall}
-					options={options}
-				/>
+				<Tab.Screen name="Emergency" component={Emergency} options={options} />
 			</Tab.Navigator>
 		</NavigationContainer>
 	);

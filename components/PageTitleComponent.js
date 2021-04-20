@@ -2,10 +2,10 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { COLORS } from "../shared/constants";
 
-export default function PageTitle({ text }) {
+export default function PageTitle({ navigation, route }) {
 	return (
 		<View style={styles.textView}>
-			<Text style={styles.text}>{text}</Text>
+			<Text style={styles.text}>{route.name}</Text>
 		</View>
 	);
 }
@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
 		top: "85%",
 		right: "4%",
 		left: "4%",
-		paddingRight: "10%",
 		textAlign: "center",
 		alignItems: "center",
 		justifyContent: "center",
