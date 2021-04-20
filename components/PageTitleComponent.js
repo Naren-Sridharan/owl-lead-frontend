@@ -31,6 +31,6 @@ const styles = StyleSheet.create({
 	text: {
 		color: COLORS.light,
 		fontWeight: "bold",
-		fontSize: 30,
+		fontSize: 20,
 	},
 });
