@@ -5,7 +5,9 @@ import { COLORS } from "../shared/constants";
 export default function PageTitle({ navigation, route }) {
 	return (
 		<View style={styles.textView}>
-			<Text style={styles.text}>{route.name}</Text>
+			<Text style={styles.text} testID="pageTitle">
+				{route.name}
+			</Text>
 		</View>
 	);
 }

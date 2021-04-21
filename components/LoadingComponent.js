@@ -5,8 +5,14 @@ import { COLORS } from "../shared/constants";
 export default function Loading() {
 	return (
 		<View style={styles.container}>
-			<ActivityIndicator size="large" color={COLORS.dark} />
-			<Text style={styles.loadingText}>Loading . . .</Text>
+			<ActivityIndicator
+				size="large"
+				color={COLORS.dark}
+				testID="activityIndicator"
+			/>
+			<Text style={styles.loadingText} testID="loadingText">
+				Loading . . .
+			</Text>
 		</View>
 	);
 }

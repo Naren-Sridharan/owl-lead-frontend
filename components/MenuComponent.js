@@ -8,12 +8,14 @@ import { Linking } from "react-native";
 const MenuButton = ({
 	onPress,
 	source,
+	testID,
 	button_style = {},
 	icon_style = {},
 }) => (
 	<TouchableOpacity
 		onPress={onPress}
 		style={{ ...styles.menu_button, ...button_style }}
+		testID={testID}
 	>
 		<Image source={source} style={{ ...styles.icon, ...icon_style }} />
 	</TouchableOpacity>
@@ -26,9 +28,6 @@ export default Menu = ({ navigation }) => {
 
 	const onNewScreen = (page) => () => {
 		dispatch(Actions.hideOptions());
-		if (navigation.canGoBack()) {
-			navigation.goBack();
-		}
 		navigation.navigate(page);
 	};
 
@@ -39,18 +38,21 @@ export default Menu = ({ navigation }) => {
 				button_style={{ top: "70%" }}
 				source={require("../assets/images/home.png")}
 				icon_style={{ tintColor: COLORS.dark }}
+				testID="homeButton"
 			/>
 			<MenuButton
 				onPress={onNewScreen("Anyone Around?")}
 				button_style={{ top: "55%" }}
 				source={require("../assets/images/anyone_around.png")}
 				icon_style={{ tintColor: COLORS.dark }}
+				testID="anyoneAroundButton"
 			/>
 			<MenuButton
 				onPress={onNewScreen("PSO Finder")}
 				button_style={{ top: "40%" }}
 				source={require("../assets/images/pso_finder.png")}
 				icon_style={{ tintColor: COLORS.dark }}
+				testID="psoFinderButton"
 			/>
 		</>
 	);
@@ -65,6 +67,7 @@ export default Menu = ({ navigation }) => {
 				}
 				button_style={{ top: "85%" }}
 				source={require("../assets/images/owl_lead.png")}
+				testID="menuButton"
 			/>
 			<MenuButton
 				onPress={() => {
@@ -73,8 +76,9 @@ export default Menu = ({ navigation }) => {
 				}}
 				button_style={{ top: "85%", left: "3%" }}
 				source={require("../assets/images/emergency.png")}
+				testID="emergencyButton"
 			/>
-			{show_options ? buttons : <></>}
+			{show_options && buttons}
 		</>
 	);
 };

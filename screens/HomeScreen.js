@@ -7,7 +7,7 @@ import PageTitle from "../components/PageTitleComponent";
 export default function Home({ navigation, route }) {
 	return (
 		<View style={styles.container}>
-			<Map />
+			<Map id="Map_Home" />
 			<Menu navigation={navigation} route={route} />
 			<PageTitle navigation={navigation} route={route} />
 		</View>

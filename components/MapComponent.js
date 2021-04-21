@@ -66,8 +66,8 @@ function Map(props) {
 	const hideOptions = () => dispatch(Actions.hideOptions());
 
 	// references to search bar and mapview components
-	let searchRef = useRef();
-	let mapRef = useRef();
+	let searchRef = useRef(null);
+	let mapRef = useRef(null);
 
 	Location.setGoogleApiKey(API_KEY);
 

@@ -70,7 +70,7 @@ const registerBackgroundPSOStationsTask = async () => {
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+export default function Main() {
 	const pedestrian_counts = useSelector((state) => state.pedestrian_counts);
 
 	const dispatch = useDispatch();
