@@ -91,7 +91,7 @@ const Map = (props) => {
 					? betters[
 							betters.reduce(
 								(iSafe, x, i, arr) =>
-									x.value > arr[iSafe].value && x.duration < arr[iSafe].duration
+									x.level > arr[iSafe].level || x.duration < arr[iSafe].duration
 										? i
 										: iSafe,
 								0
