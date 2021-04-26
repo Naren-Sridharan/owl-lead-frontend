@@ -29,6 +29,3 @@ export const EMERGENCY_NUMBER = "000";
 
 // Task name for fetching Pedestrian Counts
 export const FETCH_PEDESTRIAN_COUNTS = "FETCH_PEDESTRIAN_COUNTS";
-
-// Task name for fetching PSO Stations
-export const FETCH_PSO_STATIONS = "FETCH_PSO_STATIONS";

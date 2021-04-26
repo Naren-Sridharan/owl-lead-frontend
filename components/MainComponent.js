@@ -11,17 +11,14 @@ import Emergency from "../screens/EmergencyScreen";
 import * as TaskManager from "expo-task-manager";
 import * as BackgroundFetch from "expo-background-fetch";
 import { fetchPedestrianCounts, fetchPSOStations } from "../shared/loaders";
-import {
-	FETCH_PEDESTRIAN_COUNTS,
-	FETCH_PSO_STATIONS,
-} from "../shared/constants";
+import { FETCH_PEDESTRIAN_COUNTS } from "../shared/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { store } from "../App";
 
 TaskManager.defineTask(FETCH_PEDESTRIAN_COUNTS, async () => {
 	try {
 		console.log("Background Fetch Pedestrian Counts initiated");
-		const newData = store.dispatch(fetchPedestrianCounts());
+		const dispatch = useDispatch();
+		const newData = dispatch(fetchPedestrianCounts());
 		console.log(
 			"Background Fetch Pedestrian Counts Completed: ",
 			newData ? "Sucessful" : "Unsuccessful"

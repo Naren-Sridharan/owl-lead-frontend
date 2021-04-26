@@ -132,15 +132,13 @@ const Map = (props) => {
 			...INITIAL_REGION,
 			...location,
 		});
-	}, [location, markers]);
+
+		mapRef.animateToRegion(region);
+	}, [location]);
 
 	useEffect(() => {
 		address && searchRef.current?.setAddressText(address);
 	}, [address]);
-
-	useEffect(() => {
-		mapRef.animateToRegion(region);
-	}, [region]);
 
 	// Function to get user location asynchornously
 	const getLocationAsync = async () => {
