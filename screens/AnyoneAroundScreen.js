@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
-import { StyleSheet, View } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { StyleSheet, View, Text } from "react-native";
+import { useSelector } from "react-redux";
 import Map from "../components/MapComponent";
 import Menu from "../components/MenuComponent";
 import PageTitle from "../components/PageTitleComponent";
 import Loading from "../components/LoadingComponent";
 
-export default AnyoneAround = ({ navigation, route }) => {
+const AnyoneAround = ({ navigation, route }) => {
 	const pedestrian_counts = useSelector((state) => state.pedestrian_counts);
 	const isLoading = useSelector((state) => state.isLoading);
 	const errMsg = useSelector((state) => state.errMsg);
@@ -16,7 +16,7 @@ export default AnyoneAround = ({ navigation, route }) => {
 	} else if (errMsg) {
 		return (
 			<View style={styles.container}>
-				<Text>{errMess}</Text>
+				<Text>{errMsg}</Text>
 			</View>
 		);
 	} else {
@@ -42,3 +42,5 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 });
+
+export default AnyoneAround;

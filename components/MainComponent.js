@@ -16,12 +16,12 @@ import {
 	FETCH_PSO_STATIONS,
 } from "../shared/constants";
 import { useDispatch, useSelector } from "react-redux";
+import { store } from "../App";
 
 TaskManager.defineTask(FETCH_PEDESTRIAN_COUNTS, async () => {
 	try {
 		console.log("Background Fetch Pedestrian Counts initiated");
-		const dispatch = useDispatch();
-		const newData = dispatch(fetchPedestrianCounts());
+		const newData = store.dispatch(fetchPedestrianCounts());
 		console.log(
 			"Background Fetch Pedestrian Counts Completed: ",
 			newData ? "Sucessful" : "Unsuccessful"
@@ -45,32 +45,9 @@ const registerBackgroundPedestrianCountsTask = async () => {
 	}
 };
 
-TaskManager.defineTask(FETCH_PSO_STATIONS, () => {
-	try {
-		const dispatch = useDispatch();
-		const newData = dispatch(fetchPSOStations());
-		return newData
-			? BackgroundFetch.Result.NewData
-			: BackgroundFetch.Result.NoData;
-	} catch (error) {
-		console.log(error);
-		return BackgroundFetch.Result.Failed;
-	}
-});
-
-const registerBackgroundPSOStationsTask = async () => {
-	try {
-		await BackgroundFetch.registerTaskAsync(FETCH_PSO_STATIONS, {
-			minimumInterval: 15 * 60, // seconds
-		});
-	} catch (err) {
-		console.log("Fetch PSO Stations Registration Failed:", err);
-	}
-};
-
 const Tab = createBottomTabNavigator();
 
-export default function Main() {
+const Main = () => {
 	const pedestrian_counts = useSelector((state) => state.pedestrian_counts);
 
 	const dispatch = useDispatch();
@@ -79,8 +56,7 @@ export default function Main() {
 		dispatch(fetchPedestrianCounts());
 		dispatch(fetchPSOStations());
 		registerBackgroundPedestrianCountsTask();
-		registerBackgroundPSOStationsTask();
-	}, []);
+	}, [dispatch]);
 
 	const options = {
 		tabBarVisible: false,
@@ -100,4 +76,6 @@ export default function Main() {
 			</Tab.Navigator>
 		</NavigationContainer>
 	);
-}
+};
+
+export default Main;

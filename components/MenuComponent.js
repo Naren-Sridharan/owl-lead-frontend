@@ -21,7 +21,7 @@ const MenuButton = ({
 	</TouchableOpacity>
 );
 
-export default Menu = ({ navigation }) => {
+const Menu = ({ navigation }) => {
 	const show_options = useSelector((state) => state.show_options);
 
 	const dispatch = useDispatch();
@@ -83,14 +83,13 @@ export default Menu = ({ navigation }) => {
 	);
 };
 
-styles = StyleSheet.create({
+const styles = StyleSheet.create({
 	menu_button: {
 		position: "absolute",
 		width: 75,
 		height: 75,
 		right: "3%",
 		borderRadius: 75,
-		zIndex: 2,
 		backgroundColor: COLORS.light,
 		justifyContent: "center",
 		alignItems: "center",
@@ -102,3 +101,5 @@ styles = StyleSheet.create({
 		opacity: 1,
 	},
 });
+
+export default Menu;

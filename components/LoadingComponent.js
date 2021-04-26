@@ -2,20 +2,18 @@ import React from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { COLORS } from "../shared/constants";
 
-export default function Loading() {
-	return (
-		<View style={styles.container}>
-			<ActivityIndicator
-				size="large"
-				color={COLORS.dark}
-				testID="activityIndicator"
-			/>
-			<Text style={styles.loadingText} testID="loadingText">
-				Loading . . .
-			</Text>
-		</View>
-	);
-}
+const Loading = () => (
+	<View style={styles.container}>
+		<ActivityIndicator
+			size="large"
+			color={COLORS.dark}
+			testID="activityIndicator"
+		/>
+		<Text style={styles.loadingText} testID="loadingText">
+			Loading . . .
+		</Text>
+	</View>
+);
 
 const styles = StyleSheet.create({
 	container: {
@@ -29,3 +27,5 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 });
+
+export default Loading;

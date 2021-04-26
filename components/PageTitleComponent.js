@@ -2,22 +2,15 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { COLORS } from "../shared/constants";
 
-export default function PageTitle({ navigation, route }) {
-	return (
-		<View style={styles.textView}>
-			<Text style={styles.text} testID="pageTitle">
-				{route.name}
-			</Text>
-		</View>
-	);
-}
+const PageTitle = ({ route }) => (
+	<View style={styles.textView}>
+		<Text style={styles.text} testID="pageTitle">
+			{route.name}
+		</Text>
+	</View>
+);
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
-	},
 	textView: {
 		position: "absolute",
 		height: 75,
@@ -36,3 +29,5 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 	},
 });
+
+export default PageTitle;

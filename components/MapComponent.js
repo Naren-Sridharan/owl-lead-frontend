@@ -36,17 +36,15 @@ const INITIAL_REGION = {
 };
 
 const openSetting = () => {
-	if (Platform.OS == "ios") {
-		Linking.openURL("app-settings:");
-	} else {
-		IntentLauncherAndroid.startActivityAsync(
-			IntentLauncherAndroid.ACTION_LOCATION_SOURCE_SETTINGS
-		);
-	}
+	Platform.OS == "ios"
+		? Linking.openURL("app-settings:")
+		: IntentLauncherAndroid.startActivityAsync(
+				IntentLauncherAndroid.ACTION_LOCATION_SOURCE_SETTINGS
+		  );
 };
 
 //create a class component for any Map used in Owl Lead's Features
-function Map(props) {
+const Map = (props) => {
 	// get properties used from redux store
 	const location = useSelector((state) => state.location);
 	const location_access = useSelector((state) => state.location_access);
@@ -71,59 +69,59 @@ function Map(props) {
 
 	Location.setGoogleApiKey(API_KEY);
 
-	const findBest = async () => {
-		const levelValue = { LOW: -1, MODERATE: 0, HIGH: 1 };
-
-		const closest = markers.reduce(
-			(iMin, x, i, arr) => (x.distance < arr[iMin].distance ? i : iMin),
-			0
-		);
-
-		let betters = markers.filter(
-			(x) =>
-				x.duration <= 25 &&
-				x.id !== markers[closest].id &&
-				(levelValue[x.level] > levelValue[markers[closest].level] ||
-					(levelValue[x.level] == 1 && x.value > markers[closest].value))
-		);
-
-		let local_best =
-			betters.length > 0
-				? betters[
-						betters.reduce(
-							(iSafe, x, i, arr) =>
-								x.value > arr[iSafe].value && x.duration < arr[iSafe].duration
-									? i
-									: iSafe,
-							0
-						)
-				  ].id
-				: markers[closest].id;
-
-		setBest(local_best);
-	};
-
-	const getDistances = async () => {
-		try {
-			let results = await fetchDistances(
-				location,
-				markers.map((marker) => marker.latlng)
-			);
-
-			setMarkers(
-				markers.map((marker, index) => ({
-					...marker,
-					distance: results[index].distance,
-					duration: results[index].duration,
-				}))
-			);
-		} catch (error) {
-			alert("Error getting distances");
-			console.log(error);
-		}
-	};
-
 	useEffect(() => {
+		const findBest = async () => {
+			const levelValue = { LOW: -1, MODERATE: 0, HIGH: 1 };
+
+			const closest = markers.reduce(
+				(iMin, x, i, arr) => (x.distance < arr[iMin].distance ? i : iMin),
+				0
+			);
+
+			let betters = markers.filter(
+				(x) =>
+					x.duration <= 25 &&
+					x.id !== markers[closest].id &&
+					(levelValue[x.level] > levelValue[markers[closest].level] ||
+						(levelValue[x.level] == 1 && x.value > markers[closest].value))
+			);
+
+			let local_best =
+				betters.length > 0
+					? betters[
+							betters.reduce(
+								(iSafe, x, i, arr) =>
+									x.value > arr[iSafe].value && x.duration < arr[iSafe].duration
+										? i
+										: iSafe,
+								0
+							)
+					  ].id
+					: markers[closest].id;
+
+			setBest(local_best);
+		};
+
+		const getDistances = async () => {
+			try {
+				let results = await fetchDistances(
+					location,
+					markers.map((marker) => marker.latlng)
+				);
+
+				setMarkers(
+					markers.map((marker, index) => ({
+						...marker,
+						distance: results[index].distance,
+						duration: results[index].duration,
+					}))
+				);
+			} catch (error) {
+				alert("Error getting distances");
+				console.log(error);
+			}
+		};
+
 		if (location && markers.length > 0) {
 			getDistances();
 			findBest();
@@ -131,31 +129,17 @@ function Map(props) {
 
 		// Center the map on the location we just fetched.
 		setRegion({
-			...region,
+			...INITIAL_REGION,
 			...location,
 		});
-
-		return () => console.log(best);
-	}, [location]);
+	}, [location, markers]);
 
 	useEffect(() => {
-		if (address) {
-			searchRef.current?.setAddressText(address);
-		}
+		address && searchRef.current?.setAddressText(address);
 	}, [address]);
 
 	useEffect(() => {
-		if (location && best) {
-			mapRef.fitToCoordinates(
-				[location, markers.filter((marker) => marker.id == best)[0].latlng],
-				{
-					edgePadding: { top: 20, right: 20, bottom: 20, left: 20 },
-					animated: false,
-				}
-			);
-		} else {
-			mapRef.animateToRegion(region);
-		}
+		mapRef.animateToRegion(region);
 	}, [region]);
 
 	// Function to get user location asynchornously
@@ -208,7 +192,7 @@ function Map(props) {
 				longitude: current_location.coords.longitude,
 			};
 
-			isLocationOutside = !isPointWithinRadius(
+			const isLocationOutside = !isPointWithinRadius(
 				current_location,
 				{
 					latitude: INITIAL_REGION.latitude,
@@ -239,10 +223,7 @@ function Map(props) {
 
 			setAddress(current_address);
 		} catch (error) {
-			if (location_access == null) {
-				console.log(error);
-				getLocationAsync();
-			}
+			location_access == null && getLocationAsync();
 		}
 	};
 
@@ -275,9 +256,6 @@ function Map(props) {
 				{
 					// set up markers from state onto the map view
 					markers.map((marker, index) => {
-						if (marker.id == best) {
-							console.log(marker);
-						}
 						return (
 							<Marker
 								key={marker.id}
@@ -427,7 +405,7 @@ function Map(props) {
 			/>
 		</>
 	);
-}
+};
 
 // create all general styles for each component in one constant stylesheet
 const styles = StyleSheet.create({

@@ -11,7 +11,7 @@ const initialState = {
 	pso_stations: [],
 };
 
-export default function reducer(state = initialState, action) {
+const reducer = (state = initialState, action) => {
 	switch (action.type) {
 		case Types.SET_ADDRESS:
 			return {
@@ -96,4 +96,6 @@ export default function reducer(state = initialState, action) {
 		default:
 			return state;
 	}
-}
+};
+
+export default reducer;

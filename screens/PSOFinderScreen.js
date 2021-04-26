@@ -5,7 +5,7 @@ import Map from "../components/MapComponent";
 import Menu from "../components/MenuComponent";
 import PageTitle from "../components/PageTitleComponent";
 
-export default PSOFinder = ({ navigation, route }) => {
+const PSOFinder = ({ navigation, route }) => {
 	const pso_stations = useSelector((state) => state.pso_stations);
 	return (
 		<View style={styles.container}>
@@ -27,3 +27,5 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 });
+
+export default PSOFinder;
