@@ -236,6 +236,7 @@ const Map = (props) => {
 				style={styles.map}
 				provider={MapView.PROVIDER_GOOGLE}
 				initialRegion={INITIAL_REGION}
+				zoomControlEnabled={false}
 				onPress={hideOptions}
 				ref={(ref) => (mapRef = ref)}
 				minZoomLevel={13}

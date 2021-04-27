@@ -3,6 +3,7 @@ import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
+import Login from "../screens/LoginScreen";
 import Home from "../screens/HomeScreen";
 import AnyoneAround from "../screens/AnyoneAroundScreen";
 import PSOFinder from "../screens/PSOFinderScreen";
@@ -61,7 +62,8 @@ const Main = () => {
 
 	return (
 		<NavigationContainer>
-			<Tab.Navigator initialRouteName="Home">
+			<Tab.Navigator initialRouteName="Login">
+				<Tab.Screen name="Login" component={Login} options={options} />
 				<Tab.Screen name="Home" component={Home} options={options} />
 				<Tab.Screen
 					name="Anyone Around?"
