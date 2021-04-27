@@ -91,7 +91,8 @@ const Map = (props) => {
 					? betters[
 							betters.reduce(
 								(iSafe, x, i, arr) =>
-									x.level > arr[iSafe].level || x.duration < arr[iSafe].duration
+									x.level >= arr[iSafe].level &&
+									x.duration < arr[iSafe].duration
 										? i
 										: iSafe,
 								0
@@ -132,9 +133,11 @@ const Map = (props) => {
 			...INITIAL_REGION,
 			...location,
 		});
-
-		mapRef.animateToRegion(region);
 	}, [location]);
+
+	useEffect(() => {
+		mapRef.animateToRegion(region);
+	}, [region]);
 
 	useEffect(() => {
 		address && searchRef.current?.setAddressText(address);
