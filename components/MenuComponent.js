@@ -1,9 +1,8 @@
 import React from "react";
 import { StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { COLORS, EMERGENCY_NUMBER } from "../shared/constants";
+import { COLORS } from "../shared/constants";
 import { Actions } from "../redux/actions";
-import { Linking } from "react-native";
 
 const MenuButton = ({
 	onPress,
@@ -54,6 +53,13 @@ const Menu = ({ navigation }) => {
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="psoFinderButton"
 			/>
+			<MenuButton
+				onPress={onNewScreen("Emergency Contacts")}
+				button_style={{ top: "25%" }}
+				source={require("../assets/images/emergency_contact.png")}
+				icon_style={{ tintColor: "red" }}
+				testID="emergencyContactButton"
+			/>
 		</>
 	);
 
@@ -70,10 +76,7 @@ const Menu = ({ navigation }) => {
 				testID="menuButton"
 			/>
 			<MenuButton
-				onPress={() => {
-					Linking.openURL(`tel:${EMERGENCY_NUMBER}`);
-					onNewScreen("Emergency")();
-				}}
+				onPress={onNewScreen("Emergency")}
 				button_style={{ top: "85%", left: "3%" }}
 				source={require("../assets/images/emergency.png")}
 				testID="emergencyButton"
@@ -90,6 +93,8 @@ const styles = StyleSheet.create({
 		height: 75,
 		right: "3%",
 		borderRadius: 75,
+		borderWidth: 3,
+		borderColor: COLORS.highlight,
 		backgroundColor: COLORS.light,
 		justifyContent: "center",
 		alignItems: "center",

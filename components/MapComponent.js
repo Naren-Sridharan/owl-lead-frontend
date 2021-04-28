@@ -257,7 +257,7 @@ const Map = (props) => {
 			>
 				{
 					// set up markers from state onto the map view
-					markers.map((marker, index) => {
+					markers.map((marker) => {
 						return (
 							<Marker
 								key={marker.id}

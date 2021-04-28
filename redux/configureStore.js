@@ -18,6 +18,7 @@ export const ConfigureStore = () => {
 			"errMess",
 			"pedestrian_counts",
 			"pso_stations",
+			"contacts",
 		],
 		debug: false,
 	};

@@ -9,10 +9,9 @@ import {
 	Image,
 	Keyboard,
 } from "react-native";
-import { COLORS } from "../shared/constants";
+import { COLORS, actual_password } from "../shared/constants";
 
 const Login = ({ navigation }) => {
-	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
 	return (
@@ -20,12 +19,6 @@ const Login = ({ navigation }) => {
 			<Image
 				source={require("../assets/images/owl_lead.png")}
 				style={styles.logo}
-			/>
-			<TextInput
-				value={username}
-				onChangeText={(username) => setUsername(username)}
-				placeholder={"Username"}
-				style={styles.input}
 			/>
 			<TextInput
 				value={password}
@@ -39,9 +32,8 @@ const Login = ({ navigation }) => {
 				style={styles.button}
 				onPress={() => {
 					Keyboard.dismiss();
-					setUsername("");
 					setPassword("");
-					username === "tester" && password === "TeamMA26!"
+					password === actual_password
 						? navigation.navigate("Home")
 						: Alert.alert(
 								"Incorrect Login Attempt!",

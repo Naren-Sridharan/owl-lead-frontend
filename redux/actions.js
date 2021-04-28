@@ -29,6 +29,18 @@ const Actions = {
 		type: Types.PSO_STATIONS_FAILED,
 		payload: errMess,
 	}),
+	addEmergencyContact: (contact) => ({
+		type: Types.ADD_EMERGENCY_CONTACT,
+		payload: contact,
+	}),
+	removeEmergencyContact: (contact) => ({
+		type: Types.REMOVE_EMERGENCY_CONTACT,
+		payload: contact,
+	}),
+	setContacts: (contacts) => ({
+		type: Types.SET_CONTACTS,
+		payload: contacts,
+	}),
 };
 
 export { Actions };

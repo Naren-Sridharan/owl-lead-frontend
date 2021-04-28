@@ -9,6 +9,8 @@ const initialState = {
 	errMess: null,
 	pedestrian_counts: [],
 	pso_stations: [],
+	emergency_contacts: [],
+	contacts: [],
 };
 
 const reducer = (state = initialState, action) => {
@@ -17,6 +19,12 @@ const reducer = (state = initialState, action) => {
 			return {
 				...state,
 				address: action.payload,
+			};
+
+		case Types.SET_CONTACTS:
+			return {
+				...state,
+				contacts: action.payload,
 			};
 
 		case Types.SET_LOCATION:
@@ -91,6 +99,20 @@ const reducer = (state = initialState, action) => {
 				...state,
 				isLoading: false,
 				errMess: action.payload,
+			};
+
+		case Types.ADD_EMERGENCY_CONTACT:
+			return {
+				...state,
+				emergency_contacts: [...state.emergency_contacts, action.payload],
+			};
+
+		case Types.REMOVE_EMERGENCY_CONTACT:
+			return {
+				...state,
+				emergency_contacts: state.emergency_contacts.filter(
+					(contact) => contact.id != action.payload.id
+				),
 			};
 
 		default:

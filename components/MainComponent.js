@@ -8,6 +8,7 @@ import Home from "../screens/HomeScreen";
 import AnyoneAround from "../screens/AnyoneAroundScreen";
 import PSOFinder from "../screens/PSOFinderScreen";
 import Emergency from "../screens/EmergencyScreen";
+import EmergencyContact from "../screens/EmergencyContactScreen";
 
 import * as TaskManager from "expo-task-manager";
 import * as BackgroundFetch from "expo-background-fetch";
@@ -72,6 +73,11 @@ const Main = () => {
 				/>
 				<Tab.Screen name="PSO Finder" component={PSOFinder} options={options} />
 				<Tab.Screen name="Emergency" component={Emergency} options={options} />
+				<Tab.Screen
+					name="Emergency Contacts"
+					component={EmergencyContact}
+					options={options}
+				/>
 			</Tab.Navigator>
 		</NavigationContainer>
 	);
