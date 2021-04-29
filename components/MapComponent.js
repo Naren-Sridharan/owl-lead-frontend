@@ -341,7 +341,10 @@ const Map = (props) => {
 			<GooglePlacesAutocomplete
 				ref={searchRef} // Reference to be used to access input
 				textInputProps={{
-					onFocus: hideOptions,
+					onFocus: () => {
+						hideOptions();
+						searchRef.current?.setAddressText("");
+					},
 				}}
 				placeholder="Search" // Show 'Search' in location search bar
 				minLength={2} // Show autocomplete after 2 letters
