@@ -29,7 +29,7 @@ const AnyoneAround = ({ navigation, route }) => {
 					level_name="Traffic"
 				/>
 				<Menu navigation={navigation} route={route} />
-				<PageTitle navigation={navigation} route={route} />
+				<PageTitle navigation={navigation} name={route.name} />
 			</View>
 		);
 	}

@@ -11,6 +11,7 @@ const initialState = {
 	pso_stations: [],
 	emergency_contacts: [],
 	contacts: [],
+	contacts_access: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -113,6 +114,18 @@ const reducer = (state = initialState, action) => {
 				emergency_contacts: state.emergency_contacts.filter(
 					(contact) => contact.id != action.payload.id
 				),
+			};
+
+		case Types.ALLOW_CONTACTS_ACCESS:
+			return {
+				...state,
+				contacts_access: true,
+			};
+
+		case Types.DENY_CONTACTS_ACCESS:
+			return {
+				...state,
+				contacts_access: false,
 			};
 
 		default:

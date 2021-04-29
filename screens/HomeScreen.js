@@ -8,7 +8,7 @@ const Home = ({ navigation, route }) => (
 	<View style={styles.container}>
 		<Map id="Map_Home" />
 		<Menu navigation={navigation} route={route} />
-		<PageTitle navigation={navigation} route={route} />
+		<PageTitle navigation={navigation} name={route.name} />
 	</View>
 );
 

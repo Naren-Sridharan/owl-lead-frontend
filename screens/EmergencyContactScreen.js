@@ -44,19 +44,18 @@ const EmergencyContact = ({ navigation, route }) => {
 			>
 				<Text style={styles.button_text}>
 					{item.name} ({item.phone_number})
-					<Image
-						source={require("../assets/images/delete_contact.png")}
-						style={styles.button_image}
-					/>
 				</Text>
+				<Image
+					source={require("../assets/images/delete_contact.png")}
+					style={styles.button_image}
+				/>
 			</TouchableOpacity>
 		);
 	};
 	return (
 		<View style={styles.container}>
 			<Text style={styles.text}>
-				You have {emergency_contacts.length} emergency contacts saved at the
-				moment.
+				Saved Emergency Contacts: {emergency_contacts.length}.
 			</Text>
 			<FlatList
 				style={styles.list}
@@ -66,7 +65,7 @@ const EmergencyContact = ({ navigation, route }) => {
 			/>
 			<ContactPicker />
 			<Menu navigation={navigation} route={route} />
-			<PageTitle navigation={navigation} route={route} />
+			<PageTitle navigation={navigation} name={route.name} />
 		</View>
 	);
 };
@@ -87,6 +86,8 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		width: "90%",
 		color: COLORS.light,
+		textAlign: "center",
+		marginBottom: 10,
 	},
 	button: {
 		width: "100%",
@@ -95,14 +96,19 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: COLORS.highlight,
+		marginBottom: 10,
+		flexDirection: "row",
+		flexWrap: "wrap",
 	},
 	button_text: {
 		fontSize: 17,
+		fontWeight: "bold",
 	},
 	button_image: {
-		width: 20,
-		height: 20,
+		width: 40,
+		height: 40,
 		tintColor: "red",
+		marginLeft: 5,
 	},
 });
 

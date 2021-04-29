@@ -6,7 +6,7 @@ describe("<Loading />", () => {
 	let component;
 	const route = { name: "page" };
 	beforeEach(() => {
-		component = render(<PageTitle route={route} />);
+		component = render(<PageTitle name={route.name} />);
 	});
 	it("has only one child", () => {
 		const tree = component.toJSON();

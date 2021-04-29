@@ -2,10 +2,10 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { COLORS } from "../shared/constants";
 
-const PageTitle = ({ route }) => (
-	<View style={styles.textView}>
+const PageTitle = ({ name, top = "85%" }) => (
+	<View style={{ ...styles.textView, top: top }}>
 		<Text style={styles.text} testID="pageTitle">
-			{route.name}
+			{name}
 		</Text>
 	</View>
 );
@@ -22,11 +22,13 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		borderRadius: 100,
 		backgroundColor: COLORS.dark,
+		borderWidth: 3,
+		borderColor: COLORS.highlight,
 	},
 	text: {
 		color: COLORS.light,
 		fontWeight: "bold",
-		fontSize: 20,
+		fontSize: 19,
 	},
 });
 

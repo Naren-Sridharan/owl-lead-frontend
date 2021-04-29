@@ -15,7 +15,7 @@ const PSOFinder = ({ navigation, route }) => {
 				marker_icon={require("../assets/images/pso_finder.png")}
 			/>
 			<Menu navigation={navigation} route={route} />
-			<PageTitle navigation={navigation} route={route} />
+			<PageTitle navigation={navigation} name={route.name} />
 		</View>
 	);
 };

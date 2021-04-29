@@ -41,6 +41,12 @@ const Actions = {
 		type: Types.SET_CONTACTS,
 		payload: contacts,
 	}),
+	allowContactsAccess: () => ({
+		type: Types.ALLOW_CONTACTS_ACCESS,
+	}),
+	denyContactsAccess: () => ({
+		type: Types.DENY_CONTACTS_ACCESS,
+	}),
 };
 
 export { Actions };
