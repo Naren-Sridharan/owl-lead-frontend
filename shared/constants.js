@@ -31,4 +31,4 @@ export const EMERGENCY_NUMBER = "000";
 export const FETCH_PEDESTRIAN_COUNTS = "FETCH_PEDESTRIAN_COUNTS";
 
 //actual password
-export const actual_password = "TeamMA26!";
+export const actual_password = "teamMA26";
