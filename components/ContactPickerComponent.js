@@ -24,11 +24,11 @@ const openSetting = () => {
 };
 
 const ContactPicker = () => {
-	const [selectedContact, setSelectedContact] = useState("");
-
 	const contacts = useSelector((state) => state.contacts);
 	const contacts_access = useSelector((state) => state.contacts_access);
 	const emergency_contacts = useSelector((state) => state.emergency_contacts);
+
+	const [selectedContact, setSelectedContact] = useState(0);
 
 	const dispatch = useDispatch();
 
@@ -50,13 +50,16 @@ const ContactPicker = () => {
 						data
 							.filter((contact) => contact.phoneNumbers)
 							.map((contact) =>
-								contact.phoneNumbers.map((phone_number) => ({
-									id: contact.id + phone_number,
-									name: `${contact.firstName ? contact.firstName : ""} ${
-										contact.lastName ? contact.lastName : ""
-									}`,
-									phone_number: phone_number.number.replace("/s/g", ""),
-								}))
+								contact.phoneNumbers
+									.filter((phone_number) => !phone_number.number.includes(" "))
+									.map((phone_number) => ({
+										id: contact.id,
+										name: contact.firstName,
+										surname: contact.lastName ? contact.lastName : "",
+										phone_number: phone_number.number
+											.replace(" ", "")
+											.replace("-", ""),
+									}))
 							)
 							.flat(Infinity)
 					)
@@ -100,14 +103,16 @@ const ContactPicker = () => {
 				"You can add only a maximum of 3 contacts as emergency contacts. Remove an emergency contact to add more."
 			);
 		} else if (
-			emergency_contacts.map((ct) => ct.id).includes(selectedContact.id)
+			emergency_contacts
+				.map((ct) => ct.id)
+				.includes(contacts[selectedContact].id)
 		) {
 			Alert.alert(
 				"Already an Emergency Contact",
-				`${selectedContact.name} (${selectedContact.phone_number}) is already an emergency contact. Try adding someone else.`
+				`${contacts[selectedContact].name} (${contacts[selectedContact].phone_number}) is already an emergency contact. Try adding someone else.`
 			);
 		} else {
-			dispatch(Actions.addEmergencyContact(selectedContact));
+			dispatch(Actions.addEmergencyContact(contacts[selectedContact]));
 		}
 	};
 
@@ -116,23 +121,18 @@ const ContactPicker = () => {
 			<Text style={styles.title}>Add New Emergency Contact</Text>
 			<View style={styles.picker_container}>
 				<Picker
-					selectedContact={selectedContact}
+					selectedValueZ={selectedContact}
 					style={styles.picker}
 					itemStyle={styles.picker_item}
 					onValueChange={setSelectedContact}
 				>
-					{contacts
-						.filter(
-							(contact) =>
-								!emergency_contacts.map((ct) => ct.id).includes(contact.id)
-						)
-						.map((contact) => (
-							<Picker.Item
-								key={contact.id}
-								label={`${contact.name} (${contact.phone_number})`}
-								value={contact}
-							/>
-						))}
+					{contacts.map((contact, index) => (
+						<Picker.Item
+							key={index}
+							label={`${contact.name} ${contact.surname} (${contact.phone_number})`}
+							value={index}
+						/>
+					))}
 				</Picker>
 			</View>
 			<TouchableOpacity onPress={onAddEmergencyContact} style={styles.button}>
@@ -159,13 +159,12 @@ export default ContactPicker;
 const styles = StyleSheet.create({
 	container: {
 		width: "90%",
-		height: "25%",
+		height: "30%",
 		justifyContent: "center",
 		margin: 10,
 	},
 	picker_container: {
 		flex: 1,
-		flexDirection: "column",
 		justifyContent: "center",
 		padding: 20,
 		backgroundColor: COLORS.light,
@@ -183,14 +182,10 @@ const styles = StyleSheet.create({
 		height: 88,
 		width: "100%",
 		color: COLORS.dark,
-		borderWidth: 2,
-		alignSelf: "center",
 	},
 	picker_item: {
 		height: 88,
 		color: COLORS.dark,
-		fontSize: 17,
-		fontWeight: "bold",
 	},
 	button: {
 		width: "100%",

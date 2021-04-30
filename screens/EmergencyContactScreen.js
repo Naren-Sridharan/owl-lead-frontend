@@ -23,7 +23,7 @@ const EmergencyContact = ({ navigation, route }) => {
 		const removeEmergencyContact = () =>
 			Alert.alert(
 				"Please Confirm Removal",
-				`Are you sure you want to remove ${item.name} (${item.phone_number}) from your emergency contacts?`,
+				`Are you sure you want to remove ${item.name} ${item.surname} (${item.phone_number}) from your emergency contacts?`,
 				[
 					{
 						text: "Yes",
@@ -39,7 +39,7 @@ const EmergencyContact = ({ navigation, route }) => {
 		return (
 			<View style={styles.contact_view}>
 				<Text style={styles.contact_text}>
-					{item.name} ({item.phone_number})
+					{item.name} {item.surname}
 				</Text>
 				<TouchableOpacity
 					key={index}
@@ -58,14 +58,12 @@ const EmergencyContact = ({ navigation, route }) => {
 		<View style={styles.container}>
 			<Text style={styles.text}>Saved Emergency Contacts</Text>
 			<Text style={styles.text}>({emergency_contacts.length} out of 3)</Text>
-			{emergency_contacts.length && (
-				<FlatList
-					style={styles.list}
-					data={emergency_contacts}
-					renderItem={renderContact}
-					keyExtractor={(contact) => contact.id}
-				/>
-			)}
+			<FlatList
+				style={styles.list}
+				data={emergency_contacts}
+				renderItem={renderContact}
+				keyExtractor={(contact) => contact.id}
+			/>
 			<ContactPicker />
 			<Menu navigation={navigation} route={route} />
 			<PageTitle navigation={navigation} name={route.name} />
@@ -102,15 +100,15 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		borderWidth: 2,
 		borderColor: COLORS.dark,
-		justifyContent: "center",
 		alignItems: "center",
 		padding: 10,
 	},
 	contact_text: {
+		width: "85%",
+		textAlign: "center",
 		fontSize: 17,
 		fontWeight: "bold",
 		color: COLORS.dark,
-		left: 0,
 	},
 	delete_button: {
 		width: 40,
@@ -121,7 +119,6 @@ const styles = StyleSheet.create({
 		backgroundColor: COLORS.levels.MODERATE,
 		alignItems: "center",
 		justifyContent: "center",
-		marginLeft: 5,
 	},
 	delete_button_image: {
 		width: 40,
