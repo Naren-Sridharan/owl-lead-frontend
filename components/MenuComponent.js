@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
 		right: "3%",
 		borderRadius: 75,
 		borderWidth: 3,
-		borderColor: COLORS.highlight,
+		borderColor: COLORS.levels.MODERATE,
 		backgroundColor: COLORS.light,
 		justifyContent: "center",
 		alignItems: "center",

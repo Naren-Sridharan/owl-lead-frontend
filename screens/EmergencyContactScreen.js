@@ -115,11 +115,13 @@ const styles = StyleSheet.create({
 	delete_button: {
 		width: 40,
 		height: 40,
-		borderRadius: 40,
-		backgroundColor: COLORS.light,
+		borderWidth: 1,
+		borderRadius: 5,
+		borderColor: COLORS.levels.MODERATE,
+		backgroundColor: COLORS.levels.MODERATE,
 		alignItems: "center",
 		justifyContent: "center",
-		right: 0,
+		marginLeft: 5,
 	},
 	delete_button_image: {
 		width: 40,

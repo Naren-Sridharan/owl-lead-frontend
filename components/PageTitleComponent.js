@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
 		borderRadius: 100,
 		backgroundColor: COLORS.dark,
 		borderWidth: 3,
-		borderColor: COLORS.highlight,
+		borderColor: COLORS.levels.LOW,
 	},
 	text: {
 		color: COLORS.light,
