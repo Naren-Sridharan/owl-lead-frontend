@@ -100,7 +100,9 @@ const Menu = ({ navigation }) => {
 								try {
 									const { result } = SMS.sendSMSAsync(
 										emergency_contacts.map((contact) => contact.phone_number),
-										`Emergency! Please Help! I am at ${address}. Try calling me first! Please come immediately or inform the police if I don't pick up.`
+										`Emergency! Please Help! ${
+											address ? `I am at ${address}.` : ""
+										} Try calling me first! Please come immediately or inform the police if I don't pick up.`
 									);
 									status = "SOS SMSs were sent to Emergency Contacts.";
 								} catch (error) {

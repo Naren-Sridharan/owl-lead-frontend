@@ -121,7 +121,7 @@ const ContactPicker = () => {
 			<Text style={styles.title}>Add New Emergency Contact</Text>
 			<View style={styles.picker_container}>
 				<Picker
-					selectedValueZ={selectedContact}
+					selectedValue={selectedContact}
 					style={styles.picker}
 					itemStyle={styles.picker_item}
 					onValueChange={setSelectedContact}

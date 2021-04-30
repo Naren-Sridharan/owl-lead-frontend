@@ -288,27 +288,21 @@ const Map = (props) => {
 										)
 									}
 								>
-									<View>
+									<View style={{ flex: 1 }}>
 										<Text>{marker.place}</Text>
-										{props.value_name ? (
+										{props.value_name && (
 											<Text>
 												{props.value_name}: {marker.value}
 											</Text>
-										) : (
-											<></>
 										)}
 										<Text>
 											{props.level_name}: {marker.level}
 										</Text>
-										{marker.distance ? (
+										{marker.distance && (
 											<Text>Distance: {marker.distance} meters</Text>
-										) : (
-											<Text></Text>
 										)}
-										{marker.duration ? (
+										{marker.duration && (
 											<Text>Duration: {marker.duration} minutes</Text>
-										) : (
-											<Text></Text>
 										)}
 										<Text>Last updated: {marker.time}</Text>
 										<Button
@@ -442,6 +436,8 @@ const styles = StyleSheet.create({
 		flex: -1,
 		position: "absolute",
 		width: 250,
+		borderWidth: 2,
+		borderColor: COLORS.dark,
 	},
 	button: {
 		backgroundColor: COLORS.dark,
