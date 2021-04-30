@@ -51,8 +51,10 @@ const ContactPicker = () => {
 							.filter((contact) => contact.phoneNumbers)
 							.map((contact) =>
 								contact.phoneNumbers.map((phone_number) => ({
-									id: contact.id,
-									name: `${contact.firstName} ${contact.lastName}`,
+									id: contact.id + phone_number,
+									name: `${contact.firstName ? contact.firstName : ""} ${
+										contact.lastName ? contact.lastName : ""
+									}`,
 									phone_number: phone_number.number.replace("/s/g", ""),
 								}))
 							)
@@ -111,25 +113,28 @@ const ContactPicker = () => {
 
 	const existing_contacts = (
 		<View style={styles.container}>
-			<Picker
-				selectedContact={selectedContact}
-				style={styles.picker}
-				style={styles.picker_item}
-				onValueChange={setSelectedContact}
-			>
-				{contacts
-					.filter(
-						(contact) =>
-							!emergency_contacts.map((ct) => ct.id).includes(contact.id)
-					)
-					.map((contact) => (
-						<Picker.Item
-							key={contact.id}
-							label={`${contact.name} (${contact.phone_number})`}
-							value={contact}
-						/>
-					))}
-			</Picker>
+			<Text style={styles.title}>Add New Emergency Contact</Text>
+			<View style={styles.picker_container}>
+				<Picker
+					selectedContact={selectedContact}
+					style={styles.picker}
+					itemStyle={styles.picker_item}
+					onValueChange={setSelectedContact}
+				>
+					{contacts
+						.filter(
+							(contact) =>
+								!emergency_contacts.map((ct) => ct.id).includes(contact.id)
+						)
+						.map((contact) => (
+							<Picker.Item
+								key={contact.id}
+								label={`${contact.name} (${contact.phone_number})`}
+								value={contact}
+							/>
+						))}
+				</Picker>
+			</View>
 			<TouchableOpacity onPress={onAddEmergencyContact} style={styles.button}>
 				<Text style={styles.text}>Add as Emergency Contact</Text>
 				<Image
@@ -155,11 +160,18 @@ const styles = StyleSheet.create({
 	container: {
 		width: "90%",
 		height: "25%",
-		borderRadius: 20,
-		backgroundColor: COLORS.light,
-		padding: 10,
 		justifyContent: "center",
 		margin: 10,
+	},
+	picker_container: {
+		flex: 1,
+		flexDirection: "column",
+		justifyContent: "center",
+		padding: 20,
+		backgroundColor: COLORS.light,
+		borderColor: COLORS.dark,
+		borderWidth: 2,
+		borderRadius: 10,
 	},
 	text: {
 		fontSize: 17,
@@ -168,24 +180,25 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 	picker: {
-		height: 30,
-		width: "90%",
+		height: 88,
+		width: "100%",
 		color: COLORS.dark,
 		borderWidth: 2,
 		alignSelf: "center",
 	},
 	picker_item: {
-		height: 30,
+		height: 88,
 		color: COLORS.dark,
+		fontSize: 17,
+		fontWeight: "bold",
 	},
 	button: {
-		width: "90%",
+		width: "100%",
 		height: 40,
 		borderRadius: 10,
 		justifyContent: "center",
 		backgroundColor: COLORS.highlight,
 		alignItems: "center",
-		margin: 10,
 		marginTop: 30,
 		flexDirection: "row",
 		flexWrap: "wrap",
@@ -194,5 +207,14 @@ const styles = StyleSheet.create({
 		width: 25,
 		height: 25,
 		marginLeft: 10,
+	},
+	title: {
+		fontSize: 20,
+		fontWeight: "bold",
+		width: "90%",
+		color: COLORS.light,
+		textAlign: "center",
+		alignSelf: "center",
+		marginBottom: 10,
 	},
 });

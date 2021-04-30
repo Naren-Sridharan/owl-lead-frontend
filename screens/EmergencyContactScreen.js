@@ -37,32 +37,35 @@ const EmergencyContact = ({ navigation, route }) => {
 				]
 			);
 		return (
-			<TouchableOpacity
-				key={index}
-				onPress={removeEmergencyContact}
-				style={styles.button}
-			>
-				<Text style={styles.button_text}>
+			<View style={styles.contact_view}>
+				<Text style={styles.contact_text}>
 					{item.name} ({item.phone_number})
 				</Text>
-				<Image
-					source={require("../assets/images/delete_contact.png")}
-					style={styles.button_image}
-				/>
-			</TouchableOpacity>
+				<TouchableOpacity
+					key={index}
+					onPress={removeEmergencyContact}
+					style={styles.delete_button}
+				>
+					<Image
+						source={require("../assets/images/delete_contact.png")}
+						style={styles.delete_button_image}
+					/>
+				</TouchableOpacity>
+			</View>
 		);
 	};
 	return (
 		<View style={styles.container}>
-			<Text style={styles.text}>
-				Saved Emergency Contacts: {emergency_contacts.length}.
-			</Text>
-			<FlatList
-				style={styles.list}
-				data={emergency_contacts}
-				renderItem={renderContact}
-				keyExtractor={(contact) => contact.id}
-			/>
+			<Text style={styles.text}>Saved Emergency Contacts</Text>
+			<Text style={styles.text}>({emergency_contacts.length} out of 3)</Text>
+			{emergency_contacts.length && (
+				<FlatList
+					style={styles.list}
+					data={emergency_contacts}
+					renderItem={renderContact}
+					keyExtractor={(contact) => contact.id}
+				/>
+			)}
 			<ContactPicker />
 			<Menu navigation={navigation} route={route} />
 			<PageTitle navigation={navigation} name={route.name} />
@@ -79,7 +82,11 @@ const styles = StyleSheet.create({
 	},
 	list: {
 		width: "90%",
+		height: 180,
 		flexGrow: 0,
+		backgroundColor: COLORS.light,
+		borderColor: COLORS.levels.LOW,
+		borderRadius: 10,
 	},
 	text: {
 		fontSize: 20,
@@ -89,26 +96,36 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		marginBottom: 10,
 	},
-	button: {
+	contact_view: {
 		width: "100%",
-		height: 40,
-		borderRadius: 10,
+		height: 60,
+		flexDirection: "row",
+		borderWidth: 2,
+		borderColor: COLORS.dark,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: COLORS.highlight,
-		marginBottom: 10,
-		flexDirection: "row",
-		flexWrap: "wrap",
+		padding: 10,
 	},
-	button_text: {
+	contact_text: {
 		fontSize: 17,
 		fontWeight: "bold",
+		color: COLORS.dark,
+		left: 0,
 	},
-	button_image: {
+	delete_button: {
+		width: 40,
+		height: 40,
+		borderRadius: 40,
+		backgroundColor: COLORS.light,
+		alignItems: "center",
+		justifyContent: "center",
+		right: 0,
+	},
+	delete_button_image: {
 		width: 40,
 		height: 40,
 		tintColor: "red",
-		marginLeft: 5,
+		alignSelf: "center",
 	},
 });
 
