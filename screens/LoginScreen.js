@@ -9,10 +9,12 @@ import {
 	Image,
 	Keyboard,
 } from "react-native";
+import { useSelector } from "react-redux";
 import { COLORS, actual_password } from "../shared/constants";
 
 const Login = ({ navigation }) => {
 	const [password, setPassword] = useState("");
+	const intro_shown = useSelector((state) => state.intro_shown);
 
 	return (
 		<View style={styles.container}>
@@ -34,7 +36,7 @@ const Login = ({ navigation }) => {
 					Keyboard.dismiss();
 					setPassword("");
 					password === actual_password
-						? navigation.navigate("Home")
+						? navigation.navigate(intro_shown ? "Home" : "Intro")
 						: Alert.alert(
 								"Incorrect Login Attempt!",
 								"Invalid username or password. Please try again."

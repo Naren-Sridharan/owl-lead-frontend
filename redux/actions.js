@@ -47,6 +47,9 @@ const Actions = {
 	denyContactsAccess: () => ({
 		type: Types.DENY_CONTACTS_ACCESS,
 	}),
+	introShown: () => ({
+		type: Types.INTRO_SHOWN,
+	}),
 };
 
 export { Actions };

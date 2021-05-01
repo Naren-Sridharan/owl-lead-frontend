@@ -12,6 +12,7 @@ const initialState = {
 	emergency_contacts: [],
 	contacts: [],
 	contacts_access: null,
+	intro_shown: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -126,6 +127,12 @@ const reducer = (state = initialState, action) => {
 			return {
 				...state,
 				contacts_access: false,
+			};
+
+		case Types.INTRO_SHOWN:
+			return {
+				...state,
+				intro_shown: true,
 			};
 
 		default:

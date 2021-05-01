@@ -9,6 +9,7 @@ import AnyoneAround from "../screens/AnyoneAroundScreen";
 import PSOFinder from "../screens/PSOFinderScreen";
 import Emergency from "../screens/EmergencyScreen";
 import EmergencyContact from "../screens/EmergencyContactScreen";
+import Intro from "../screens/IntroScreen";
 
 import * as TaskManager from "expo-task-manager";
 import * as BackgroundFetch from "expo-background-fetch";
@@ -65,6 +66,7 @@ const Main = () => {
 		<NavigationContainer>
 			<Tab.Navigator initialRouteName="Login">
 				<Tab.Screen name="Login" component={Login} options={options} />
+				<Tab.Screen name="Intro" component={Intro} options={options} />
 				<Tab.Screen name="Home" component={Home} options={options} />
 				<Tab.Screen
 					name="Anyone Around?"

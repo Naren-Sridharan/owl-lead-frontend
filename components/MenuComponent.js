@@ -42,37 +42,45 @@ const Menu = ({ navigation }) => {
 
 	const buttons = (
 		<>
-			<PageTitle name="Home" top="70%" />
+			<PageTitle name="Home" top="72.5%" />
 			<MenuButton
 				onPress={onNewScreen("Home")}
-				button_style={{ top: "70%" }}
+				button_style={{ top: "72.5%" }}
 				source={require("../assets/images/home.png")}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="homeButton"
 			/>
-			<PageTitle name="Anyone Around?" top="55%" />
+			<PageTitle name="Anyone Around?" top="60%" />
 			<MenuButton
 				onPress={onNewScreen("Anyone Around?")}
-				button_style={{ top: "55%" }}
+				button_style={{ top: "60%" }}
 				source={require("../assets/images/anyone_around.png")}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="anyoneAroundButton"
 			/>
-			<PageTitle name="PSO Finder" top="40%" />
+			<PageTitle name="PSO Finder" top="47.5%" />
 			<MenuButton
 				onPress={onNewScreen("PSO Finder")}
-				button_style={{ top: "40%" }}
+				button_style={{ top: "47.5%" }}
 				source={require("../assets/images/pso_finder.png")}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="psoFinderButton"
 			/>
-			<PageTitle name="Emergency Contacts" top="25%" />
+			<PageTitle name="Emergency Contacts" top="35%" />
 			<MenuButton
 				onPress={onNewScreen("Emergency Contacts")}
-				button_style={{ top: "25%" }}
+				button_style={{ top: "35%" }}
 				source={require("../assets/images/emergency_contact.png")}
 				icon_style={{ tintColor: "red" }}
 				testID="emergencyContactButton"
+			/>
+			<PageTitle name="Intro" top="22.5%" />
+			<MenuButton
+				onPress={onNewScreen("Intro")}
+				button_style={{ top: "22.5%" }}
+				source={require("../assets/images/intro.png")}
+				icon_style={{ tintColor: COLORS.dark }}
+				testID="introButton"
 			/>
 		</>
 	);
@@ -89,6 +97,7 @@ const Menu = ({ navigation }) => {
 				source={require("../assets/images/owl_lead.png")}
 				testID="menuButton"
 			/>
+
 			<MenuButton
 				onPress={() => {
 					Linking.openURL(`tel:${EMERGENCY_NUMBER}`);
