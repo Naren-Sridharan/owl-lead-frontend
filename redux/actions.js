@@ -7,6 +7,8 @@ const Actions = {
 	denyLocationAccess: () => ({ type: Types.DENY_LOCATION_ACCESS }),
 	showOptions: () => ({ type: Types.SHOW_OPTIONS }),
 	hideOptions: () => ({ type: Types.HIDE_OPTIONS }),
+	showEmergencyOptions: () => ({ type: Types.SHOW_EMERGENCY_OPTIONS }),
+	hideEmergencyOptions: () => ({ type: Types.HIDE_EMERGENCY_OPTIONS }),
 	pedestrianCountsLoading: () => ({
 		type: Types.PEDESTRIAN_COUNTS_LOADING,
 	}),

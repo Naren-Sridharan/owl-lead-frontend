@@ -2,6 +2,7 @@ import * as Types from "./types";
 
 const initialState = {
 	show_options: false,
+	show_emergency_options: false,
 	location_access: null,
 	location: null,
 	address: null,
@@ -57,6 +58,18 @@ const reducer = (state = initialState, action) => {
 			return {
 				...state,
 				show_options: false,
+			};
+
+		case Types.SHOW_EMERGENCY_OPTIONS:
+			return {
+				...state,
+				show_emergency_options: true,
+			};
+
+		case Types.HIDE_EMERGENCY_OPTIONS:
+			return {
+				...state,
+				show_emergency_options: false,
 			};
 
 		case Types.PEDESTRIAN_COUNTS_LOADING:

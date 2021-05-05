@@ -1,35 +1,48 @@
 import React from "react";
-import {
-	StyleSheet,
-	Image,
-	TouchableOpacity,
-	Linking,
-	Alert,
-} from "react-native";
+import { StyleSheet, Image, TouchableOpacity, Linking } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { COLORS, EMERGENCY_NUMBER } from "../shared/constants";
 import { Actions } from "../redux/actions";
 import PageTitle from "./PageTitleComponent";
 import * as SMS from "expo-sms";
+import { BlurView } from "expo-blur";
+
+import owl_lead from "../assets/images/owl_lead.png";
+import home from "../assets/images/home.png";
+import anyone_around from "../assets/images/anyone_around.png";
+import pso_finder from "../assets/images/pso_finder.png";
+import intro from "../assets/images/intro.png";
+import emergency from "../assets/images/emergency.png";
+import emergency_call from "../assets/images/emergency_call.png";
+import sos from "../assets/images/sos.png";
+import emergency_contact from "../assets/images/emergency_contact.png";
+import information from "../assets/images/information.png";
 
 const MenuButton = ({
+	name,
 	onPress,
 	source,
 	testID,
 	button_style = {},
 	icon_style = {},
 }) => (
-	<TouchableOpacity
-		onPress={onPress}
-		style={{ ...styles.menu_button, ...button_style }}
-		testID={testID}
-	>
-		<Image source={source} style={{ ...styles.icon, ...icon_style }} />
-	</TouchableOpacity>
+	<>
+		{name && <PageTitle name={name} top={button_style.top} onPress={onPress} />}
+		<TouchableOpacity
+			onPress={onPress}
+			style={{ ...styles.menu_button, ...button_style }}
+			testID={testID}
+		>
+			<Image source={source} style={{ ...styles.icon, ...icon_style }} />
+		</TouchableOpacity>
+	</>
 );
 
 const Menu = ({ navigation }) => {
 	const show_options = useSelector((state) => state.show_options);
+	const show_emergency_options = useSelector(
+		(state) => state.show_emergency_options
+	);
 	const emergency_contacts = useSelector((state) => state.emergency_contacts);
 	const address = useSelector((state) => state.address);
 
@@ -37,70 +50,73 @@ const Menu = ({ navigation }) => {
 
 	const onNewScreen = (page, status = "") => () => {
 		dispatch(Actions.hideOptions());
+		dispatch(Actions.hideEmergencyOptions());
 		navigation.navigate(page, { status: status });
 	};
 
 	const buttons = (
-		<>
-			<PageTitle name="Home" top="72.5%" />
+		<BlurView
+			tint="dark"
+			intensity={50}
+			style={[StyleSheet.absoluteFill, styles.nonBlurredContent]}
+		>
 			<MenuButton
+				name="Home"
 				onPress={onNewScreen("Home")}
 				button_style={{ top: "72.5%" }}
-				source={require("../assets/images/home.png")}
+				source={home}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="homeButton"
 			/>
-			<PageTitle name="Anyone Around?" top="60%" />
 			<MenuButton
+				name="Anyone Around?"
 				onPress={onNewScreen("Anyone Around?")}
 				button_style={{ top: "60%" }}
-				source={require("../assets/images/anyone_around.png")}
+				source={anyone_around}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="anyoneAroundButton"
 			/>
-			<PageTitle name="PSO Finder" top="47.5%" />
 			<MenuButton
+				name="PSO Finder"
 				onPress={onNewScreen("PSO Finder")}
 				button_style={{ top: "47.5%" }}
-				source={require("../assets/images/pso_finder.png")}
+				source={pso_finder}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="psoFinderButton"
 			/>
-			<PageTitle name="Emergency Contacts" top="35%" />
 			<MenuButton
-				onPress={onNewScreen("Emergency Contacts")}
-				button_style={{ top: "35%" }}
-				source={require("../assets/images/emergency_contact.png")}
-				icon_style={{ tintColor: "red" }}
-				testID="emergencyContactButton"
-			/>
-			<PageTitle name="Intro" top="22.5%" />
-			<MenuButton
+				name="Intro"
 				onPress={onNewScreen("Intro")}
-				button_style={{ top: "22.5%" }}
-				source={require("../assets/images/intro.png")}
+				button_style={{ top: "35%" }}
+				source={intro}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="introButton"
 			/>
-		</>
+		</BlurView>
 	);
 
-	return (
-		<>
+	const emergency_buttons = (
+		<BlurView
+			intensity={50}
+			tint="dark"
+			style={[StyleSheet.absoluteFill, styles.nonBlurredContent]}
+		>
 			<MenuButton
-				onPress={() =>
-					show_options
-						? dispatch(Actions.hideOptions())
-						: dispatch(Actions.showOptions())
-				}
-				button_style={{ top: "85%" }}
-				source={require("../assets/images/owl_lead.png")}
-				testID="menuButton"
-			/>
-
-			<MenuButton
+				name="Emergency Call"
 				onPress={() => {
 					Linking.openURL(`tel:${EMERGENCY_NUMBER}`);
+					onNewScreen(
+						"Emergency",
+						`Location:\n${address ? address : "No Location given"}`
+					)();
+				}}
+				button_style={{ top: "72.5%", left: "3%" }}
+				source={emergency_call}
+				testID="emergencyCallButton"
+			/>
+			<MenuButton
+				name="SOS"
+				onPress={() => {
 					(async () => {
 						const isAvailable = await SMS.isAvailableAsync();
 						let status = "";
@@ -127,11 +143,56 @@ const Menu = ({ navigation }) => {
 						onNewScreen("Emergency", status)();
 					})();
 				}}
+				button_style={{ top: "60%", left: "3%" }}
+				source={sos}
+				testID="sosButton"
+			/>
+			<MenuButton
+				name="Emergency Contacts"
+				onPress={onNewScreen("Emergency Contacts")}
+				button_style={{ top: "47.5%", left: "3%" }}
+				source={emergency_contact}
+				icon_style={{ tintColor: "red" }}
+				testID="emergencyContactButton"
+			/>
+		</BlurView>
+	);
+
+	return (
+		<>
+			<MenuButton
+				onPress={() => {
+					dispatch(Actions.hideEmergencyOptions());
+					show_options
+						? dispatch(Actions.hideOptions())
+						: dispatch(Actions.showOptions());
+				}}
+				button_style={{ top: "85%" }}
+				source={owl_lead}
+				testID="menuButton"
+			/>
+
+			<MenuButton
+				onPress={() => {
+					dispatch(Actions.hideOptions());
+					show_emergency_options
+						? dispatch(Actions.hideEmergencyOptions())
+						: dispatch(Actions.showEmergencyOptions());
+				}}
 				button_style={{ top: "85%", left: "3%" }}
-				source={require("../assets/images/emergency.png")}
+				source={emergency}
 				testID="emergencyButton"
 			/>
+
+			<MenuButton
+				button_style={{ top: "20%", right: "3%" }}
+				icon_style={{ tintColor: COLORS.dark }}
+				source={information}
+				testID="informationButton"
+			/>
+
 			{show_options && buttons}
+			{show_emergency_options && emergency_buttons}
 		</>
 	);
 };
@@ -143,8 +204,8 @@ const styles = StyleSheet.create({
 		height: 75,
 		right: "3%",
 		borderRadius: 75,
-		borderWidth: 3,
-		borderColor: COLORS.levels.MODERATE,
+		borderWidth: 1,
+		borderColor: COLORS.dark,
 		backgroundColor: COLORS.light,
 		justifyContent: "center",
 		alignItems: "center",

@@ -22,6 +22,7 @@ export const COLORS = {
 		MODERATE: "yellow",
 		HIGH: "green",
 	},
+	intro: "#6d42c2",
 };
 
 // Emergency Number

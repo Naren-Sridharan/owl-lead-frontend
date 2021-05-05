@@ -11,39 +11,10 @@ import Emergency from "../screens/EmergencyScreen";
 import EmergencyContact from "../screens/EmergencyContactScreen";
 import Intro from "../screens/IntroScreen";
 
-import * as TaskManager from "expo-task-manager";
-import * as BackgroundFetch from "expo-background-fetch";
 import { fetchPedestrianCounts, fetchPSOStations } from "../shared/loaders";
-import { FETCH_PEDESTRIAN_COUNTS } from "../shared/constants";
 import { useDispatch, useSelector } from "react-redux";
-
-TaskManager.defineTask(FETCH_PEDESTRIAN_COUNTS, async () => {
-	try {
-		console.log("Background Fetch Pedestrian Counts initiated");
-		const dispatch = useDispatch();
-		const newData = dispatch(fetchPedestrianCounts());
-		console.log(
-			"Background Fetch Pedestrian Counts Completed: ",
-			newData ? "Sucessful" : "Unsuccessful"
-		);
-		return newData
-			? BackgroundFetch.Result.NewData
-			: BackgroundFetch.Result.NoData;
-	} catch (error) {
-		console.log(error);
-		return BackgroundFetch.Result.Failed;
-	}
-});
-
-const registerBackgroundPedestrianCountsTask = async () => {
-	try {
-		await BackgroundFetch.registerTaskAsync(FETCH_PEDESTRIAN_COUNTS, {
-			minimumInterval: 15 * 60, // seconds
-		});
-	} catch (err) {
-		console.log("Background Fetch Pedestrian Counts Registration Failed:", err);
-	}
-};
+import { Alert, Linking } from "react-native";
+import { EMERGENCY_NUMBER } from "../shared/constants";
 
 const Tab = createBottomTabNavigator();
 
@@ -53,9 +24,23 @@ const Main = () => {
 	const dispatch = useDispatch();
 
 	React.useEffect(() => {
+		Alert.alert(
+			"ARE YOU IN IMMEDIATE DANGER?",
+			"If you are in immmediate danger, please click yes to be redirected to 000",
+			[
+				{
+					text: "Yes",
+					onPress: () => Linking.openURL(`tel:${EMERGENCY_NUMBER}`),
+				},
+				{
+					text: "No",
+					onPress: () => console.log("Cancel Pressed"),
+					style: "cancel",
+				},
+			]
+		);
 		dispatch(fetchPedestrianCounts());
 		dispatch(fetchPSOStations());
-		registerBackgroundPedestrianCountsTask();
 	}, [dispatch]);
 
 	const options = {
