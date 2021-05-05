@@ -11,6 +11,7 @@ export const ConfigureStore = () => {
 		storage: AsyncStorage,
 		blacklist: [
 			"show_options",
+			"show_emergency_options",
 			"location_access",
 			"location",
 			"address",

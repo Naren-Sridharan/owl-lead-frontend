@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import { COLORS, EMERGENCY_NUMBER } from "../shared/constants";
+import { COLORS } from "../shared/constants";
 import PageTitle from "../components/PageTitleComponent";
 import Menu from "../components/MenuComponent";
 
@@ -10,12 +10,7 @@ const Emergency = ({ navigation, route }) => {
 	const { status } = route.params;
 	return (
 		<View style={styles.container}>
-			<Text style={styles.text}>
-				{" "}
-				{`Calling ${EMERGENCY_NUMBER}! \n${
-					address ? address.split(",").join("\n") : ""
-				}\n${status}`}
-			</Text>
+			<Text style={styles.text}>{status}</Text>
 			<Menu navigation={navigation} route={route} />
 			<PageTitle navigation={navigation} name={route.name} />
 		</View>

@@ -1,7 +1,8 @@
 // Importing required modules
 import React from "react";
 
-import { StyleSheet, View, Text, Image, Dimensions } from "react-native";
+import { StyleSheet, View, Text, Image } from "react-native";
+import { Card } from "react-native-elements";
 
 import AppIntroSlider from "react-native-app-intro-slider";
 import { useDispatch } from "react-redux";
@@ -9,14 +10,11 @@ import { Actions } from "../redux/actions";
 
 import { COLORS } from "../shared/constants";
 
-// getting required images
-const owl_lead_logo = require("../assets/images/owl_lead.png");
-const anyone_around = require("../assets/images/anyone_around.png");
-const pso_finder = require("../assets/images/pso_finder.png");
-const emergency_000 = require("../assets/images/emergency.png");
-
-// getting dimesions of device for spacing arrangements
-const dims = Dimensions.get("window");
+import owl_lead from "../assets/images/owl_lead.png";
+import anyone_around from "../assets/images/anyone_around.png";
+import pso_finder from "../assets/images/pso_finder.png";
+import emergency_call from "../assets/images/emergency_call.png";
+import sos from "../assets/images/sos.png";
 
 // main component
 const Intro = ({ navigation, route }) => {
@@ -37,160 +35,193 @@ const Intro = ({ navigation, route }) => {
 	);
 };
 // rendering function to show screens
-const RenderItem = ({ item }) => {
-	if (item.key == "s1") {
-		return (
-			<>
-				<View
-					style={{
-						flex: 5,
-						backgroundColor: item.backgroundColor,
-						alignItems: "center",
-						justifyContent: "space-around",
-						paddingTop: 50,
-					}}
-				>
-					<Text style={styles.introTitleStyle}>{item.title}</Text>
-					<Image
-						style={[styles.MainImageStyle, { backgroundColor: null }]}
-						source={item.image}
-					/>
-					<Text style={[styles.introTextStyle, { marginBottom: 0 }]}>
-						{item.text}
-					</Text>
-				</View>
-				<View
-					style={{
-						flex: 3,
-						flexDirection: "row",
-						backgroundColor: item.backgroundColor,
-						alignItems: "center",
-						justifyContent: "space-around",
-						paddingBottom: 10,
-					}}
-				>
-					<Image
-						style={[styles.SubImageStyle, { tintColor: "#2d327a" }]}
-						source={item.image1}
-					/>
-					<Image style={styles.SubImageStyle} source={item.image2} />
-					<Image style={styles.SubImageStyle} source={item.image3} />
-				</View>
-				<View
-					style={{
-						flex: 1,
-						flexDirection: "row",
-						backgroundColor: item.backgroundColor,
-						alignItems: "center",
-						justifyContent: "space-around",
-						paddingBottom: 50,
-					}}
-				>
-					<Text style={styles.subtextStyle}>{item.subtext1}</Text>
-					<Text style={styles.subtextStyle}>{item.subtext2}</Text>
-					<Text style={styles.subtextStyle}>{item.subtext3}</Text>
-				</View>
-			</>
-		);
-	} else {
-		return (
-			<View
-				style={{
-					flex: 1,
-					backgroundColor: item.backgroundColor,
-					alignItems: "center",
-					justifyContent: "space-around",
-					paddingTop: 50,
-				}}
-			>
-				<Text style={styles.introTitleStyle}> {item.title} </Text>
-				{item.key != "s2" ? (
-					<Image style={styles.MainImageStyle} source={item.image} />
-				) : (
-					<Image
-						style={[styles.MainImageStyle, { tintColor: COLORS.dark }]}
-						source={item.image}
-					/>
-				)}
-
-				<Text style={styles.introTextStyle}> {item.text} </Text>
+const RenderItem = ({ item }) => (
+	<View style={styles.content}>
+		<View style={styles.item}>
+			<Text style={styles.title}>{item.title}</Text>
+			<View style={styles.image_background}>
+				<Image style={[styles.image, item.imageStyle]} source={item.image} />
 			</View>
-		);
-	}
-};
+			<Text style={item.subcontent ? styles.subtitle : styles.text}>
+				{item.text}
+			</Text>
+		</View>
+		{item.subcontent && (
+			<View style={styles.subcontent}>
+				{item.subcontent.map((subitem, index) => (
+					<View style={[styles.subitem, subitem.containerStyle]} key={index}>
+						<View style={styles.subimage_background}>
+							<Image
+								style={[styles.subimage, subitem.imageStyle]}
+								source={subitem.image}
+							/>
+						</View>
+						<Text style={styles.subtext}>{subitem.text}</Text>
+					</View>
+				))}
+			</View>
+		)}
+	</View>
+);
 
 // contents for each slide
 const slides = [
 	{
-		key: "s1",
-		text: "Let the owl lead you to safety!",
+		key: "1",
 		title: "Welcome",
-		image: owl_lead_logo,
-		image1: anyone_around,
-		image2: pso_finder,
-		image3: emergency_000,
-		backgroundColor: "#5b38a1",
-		subtext1: "Anyone Around",
-		subtext2: "Pso Finder",
-		subtext3: "Emergency 000",
+		image: owl_lead,
+		text:
+			"Walking alone in the city?\n\nLet the owl lead you to safety with these safety features!",
+		subcontent: [
+			{
+				image: anyone_around,
+				text: "1. Anyone Around?",
+				containerStyle: { top: "10%", left: 0 },
+				imageStyle: { tintColor: COLORS.dark },
+			},
+			{
+				image: pso_finder,
+				text: "2. PSO Finder",
+				containerStyle: { top: "10%", right: 0 },
+				imageStyle: { tintColor: COLORS.dark },
+			},
+			{
+				image: emergency_call,
+				text: "3. Emergency Call",
+				containerStyle: { bottom: "25%", left: 0 },
+				imageStyle: {},
+			},
+			{
+				image: sos,
+				text: "4. SOS",
+				containerStyle: { bottom: "25%", right: 0 },
+				imageStyle: {},
+			},
+		],
 	},
 	{
-		key: "s2",
-		title: "Anyone Around",
+		key: "2",
+		title: "Anyone Around?",
 		text:
 			"Anyone Around helps you find a street where there are a substantial number of people to feel secure when you feel unsafe on a lonely street",
 		image: anyone_around,
-		backgroundColor: "#6d42c2",
+		imageStyle: { tintColor: COLORS.dark },
 	},
 	{
-		key: "s3",
+		key: "3",
 		title: "PSO Finder",
 		text:
 			"PSO Finder helps you find places where there is a potential presence of Protected Service Officer, for the times you feel insecure or feel you are being followed.",
 		image: pso_finder,
-		backgroundColor: "#6d42c2",
+		imageStyle: { tintColor: COLORS.dark },
 	},
 	{
-		key: "s4",
-		title: "Emergency 000",
+		key: "4",
+		title: "Emergency Call",
 		text:
-			"This feature allow you to call 000 with a click of a button and simultaneously messages your emergency contacts your current location with a distress message ",
-		image: emergency_000,
-		backgroundColor: "#6d42c2",
+			"This feature allow you to call 000 with a click of a button and shows your location",
+		image: emergency_call,
+		imageStyle: {},
+	},
+	{
+		key: "5",
+		title: "SOS",
+		text:
+			"This feature allows you send an SOS message to your emergency contacts",
+		image: sos,
+		imageStyle: {},
 	},
 ];
 
 // defining the stylesheet for slider
 const styles = StyleSheet.create({
-	subtextStyle: {
+	content: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: COLORS.dark,
 		padding: 20,
+	},
+	item: {
+		flex: 1,
+		padding: 10,
+	},
+	title: {
+		top: 10,
+		fontWeight: "bold",
+		fontSize: 36,
+		color: COLORS.light,
+		textAlign: "center",
+		textAlignVertical: "center",
+	},
+	text: {
+		fontWeight: "bold",
+		fontSize: 26,
+		color: COLORS.light,
+		textAlign: "justify",
+		padding: 20,
+		bottom: 10,
+	},
+	image_background: {
+		width: 150,
+		height: 150,
+		borderRadius: 150,
+		margin: 20,
+		alignItems: "center",
+		justifyContent: "center",
+		alignSelf: "center",
+		borderColor: COLORS.light,
+		borderWidth: 2,
+		borderColor: "white",
+		backgroundColor: COLORS.light,
+	},
+	image: {
+		width: 100,
+		height: 100,
+	},
+	subtitle: {
 		textAlign: "center",
 		fontSize: 18,
-		color: "white",
-		marginBottom: dims.height / 4.5,
+		fontWeight: "bold",
+		color: COLORS.light,
 	},
-	SubImageStyle: {
+	subcontent: {
+		position: "absolute",
+		height: "60%",
+		width: "100%",
+		bottom: 0,
+		padding: 20,
+		flexDirection: "row",
+		flexWrap: "wrap",
+		alignContent: "space-between",
+	},
+	subitem: {
+		position: "absolute",
+		width: "50%",
+		height: "40%",
+		backgroundColor: "transparent",
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	subtext: {
+		fontSize: 12,
+		fontWeight: "bold",
+		textAlign: "center",
+		color: COLORS.light,
+	},
+	subimage_background: {
 		width: 75,
 		height: 75,
+		borderRadius: 75,
+		margin: 10,
+		backgroundColor: COLORS.light,
+		justifyContent: "center",
+		alignItems: "center",
 	},
-	MainImageStyle: {
-		width: 200,
-		height: 200,
-		marginTop: 20,
-	},
-	introTextStyle: {
-		fontSize: 20,
-		color: "white",
-		textAlign: "center",
-		paddingVertical: 20,
-		paddingHorizontal: 20,
-		marginBottom: 100,
-	},
-	introTitleStyle: {
-		fontSize: 30,
-		color: "white",
-		textAlign: "center",
-		fontWeight: "bold",
+	subimage: {
+		width: 50,
+		height: 50,
 	},
 });
+
 export default Intro;

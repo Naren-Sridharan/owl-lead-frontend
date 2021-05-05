@@ -1,14 +1,24 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { COLORS } from "../shared/constants";
 
-const PageTitle = ({ name, top = "85%" }) => (
-	<View style={{ ...styles.textView, top: top }}>
+const PageTitle = ({ name, top = "85%", onPress }) => {
+	const text = (
 		<Text style={styles.text} testID="pageTitle">
 			{name}
 		</Text>
-	</View>
-);
+	);
+
+	const style = { ...styles.textView, top: top };
+
+	return onPress ? (
+		<TouchableOpacity onPress={onPress} style={style}>
+			{text}
+		</TouchableOpacity>
+	) : (
+		<View style={style}>{text}</View>
+	);
+};
 
 const styles = StyleSheet.create({
 	textView: {
@@ -22,8 +32,8 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		borderRadius: 100,
 		backgroundColor: COLORS.dark,
-		borderWidth: 3,
-		borderColor: COLORS.levels.LOW,
+		borderWidth: 1,
+		borderColor: COLORS.light,
 	},
 	text: {
 		color: COLORS.light,

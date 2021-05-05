@@ -61,7 +61,10 @@ const Map = (props) => {
 	const setLocation = (location) => dispatch(Actions.setLocation(location));
 	const allowLocationAccess = () => dispatch(Actions.allowLocationAccess());
 	const denyLocationAccess = () => dispatch(Actions.denyLocationAccess());
-	const hideOptions = () => dispatch(Actions.hideOptions());
+	const hideOptions = () => {
+		dispatch(Actions.hideOptions());
+		dispatch(Actions.hideEmergencyOptions());
+	};
 
 	// references to search bar and mapview components
 	let searchRef = useRef(null);
