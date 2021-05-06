@@ -26,7 +26,7 @@ const AnyoneAround = ({ navigation, route }) => {
 					markers={pedestrian_counts}
 					marker_icon={require("../assets/images/anyone_around.png")}
 					value_name="Pedestrian Counts"
-					level_name="Traffic"
+					level_name="Pedestrian Traffic"
 				/>
 				<Menu navigation={navigation} route={route} info={true} />
 				<PageTitle navigation={navigation} name={route.name} />

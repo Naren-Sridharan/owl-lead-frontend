@@ -1,9 +1,16 @@
-import React from "react";
-import { StyleSheet, Image, TouchableOpacity, Linking } from "react-native";
+import React, { useState } from "react";
+import {
+	StyleSheet,
+	Image,
+	TouchableOpacity,
+	Linking,
+	Modal,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { COLORS, EMERGENCY_NUMBER } from "../shared/constants";
 import { Actions } from "../redux/actions";
 import PageTitle from "./PageTitleComponent";
+import Information from "./InformationComponent";
 import * as SMS from "expo-sms";
 import { BlurView } from "expo-blur";
 
@@ -17,6 +24,7 @@ import emergency_call from "../assets/images/emergency_call.png";
 import sos from "../assets/images/sos.png";
 import emergency_contact from "../assets/images/emergency_contact.png";
 import information from "../assets/images/information.png";
+import close from "../assets/images/close.png";
 
 const MenuButton = ({
 	name,
@@ -38,7 +46,9 @@ const MenuButton = ({
 	</>
 );
 
-const Menu = ({ navigation, info = false }) => {
+const Menu = ({ navigation, route, info = false }) => {
+	const [show_information, setShowInformation] = useState(false);
+	const toggleShowInformation = () => setShowInformation(!show_information);
 	const show_options = useSelector((state) => state.show_options);
 	const show_emergency_options = useSelector(
 		(state) => state.show_emergency_options
@@ -172,6 +182,8 @@ const Menu = ({ navigation, info = false }) => {
 				testID="menuButton"
 			/>
 
+			{show_options && buttons}
+
 			<MenuButton
 				onPress={() => {
 					dispatch(Actions.hideOptions());
@@ -184,17 +196,32 @@ const Menu = ({ navigation, info = false }) => {
 				testID="emergencyButton"
 			/>
 
+			{show_emergency_options && emergency_buttons}
+
 			{info && (
 				<MenuButton
+					onPress={toggleShowInformation}
 					button_style={{ top: "4.5%", right: "3%", width: 45, height: 45 }}
 					icon_style={{ tintColor: COLORS.dark }}
 					source={information}
 					testID="informationButton"
 				/>
 			)}
-
-			{show_options && buttons}
-			{show_emergency_options && emergency_buttons}
+			<Modal
+				animationType="slide"
+				visible={show_information}
+				onRequestClose={toggleShowInformation}
+			>
+				<PageTitle name={`${route.name} Info`} />
+				<Information page={route.name} />
+				<MenuButton
+					onPress={toggleShowInformation}
+					button_style={{ top: "4.5%", right: "3%", width: 45, height: 45 }}
+					icon_style={{ tintColor: COLORS.dark }}
+					source={close}
+					testID="closeButton"
+				/>
+			</Modal>
 		</>
 	);
 };

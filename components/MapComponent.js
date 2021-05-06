@@ -24,6 +24,7 @@ import {
 	directions_server_address,
 } from "../shared/constants";
 import { fetchDistances } from "../shared/loaders";
+import { BlurView } from "expo-blur";
 
 const { width, height } = Dimensions.get("window");
 
@@ -269,15 +270,21 @@ const Map = (props) => {
 								tracksViewChanges={false}
 							>
 								{/*Make markers have a customized image with color*/}
-								<Image
-									source={props.marker_icon}
+								<TouchableOpacity
 									style={{
 										...(best && marker.id == best
 											? styles.recommendation_marker
 											: styles.marker),
-										tintColor: COLORS.levels[marker.level],
 									}}
-								/>
+								>
+									<Image
+										source={props.marker_icon}
+										style={{
+											...styles.marker_image,
+											tintColor: COLORS.levels[marker.level],
+										}}
+									/>
+								</TouchableOpacity>
 								{/*Create a popup with details for marker and with redirection button to google maps for directions*/}
 								<Callout
 									style={styles.callout}
@@ -299,7 +306,15 @@ const Map = (props) => {
 											</Text>
 										)}
 										<Text>
-											{props.level_name}: {marker.level}
+											{props.level_name}:{" "}
+											<Text
+												style={{
+													color: COLORS.levels[marker.level],
+													fontWeight: "bold",
+												}}
+											>
+												{marker.level}
+											</Text>
 										</Text>
 										{marker.distance && (
 											<Text>Distance: {marker.distance} meters</Text>
@@ -307,7 +322,7 @@ const Map = (props) => {
 										{marker.duration && (
 											<Text>Duration: {marker.duration} minutes</Text>
 										)}
-										<Text>Last updated: {marker.time}</Text>
+										{marker.time && <Text>Last updated: {marker.time}</Text>}
 										<Button
 											title="Directions"
 											color={COLORS.dark}
@@ -415,10 +430,16 @@ const styles = StyleSheet.create({
 		...StyleSheet.absoluteFillObject,
 	},
 	marker: {
+		height: 30,
+		width: 30,
+		borderRadius: 30,
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: COLORS.dark,
+	},
+	marker_image: {
 		height: 25,
 		width: 25,
-		borderRadius: 25,
-		backgroundColor: COLORS.dark,
 	},
 	location_marker: {
 		height: 40,
@@ -439,8 +460,7 @@ const styles = StyleSheet.create({
 		flex: -1,
 		position: "absolute",
 		width: 250,
-		borderWidth: 2,
-		borderColor: COLORS.dark,
+		alignContent: "space-around",
 	},
 	button: {
 		backgroundColor: COLORS.dark,
@@ -458,7 +478,6 @@ const styles = StyleSheet.create({
 		left: 3,
 		alignContent: "center",
 		tintColor: COLORS.light,
-		zIndex: 999,
 	},
 });
 
