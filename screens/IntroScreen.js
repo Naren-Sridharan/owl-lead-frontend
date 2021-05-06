@@ -186,8 +186,9 @@ const styles = StyleSheet.create({
 		color: COLORS.light,
 	},
 	subcontent: {
+		flex: 1,
 		position: "absolute",
-		height: "60%",
+		height: "50%",
 		width: "100%",
 		bottom: 0,
 		padding: 20,
