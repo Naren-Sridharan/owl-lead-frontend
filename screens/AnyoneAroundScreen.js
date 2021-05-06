@@ -28,7 +28,7 @@ const AnyoneAround = ({ navigation, route }) => {
 					value_name="Pedestrian Counts"
 					level_name="Traffic"
 				/>
-				<Menu navigation={navigation} route={route} />
+				<Menu navigation={navigation} route={route} info={true} />
 				<PageTitle navigation={navigation} name={route.name} />
 			</View>
 		);

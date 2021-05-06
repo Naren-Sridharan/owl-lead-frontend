@@ -14,7 +14,7 @@ const PSOFinder = ({ navigation, route }) => {
 				level_name={"Safety"}
 				marker_icon={require("../assets/images/pso_finder.png")}
 			/>
-			<Menu navigation={navigation} route={route} />
+			<Menu navigation={navigation} route={route} info={true} />
 			<PageTitle navigation={navigation} name={route.name} />
 		</View>
 	);

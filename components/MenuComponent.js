@@ -38,7 +38,7 @@ const MenuButton = ({
 	</>
 );
 
-const Menu = ({ navigation }) => {
+const Menu = ({ navigation, info = false }) => {
 	const show_options = useSelector((state) => state.show_options);
 	const show_emergency_options = useSelector(
 		(state) => state.show_emergency_options
@@ -63,7 +63,7 @@ const Menu = ({ navigation }) => {
 			<MenuButton
 				name="Home"
 				onPress={onNewScreen("Home")}
-				button_style={{ top: "72.5%" }}
+				button_style={{ top: "75%" }}
 				source={home}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="homeButton"
@@ -71,7 +71,7 @@ const Menu = ({ navigation }) => {
 			<MenuButton
 				name="Anyone Around?"
 				onPress={onNewScreen("Anyone Around?")}
-				button_style={{ top: "60%" }}
+				button_style={{ top: "62.5%" }}
 				source={anyone_around}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="anyoneAroundButton"
@@ -79,7 +79,7 @@ const Menu = ({ navigation }) => {
 			<MenuButton
 				name="PSO Finder"
 				onPress={onNewScreen("PSO Finder")}
-				button_style={{ top: "47.5%" }}
+				button_style={{ top: "50%" }}
 				source={pso_finder}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="psoFinderButton"
@@ -87,7 +87,7 @@ const Menu = ({ navigation }) => {
 			<MenuButton
 				name="Intro"
 				onPress={onNewScreen("Intro")}
-				button_style={{ top: "35%" }}
+				button_style={{ top: "37.5%" }}
 				source={intro}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="introButton"
@@ -110,7 +110,7 @@ const Menu = ({ navigation }) => {
 						`Location:\n${address ? address : "No Location given"}`
 					)();
 				}}
-				button_style={{ top: "72.5%", left: "3%" }}
+				button_style={{ top: "75%", left: "3%" }}
 				source={emergency_call}
 				testID="emergencyCallButton"
 			/>
@@ -143,14 +143,14 @@ const Menu = ({ navigation }) => {
 						onNewScreen("Emergency", status)();
 					})();
 				}}
-				button_style={{ top: "60%", left: "3%" }}
+				button_style={{ top: "62.5%", left: "3%" }}
 				source={sos}
 				testID="sosButton"
 			/>
 			<MenuButton
 				name="Emergency Contacts"
 				onPress={onNewScreen("Emergency Contacts")}
-				button_style={{ top: "47.5%", left: "3%" }}
+				button_style={{ top: "50%", left: "3%" }}
 				source={emergency_contact}
 				icon_style={{ tintColor: "red" }}
 				testID="emergencyContactButton"
@@ -167,7 +167,7 @@ const Menu = ({ navigation }) => {
 						? dispatch(Actions.hideOptions())
 						: dispatch(Actions.showOptions());
 				}}
-				button_style={{ top: "85%" }}
+				button_style={{ top: "87.5%" }}
 				source={owl_lead}
 				testID="menuButton"
 			/>
@@ -179,17 +179,19 @@ const Menu = ({ navigation }) => {
 						? dispatch(Actions.hideEmergencyOptions())
 						: dispatch(Actions.showEmergencyOptions());
 				}}
-				button_style={{ top: "85%", left: "3%" }}
+				button_style={{ top: "87.5%", left: "3%" }}
 				source={emergency}
 				testID="emergencyButton"
 			/>
 
-			<MenuButton
-				button_style={{ top: "20%", right: "3%" }}
-				icon_style={{ tintColor: COLORS.dark }}
-				source={information}
-				testID="informationButton"
-			/>
+			{info && (
+				<MenuButton
+					button_style={{ top: "4.5%", right: "3%", width: 45, height: 45 }}
+					icon_style={{ tintColor: COLORS.dark }}
+					source={information}
+					testID="informationButton"
+				/>
+			)}
 
 			{show_options && buttons}
 			{show_emergency_options && emergency_buttons}
@@ -200,11 +202,11 @@ const Menu = ({ navigation }) => {
 const styles = StyleSheet.create({
 	menu_button: {
 		position: "absolute",
-		width: 75,
-		height: 75,
+		width: 70,
+		height: 70,
 		right: "3%",
-		borderRadius: 75,
-		borderWidth: 1,
+		borderRadius: 70,
+		borderWidth: 2,
 		borderColor: COLORS.dark,
 		backgroundColor: COLORS.light,
 		justifyContent: "center",
@@ -212,8 +214,8 @@ const styles = StyleSheet.create({
 		zIndex: 999,
 	},
 	icon: {
-		width: 50,
-		height: 50,
+		width: 45,
+		height: 45,
 		opacity: 1,
 	},
 });

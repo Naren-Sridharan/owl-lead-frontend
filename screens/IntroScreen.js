@@ -140,10 +140,11 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		backgroundColor: COLORS.dark,
-		padding: 20,
+		padding: 10,
 	},
 	item: {
 		flex: 1,
+		top: 0,
 		padding: 10,
 	},
 	title: {
@@ -211,17 +212,17 @@ const styles = StyleSheet.create({
 		color: COLORS.light,
 	},
 	subimage_background: {
-		width: 75,
-		height: 75,
-		borderRadius: 75,
+		width: 70,
+		height: 70,
+		borderRadius: 70,
 		margin: 10,
 		backgroundColor: COLORS.light,
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	subimage: {
-		width: 50,
-		height: 50,
+		width: 45,
+		height: 45,
 	},
 });
 

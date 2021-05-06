@@ -65,7 +65,7 @@ const EmergencyContact = ({ navigation, route }) => {
 				keyExtractor={(contact) => contact.id}
 			/>
 			<ContactPicker />
-			<Menu navigation={navigation} route={route} />
+			<Menu navigation={navigation} route={route} info={true} />
 			<PageTitle navigation={navigation} name={route.name} />
 		</View>
 	);

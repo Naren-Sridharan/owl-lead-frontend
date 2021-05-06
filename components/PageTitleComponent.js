@@ -2,29 +2,47 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { COLORS } from "../shared/constants";
 
-const PageTitle = ({ name, top = "85%", onPress }) => {
-	const text = (
-		<Text style={styles.text} testID="pageTitle">
-			{name}
-		</Text>
-	);
-
+const PageTitle = ({ name, top = "87.5%", onPress }) => {
 	const style = { ...styles.textView, top: top };
 
 	return onPress ? (
 		<TouchableOpacity onPress={onPress} style={style}>
-			{text}
+			<Text style={styles.text} testID="pageTitle">
+				{name}
+			</Text>
 		</TouchableOpacity>
 	) : (
-		<View style={style}>{text}</View>
+		<View style={styles.header}>
+			<Text style={styles.headerText} testID="pageTitle">
+				{name}
+			</Text>
+		</View>
 	);
 };
 
 const styles = StyleSheet.create({
+	header: {
+		position: "absolute",
+		top: 0,
+		height: "12.5%",
+		width: "100%",
+		textAlign: "left",
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: COLORS.light,
+		borderWidth: 3,
+		borderColor: COLORS.dark,
+	},
+	headerText: {
+		marginTop: 15,
+		color: COLORS.dark,
+		fontWeight: "bold",
+		fontSize: 25,
+		left: 0,
+	},
 	textView: {
 		position: "absolute",
-		height: 75,
-		top: "85%",
+		height: 70,
 		right: "4%",
 		left: "4%",
 		textAlign: "center",
@@ -32,7 +50,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		borderRadius: 100,
 		backgroundColor: COLORS.dark,
-		borderWidth: 1,
+		borderWidth: 2,
 		borderColor: COLORS.light,
 	},
 	text: {

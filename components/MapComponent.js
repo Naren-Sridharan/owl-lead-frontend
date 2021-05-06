@@ -358,7 +358,7 @@ const Map = (props) => {
 						background: "transparent",
 						width: "100%",
 						height: "100%",
-						top: "10%",
+						top: "15%",
 						left: "3%",
 						right: "3%",
 						zIndex: 999,
@@ -458,6 +458,7 @@ const styles = StyleSheet.create({
 		left: 3,
 		alignContent: "center",
 		tintColor: COLORS.light,
+		zIndex: 999,
 	},
 });
 
