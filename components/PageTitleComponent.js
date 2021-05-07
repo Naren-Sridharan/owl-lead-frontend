@@ -26,12 +26,12 @@ const styles = StyleSheet.create({
 		top: 0,
 		height: "12.5%",
 		width: "100%",
-		textAlign: "left",
 		alignItems: "center",
 		justifyContent: "center",
 		backgroundColor: COLORS.light,
 		borderWidth: 3,
 		borderColor: COLORS.dark,
+		zIndex: 998,
 	},
 	headerText: {
 		marginTop: 15,

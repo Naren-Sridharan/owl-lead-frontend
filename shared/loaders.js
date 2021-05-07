@@ -9,6 +9,7 @@ export const fetchPedestrianCounts = () => (dispatch) => {
 				if (response.ok) {
 					return response;
 				} else {
+					console.log("ERRRRRRRRRRRRooooooooRRRRRRR!");
 					var error = new Error(response.status + ": " + response.statusText);
 					error.response = response;
 					throw error;

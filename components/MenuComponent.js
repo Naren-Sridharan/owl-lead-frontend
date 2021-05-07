@@ -5,6 +5,7 @@ import {
 	TouchableOpacity,
 	Linking,
 	Modal,
+	View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { COLORS, EMERGENCY_NUMBER } from "../shared/constants";
@@ -212,21 +213,30 @@ const Menu = ({ navigation, route, info = false }) => {
 				visible={show_information}
 				onRequestClose={toggleShowInformation}
 			>
-				<PageTitle name={`${route.name} Info`} />
-				<Information page={route.name} />
-				<MenuButton
-					onPress={toggleShowInformation}
-					button_style={{ top: "4.5%", right: "3%", width: 45, height: 45 }}
-					icon_style={{ tintColor: COLORS.dark }}
-					source={close}
-					testID="closeButton"
-				/>
+				<View style={styles.container}>
+					<PageTitle name={`Info: ${route.name}`} />
+					<MenuButton
+						onPress={toggleShowInformation}
+						button_style={{ top: "4.5%", right: "3%", width: 45, height: 45 }}
+						icon_style={{ tintColor: COLORS.dark }}
+						source={close}
+						testID="closeButton"
+					/>
+					<Information page={route.name} />
+				</View>
 			</Modal>
 		</>
 	);
 };
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: COLORS.dark,
+		paddingVertical: 10,
+	},
 	menu_button: {
 		position: "absolute",
 		width: 70,
