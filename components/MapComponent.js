@@ -87,7 +87,9 @@ const Map = (props) => {
 					x.duration <= 25 &&
 					x.id !== markers[closest].id &&
 					(levelValue[x.level] > levelValue[markers[closest].level] ||
-						(levelValue[x.level] == 1 && x.value > markers[closest].value))
+						(levelValue[x.level] == 1 &&
+							x.value &&
+							x.value > markers[closest].value))
 			);
 
 			let local_best =

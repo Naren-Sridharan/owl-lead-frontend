@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
 		marginTop: 15,
 		color: COLORS.dark,
 		fontWeight: "bold",
-		fontSize: 25,
+		fontSize: 20,
 		left: 0,
 	},
 	textView: {
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
 	text: {
 		color: COLORS.light,
 		fontWeight: "bold",
-		fontSize: 19,
+		fontSize: 20,
 	},
 });
 

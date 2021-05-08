@@ -10,6 +10,7 @@ import emergency_contact from "../assets/images/emergency_contact.png";
 import delete_contact from "../assets/images/delete_contact.png";
 import add_contact from "../assets/images/add_contact.png";
 import sos from "../assets/images/sos.png";
+import information from "../assets/images/information.png";
 import close from "../assets/images/close.png";
 
 // load once and use images everywhere
@@ -27,6 +28,7 @@ export const IMAGES = {
 	add_contact: add_contact,
 	sos: sos,
 	close: close,
+	information: information,
 };
 
 // set server address
