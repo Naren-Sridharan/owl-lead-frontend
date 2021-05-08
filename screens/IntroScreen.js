@@ -125,6 +125,14 @@ const slides = [
 		image: IMAGES.sos,
 		imageStyle: {},
 	},
+	{
+		key: "6",
+		title: "Infromation",
+		text:
+			"For complex features, we provide additional information on clicking the information icon present at the top right corner of the screen.",
+		image: IMAGES.information,
+		imageStyle: { tintColor: COLORS.dark },
+	},
 ];
 
 // defining the stylesheet for slider

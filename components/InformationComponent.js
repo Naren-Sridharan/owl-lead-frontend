@@ -360,6 +360,25 @@ const Information = ({ page }) => {
 						>
 							Safety Plan for City of Melbourne
 						</Text>
+						<Text style={[styles.cardText, styles.tip]}>
+							4. How can you give us feedback?
+						</Text>
+						<Text
+							style={[styles.cardText, styles.link]}
+							onPress={() =>
+								Linking.openURL(
+									"mailto:owllead@gmail.com?subject=Feedback&body=Hi Owl Lead Team,"
+								)
+							}
+						>
+							owllead@gmail.com
+						</Text>
+						<Text
+							style={[styles.cardText, styles.link]}
+							onPress={() => Linking.openURL("https://www.owllead.live")}
+						>
+							www.owllead.live
+						</Text>
 					</>
 				),
 			},
