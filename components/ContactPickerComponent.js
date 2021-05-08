@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { Actions } from "../redux/actions";
 import * as Contacts from "expo-contacts";
-import { COLORS } from "../shared/constants";
+import { COLORS, IMAGES } from "../shared/constants";
 import * as IntentLauncherAndroid from "expo-intent-launcher";
 
 const openSetting = () => {
@@ -137,10 +137,7 @@ const ContactPicker = () => {
 			</View>
 			<TouchableOpacity onPress={onAddEmergencyContact} style={styles.button}>
 				<Text style={styles.text}>Add as Emergency Contact</Text>
-				<Image
-					source={require("../assets/images/add_contact.png")}
-					style={styles.button_image}
-				/>
+				<Image source={IMAGES.add_contact} style={styles.button_image} />
 			</TouchableOpacity>
 		</View>
 	);

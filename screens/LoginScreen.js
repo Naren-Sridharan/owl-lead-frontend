@@ -10,7 +10,7 @@ import {
 	Keyboard,
 } from "react-native";
 import { useSelector } from "react-redux";
-import { COLORS, actual_password } from "../shared/constants";
+import { COLORS, actual_password, IMAGES } from "../shared/constants";
 
 const Login = ({ navigation }) => {
 	const [password, setPassword] = useState("");
@@ -18,10 +18,7 @@ const Login = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
-			<Image
-				source={require("../assets/images/owl_lead.png")}
-				style={styles.logo}
-			/>
+			<Image source={IMAGES.owl_lead} style={styles.logo} />
 			<TextInput
 				value={password}
 				onChangeText={(password) => setPassword(password)}

@@ -14,18 +14,7 @@ import PageTitle from "./PageTitleComponent";
 import Information from "./InformationComponent";
 import * as SMS from "expo-sms";
 import { BlurView } from "expo-blur";
-
-import owl_lead from "../assets/images/owl_lead.png";
-import home from "../assets/images/home.png";
-import anyone_around from "../assets/images/anyone_around.png";
-import pso_finder from "../assets/images/pso_finder.png";
-import intro from "../assets/images/intro.png";
-import emergency from "../assets/images/emergency.png";
-import emergency_call from "../assets/images/emergency_call.png";
-import sos from "../assets/images/sos.png";
-import emergency_contact from "../assets/images/emergency_contact.png";
-import information from "../assets/images/information.png";
-import close from "../assets/images/close.png";
+import { IMAGES } from "../shared/constants";
 
 const MenuButton = ({
 	name,
@@ -75,7 +64,7 @@ const Menu = ({ navigation, route, info = false }) => {
 				name="Home"
 				onPress={onNewScreen("Home")}
 				button_style={{ top: "75%" }}
-				source={home}
+				source={IMAGES.home}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="homeButton"
 			/>
@@ -83,7 +72,7 @@ const Menu = ({ navigation, route, info = false }) => {
 				name="Anyone Around?"
 				onPress={onNewScreen("Anyone Around?")}
 				button_style={{ top: "62.5%" }}
-				source={anyone_around}
+				source={IMAGES.anyone_around}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="anyoneAroundButton"
 			/>
@@ -91,7 +80,7 @@ const Menu = ({ navigation, route, info = false }) => {
 				name="PSO Finder"
 				onPress={onNewScreen("PSO Finder")}
 				button_style={{ top: "50%" }}
-				source={pso_finder}
+				source={IMAGES.pso_finder}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="psoFinderButton"
 			/>
@@ -99,7 +88,7 @@ const Menu = ({ navigation, route, info = false }) => {
 				name="Intro"
 				onPress={onNewScreen("Intro")}
 				button_style={{ top: "37.5%" }}
-				source={intro}
+				source={IMAGES.intro}
 				icon_style={{ tintColor: COLORS.dark }}
 				testID="introButton"
 			/>
@@ -122,7 +111,7 @@ const Menu = ({ navigation, route, info = false }) => {
 					)();
 				}}
 				button_style={{ top: "75%", left: "3%" }}
-				source={emergency_call}
+				source={IMAGES.emergency_call}
 				testID="emergencyCallButton"
 			/>
 			<MenuButton
@@ -155,14 +144,14 @@ const Menu = ({ navigation, route, info = false }) => {
 					})();
 				}}
 				button_style={{ top: "62.5%", left: "3%" }}
-				source={sos}
+				source={IMAGES.sos}
 				testID="sosButton"
 			/>
 			<MenuButton
 				name="Emergency Contacts"
 				onPress={onNewScreen("Emergency Contacts")}
 				button_style={{ top: "50%", left: "3%" }}
-				source={emergency_contact}
+				source={IMAGES.emergency_contact}
 				icon_style={{ tintColor: "red" }}
 				testID="emergencyContactButton"
 			/>
@@ -179,7 +168,7 @@ const Menu = ({ navigation, route, info = false }) => {
 						: dispatch(Actions.showOptions());
 				}}
 				button_style={{ top: "87.5%" }}
-				source={owl_lead}
+				source={IMAGES.owl_lead}
 				testID="menuButton"
 			/>
 
@@ -193,7 +182,7 @@ const Menu = ({ navigation, route, info = false }) => {
 						: dispatch(Actions.showEmergencyOptions());
 				}}
 				button_style={{ top: "87.5%", left: "3%" }}
-				source={emergency}
+				source={IMAGES.emergency}
 				testID="emergencyButton"
 			/>
 
@@ -204,7 +193,7 @@ const Menu = ({ navigation, route, info = false }) => {
 					onPress={toggleShowInformation}
 					button_style={{ top: "4.5%", right: "3%", width: 45, height: 45 }}
 					icon_style={{ tintColor: COLORS.dark }}
-					source={information}
+					source={IMAGES.information}
 					testID="informationButton"
 				/>
 			)}
@@ -219,7 +208,7 @@ const Menu = ({ navigation, route, info = false }) => {
 						onPress={toggleShowInformation}
 						button_style={{ top: "4.5%", right: "3%", width: 45, height: 45 }}
 						icon_style={{ tintColor: COLORS.dark }}
-						source={close}
+						source={IMAGES.close}
 						testID="closeButton"
 					/>
 					<Information page={route.name} />

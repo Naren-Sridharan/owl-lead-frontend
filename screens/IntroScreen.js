@@ -8,13 +8,7 @@ import AppIntroSlider from "react-native-app-intro-slider";
 import { useDispatch } from "react-redux";
 import { Actions } from "../redux/actions";
 
-import { COLORS } from "../shared/constants";
-
-import owl_lead from "../assets/images/owl_lead.png";
-import anyone_around from "../assets/images/anyone_around.png";
-import pso_finder from "../assets/images/pso_finder.png";
-import emergency_call from "../assets/images/emergency_call.png";
-import sos from "../assets/images/sos.png";
+import { COLORS, IMAGES } from "../shared/constants";
 
 // main component
 const Intro = ({ navigation, route }) => {
@@ -69,30 +63,30 @@ const slides = [
 	{
 		key: "1",
 		title: "Welcome",
-		image: owl_lead,
+		image: IMAGES.owl_lead,
 		text:
 			"Walking alone in the city?\n\nLet the owl lead you to safety with these safety features!",
 		subcontent: [
 			{
-				image: anyone_around,
+				image: IMAGES.anyone_around,
 				text: "1. Anyone Around?",
 				containerStyle: { top: "10%", left: 0 },
 				imageStyle: { tintColor: COLORS.dark },
 			},
 			{
-				image: pso_finder,
+				image: IMAGES.pso_finder,
 				text: "2. PSO Finder",
 				containerStyle: { top: "10%", right: 0 },
 				imageStyle: { tintColor: COLORS.dark },
 			},
 			{
-				image: emergency_call,
+				image: IMAGES.emergency_call,
 				text: "3. Emergency Call",
 				containerStyle: { bottom: "25%", left: 0 },
 				imageStyle: {},
 			},
 			{
-				image: sos,
+				image: IMAGES.sos,
 				text: "4. SOS",
 				containerStyle: { bottom: "25%", right: 0 },
 				imageStyle: {},
@@ -104,7 +98,7 @@ const slides = [
 		title: "Anyone Around?",
 		text:
 			"Anyone Around helps you find a street where there are a substantial number of people to feel secure when you feel unsafe on a lonely street",
-		image: anyone_around,
+		image: IMAGES.anyone_around,
 		imageStyle: { tintColor: COLORS.dark },
 	},
 	{
@@ -112,7 +106,7 @@ const slides = [
 		title: "PSO Finder",
 		text:
 			"PSO Finder helps you find places where there is a potential presence of Protected Service Officer, for the times you feel insecure or feel you are being followed.",
-		image: pso_finder,
+		image: IMAGES.pso_finder,
 		imageStyle: { tintColor: COLORS.dark },
 	},
 	{
@@ -120,7 +114,7 @@ const slides = [
 		title: "Emergency Call",
 		text:
 			"This feature allow you to call 000 with a click of a button and shows your location",
-		image: emergency_call,
+		image: IMAGES.emergency_call,
 		imageStyle: {},
 	},
 	{
@@ -128,7 +122,7 @@ const slides = [
 		title: "SOS",
 		text:
 			"This feature allows you send an SOS message to your emergency contacts",
-		image: sos,
+		image: IMAGES.sos,
 		imageStyle: {},
 	},
 ];

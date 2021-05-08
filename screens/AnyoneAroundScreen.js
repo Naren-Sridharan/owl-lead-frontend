@@ -5,6 +5,7 @@ import Map from "../components/MapComponent";
 import Menu from "../components/MenuComponent";
 import PageTitle from "../components/PageTitleComponent";
 import Loading from "../components/LoadingComponent";
+import { IMAGES } from "../shared/constants";
 
 const AnyoneAround = ({ navigation, route }) => {
 	const pedestrian_counts = useSelector((state) => state.pedestrian_counts);
@@ -24,7 +25,7 @@ const AnyoneAround = ({ navigation, route }) => {
 			<View style={styles.container}>
 				<Map
 					markers={pedestrian_counts}
-					marker_icon={require("../assets/images/anyone_around.png")}
+					marker_icon={IMAGES.anyone_around}
 					value_name="Pedestrian Counts"
 					level_name="Pedestrian Traffic"
 				/>

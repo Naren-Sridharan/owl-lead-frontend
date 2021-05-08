@@ -13,7 +13,7 @@ import ContactPicker from "../components/ContactPickerComponent";
 import Menu from "../components/MenuComponent";
 import PageTitle from "../components/PageTitleComponent";
 import { Actions } from "../redux/actions";
-import { COLORS } from "../shared/constants";
+import { COLORS, IMAGES } from "../shared/constants";
 
 const EmergencyContact = ({ navigation, route }) => {
 	const emergency_contacts = useSelector((state) => state.emergency_contacts);
@@ -47,7 +47,7 @@ const EmergencyContact = ({ navigation, route }) => {
 					style={styles.delete_button}
 				>
 					<Image
-						source={require("../assets/images/delete_contact.png")}
+						source={IMAGES.delete_contact}
 						style={styles.delete_button_image}
 					/>
 				</TouchableOpacity>

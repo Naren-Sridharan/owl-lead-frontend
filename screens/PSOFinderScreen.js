@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import Map from "../components/MapComponent";
 import Menu from "../components/MenuComponent";
 import PageTitle from "../components/PageTitleComponent";
+import { IMAGES } from "../shared/constants";
 
 const PSOFinder = ({ navigation, route }) => {
 	const pso_stations = useSelector((state) => state.pso_stations);
@@ -12,7 +13,7 @@ const PSOFinder = ({ navigation, route }) => {
 			<Map
 				markers={pso_stations}
 				level_name={"Safety"}
-				marker_icon={require("../assets/images/pso_finder.png")}
+				marker_icon={IMAGES.pso_finder}
 			/>
 			<Menu navigation={navigation} route={route} info={true} />
 			<PageTitle navigation={navigation} name={route.name} />

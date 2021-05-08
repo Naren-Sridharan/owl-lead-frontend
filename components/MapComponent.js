@@ -22,9 +22,9 @@ import {
 	API_KEY,
 	COLORS,
 	directions_server_address,
+	IMAGES,
 } from "../shared/constants";
 import { fetchDistances } from "../shared/loaders";
-import { BlurView } from "expo-blur";
 
 const { width, height } = Dimensions.get("window");
 
@@ -340,10 +340,7 @@ const Map = (props) => {
 						onPress={hideOptions}
 						tracksViewChanges={false}
 					>
-						<Image
-							source={require("../assets/images/location.png")}
-							style={styles.location_marker}
-						/>
+						<Image source={IMAGES.location} style={styles.location_marker} />
 					</Marker>
 				) : (
 					<></>
@@ -413,10 +410,7 @@ const Map = (props) => {
 						style={styles.button}
 						accessibilityLabel="This button tries to access your current location"
 					>
-						<Image
-							source={require("../assets/images/location.png")}
-							style={styles.icon}
-						/>
+						<Image source={IMAGES.location} style={styles.icon} />
 					</TouchableOpacity>
 				)}
 			/>
