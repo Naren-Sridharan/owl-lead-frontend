@@ -12,7 +12,7 @@ const PSOFinder = ({ navigation, route }) => {
 		<View style={styles.container}>
 			<Map
 				markers={pso_stations}
-				level_name={"Safety"}
+				level_name={"PSO Probability"}
 				marker_icon={IMAGES.pso_finder}
 			/>
 			<Menu navigation={navigation} route={route} info={true} />
