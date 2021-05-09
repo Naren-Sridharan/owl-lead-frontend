@@ -149,6 +149,10 @@ const Map = (props) => {
 		address && searchRef.current?.setAddressText(address);
 	}, [address]);
 
+	useEffect(() => {
+		location && mapRef.animateToRegion(region);
+	}, []);
+
 	// Function to get user location asynchornously
 	const getLocationAsync = async () => {
 		hideOptions();
