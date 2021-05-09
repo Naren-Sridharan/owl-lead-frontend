@@ -49,11 +49,11 @@ export const API_KEY = "AIzaSyCy_gaMIh9ugIJqylorjU0cJkqtlayk1qA";
 export const COLORS = {
 	dark: "#2d327a",
 	light: "#f6eea9",
-	highlight: "#bdf772",
+	highlight: "lawngreen",
 	levels: {
-		LOW: "lightblue",
-		MODERATE: "yellow",
-		HIGH: "green",
+		LOW: "lightcyan",
+		MODERATE: "gold",
+		HIGH: "limegreen",
 	},
 	intro: "#6d42c2",
 };

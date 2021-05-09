@@ -21,11 +21,13 @@
       "supportsTablet": true
     },
     "android": {
-      "package":"com.vinlyx.owllead",
+      "package": "com.vinlyx.owllead",
       "config": {
-        "googleMaps": { "apiKey": "AIzaSyCy_gaMIh9ugIJqylorjU0cJkqtlayk1qA"} 
+        "googleMaps": {
+          "apiKey": "AIzaSyCy_gaMIh9ugIJqylorjU0cJkqtlayk1qA"
+        }
       },
-      "versionCode":1,
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/owl_lead.png",
         "backgroundColor": "#FFFFFF"

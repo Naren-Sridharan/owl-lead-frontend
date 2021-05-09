@@ -1,13 +1,5 @@
 import React from "react";
-import {
-	View,
-	ScrollView,
-	Image,
-	StyleSheet,
-	Text,
-	FlatList,
-	Linking,
-} from "react-native";
+import { View, Image, StyleSheet, Text, FlatList, Linking } from "react-native";
 import { Card } from "react-native-elements";
 import { COLORS, EMERGENCY_NUMBER, IMAGES } from "../shared/constants";
 
@@ -55,7 +47,7 @@ const Information = ({ page }) => {
 				id: "1",
 				title: "What is Anyone Around?",
 				text:
-					"'Anyone Around?' is a tool that uses pedestrian counts from sensors placed all over the City of Melbourne to lead you to a safer and crowded street.",
+					"'Anyone Around?' is a tool that uses pedestrian counts from sensors placed all over the City of Melbourne to lead you to a safer and crowded street. Owl Lead sometimes recommends a street too!",
 			},
 			{
 				id: "2",
@@ -65,36 +57,51 @@ const Information = ({ page }) => {
 						id: "1",
 						text: "Your Searched/Current Location",
 						source: IMAGES.location,
-						imageStyle: { tintColor: COLORS.levels.LOW },
-						imageBackgroundStyle: { backgroundColor: COLORS.dark },
+						imageStyle: { tintColor: COLORS.light },
+						imageBackgroundStyle: {
+							backgroundColor: COLORS.dark,
+							borderColor: COLORS.light,
+						},
 					},
 					{
 						id: "2",
 						text: "Low Pedestrian Traffic",
 						source: IMAGES.anyone_around,
 						imageStyle: { tintColor: COLORS.levels.LOW },
-						imageBackgroundStyle: { backgroundColor: COLORS.dark },
+						imageBackgroundStyle: {
+							backgroundColor: COLORS.dark,
+							borderColor: COLORS.levels.LOW,
+						},
 					},
 					{
 						id: "3",
 						text: "Moderate Pedestrian Traffic",
 						source: IMAGES.anyone_around,
 						imageStyle: { tintColor: COLORS.levels.MODERATE },
-						imageBackgroundStyle: { backgroundColor: COLORS.dark },
+						imageBackgroundStyle: {
+							backgroundColor: COLORS.dark,
+							borderColor: COLORS.levels.MODERATE,
+						},
 					},
 					{
 						id: "4",
 						text: "High Pedestrian Traffic",
 						source: IMAGES.anyone_around,
 						imageStyle: { tintColor: COLORS.levels.HIGH },
-						imageBackgroundStyle: { backgroundColor: COLORS.dark },
+						imageBackgroundStyle: {
+							backgroundColor: COLORS.dark,
+							borderColor: COLORS.levels.HIGH,
+						},
 					},
 					{
 						id: "5",
 						text: "Recommendation for Safety",
 						source: IMAGES.anyone_around,
 						imageStyle: { tintColor: COLORS.levels.HIGH },
-						imageBackgroundStyle: { backgroundColor: COLORS.highlight },
+						imageBackgroundStyle: {
+							backgroundColor: COLORS.highlight,
+							borderColor: COLORS.levels.HIGH,
+						},
 					},
 				],
 			},
@@ -152,6 +159,13 @@ const Information = ({ page }) => {
 							Recommendations are made based on the distance from your location
 							and pedestrian traffic
 						</Text>
+						<Text style={[styles.cardText, styles.tip]}>
+							5. Why is there no recommendation for my location?
+						</Text>
+						<Text style={[styles.cardText, styles.tipText]}>
+							Recommendations are made only when you can walk to the calculated
+							recommendation within 20 minutes
+						</Text>
 					</>
 				),
 			},
@@ -161,7 +175,7 @@ const Information = ({ page }) => {
 				id: "1",
 				title: "What is PSO Finder?",
 				text:
-					"'PSO Finder' is a tool that uses openly available police stations and PTV train stations data to lead you to Protective Service Officers (PSO) around the city.",
+					"'PSO Finder' is a tool that uses openly available police stations and PTV train stations data to lead you to Protective Service Officers (PSO) around the city. Owl Lead sometimes recommends a station too!",
 			},
 			{
 				id: "2",
@@ -172,35 +186,50 @@ const Information = ({ page }) => {
 						text: "Your Searched/Current Location",
 						source: IMAGES.location,
 						imageStyle: { tintColor: COLORS.light },
-						imageBackgroundStyle: { backgroundColor: COLORS.dark },
+						imageBackgroundStyle: {
+							backgroundColor: COLORS.dark,
+							borderColor: COLORS.light,
+						},
 					},
 					{
 						id: "2",
 						text: "Low PSO Probability",
 						source: IMAGES.pso_finder,
 						imageStyle: { tintColor: COLORS.levels.LOW },
-						imageBackgroundStyle: { backgroundColor: COLORS.dark },
+						imageBackgroundStyle: {
+							backgroundColor: COLORS.dark,
+							borderColor: COLORS.levels.LOW,
+						},
 					},
 					{
 						id: "3",
 						text: "Moderate PSO Probability",
 						source: IMAGES.pso_finder,
 						imageStyle: { tintColor: COLORS.levels.MODERATE },
-						imageBackgroundStyle: { backgroundColor: COLORS.dark },
+						imageBackgroundStyle: {
+							backgroundColor: COLORS.dark,
+							borderColor: COLORS.levels.MODERATE,
+						},
 					},
 					{
 						id: "4",
 						text: "High PSO Probability",
 						source: IMAGES.pso_finder,
 						imageStyle: { tintColor: COLORS.levels.HIGH },
-						imageBackgroundStyle: { backgroundColor: COLORS.dark },
+						imageBackgroundStyle: {
+							backgroundColor: COLORS.dark,
+							borderColor: COLORS.levels.HIGH,
+						},
 					},
 					{
 						id: "5",
 						text: "Recommendation for Safety",
 						source: IMAGES.pso_finder,
 						imageStyle: { tintColor: COLORS.levels.HIGH },
-						imageBackgroundStyle: { backgroundColor: COLORS.highlight },
+						imageBackgroundStyle: {
+							backgroundColor: COLORS.highlight,
+							borderColor: COLORS.levels.HIGH,
+						},
 					},
 				],
 			},
@@ -264,6 +293,13 @@ const Information = ({ page }) => {
 							and the probability of finding a Protective Service Officer at
 							that location.
 						</Text>
+						<Text style={[styles.cardText, styles.tip]}>
+							5. Why is there no recommendation for my location?
+						</Text>
+						<Text style={[styles.cardText, styles.tipText]}>
+							Recommendations are made only when you can walk to the calculated
+							recommendation within 20 minutes
+						</Text>
 					</>
 				),
 			},
@@ -296,7 +332,7 @@ const Information = ({ page }) => {
 						id: "3",
 						text: "Emergency Menu",
 						source: IMAGES.emergency,
-						imageStyle: {},
+						imageStyle: { tintColor: "red" },
 					},
 				],
 			},
@@ -530,10 +566,12 @@ const styles = StyleSheet.create({
 		borderRadius: 40,
 		justifyContent: "center",
 		alignItems: "center",
+		borderWidth: 1,
 	},
 	legendCardImage: {
 		height: 25,
 		width: 25,
+		zIndex: 999,
 	},
 	legendCardImageButtons: {
 		backgroundColor: COLORS.light,

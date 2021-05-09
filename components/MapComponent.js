@@ -84,7 +84,7 @@ const Map = (props) => {
 
 			let betters = markers.filter(
 				(x) =>
-					x.duration <= 25 &&
+					x.duration <= 20 &&
 					x.id !== markers[closest].id &&
 					(levelValue[x.level] > levelValue[markers[closest].level] ||
 						(levelValue[x.level] == 1 &&
@@ -106,7 +106,9 @@ const Map = (props) => {
 					  ].id
 					: markers[closest].id;
 
-			setBest(local_best);
+			if (markers[local_best].duration <= 20) {
+				setBest(local_best);
+			}
 		};
 
 		const getDistances = async () => {
@@ -277,18 +279,22 @@ const Map = (props) => {
 							>
 								{/*Make markers have a customized image with color*/}
 								<TouchableOpacity
-									style={{
-										...(best && marker.id == best
+									style={[
+										styles.marker,
+										best && marker.id == best
 											? styles.recommendation_marker
-											: styles.marker),
-									}}
+											: {},
+										{ borderColor: COLORS.levels[marker.level] },
+									]}
 								>
 									<Image
 										source={props.marker_icon}
-										style={{
-											...styles.marker_image,
-											tintColor: COLORS.levels[marker.level],
-										}}
+										style={[
+											best && marker.id == best
+												? styles.recommendation_marker_image
+												: styles.marker_image,
+											{ tintColor: COLORS.levels[marker.level] },
+										]}
 									/>
 								</TouchableOpacity>
 								{/*Create a popup with details for marker and with redirection button to google maps for directions*/}
@@ -346,7 +352,24 @@ const Map = (props) => {
 						onPress={hideOptions}
 						tracksViewChanges={false}
 					>
-						<Image source={IMAGES.location} style={styles.location_marker} />
+						<TouchableOpacity
+							style={[
+								styles.marker,
+								{
+									...styles.recommendation_marker,
+									backgroundColor: COLORS.dark,
+									borderColor: COLORS.light,
+								},
+							]}
+						>
+							<Image
+								source={IMAGES.location}
+								style={[
+									styles.recommendation_marker_image,
+									{ tintColor: COLORS.light },
+								]}
+							/>
+						</TouchableOpacity>
 					</Marker>
 				) : (
 					<></>
@@ -435,26 +458,24 @@ const styles = StyleSheet.create({
 		borderRadius: 30,
 		alignItems: "center",
 		justifyContent: "center",
+		borderWidth: 1,
 		backgroundColor: COLORS.dark,
-	},
-	marker_image: {
-		height: 25,
-		width: 25,
-	},
-	location_marker: {
-		height: 40,
-		width: 40,
-		borderRadius: 40,
-		backgroundColor: COLORS.dark,
-		tintColor: COLORS.light,
-		zIndex: 900,
 	},
 	recommendation_marker: {
 		height: 40,
 		width: 40,
 		borderRadius: 40,
 		backgroundColor: COLORS.highlight,
-		zIndex: 900,
+	},
+	marker_image: {
+		height: 25,
+		width: 25,
+		zIndex: 999,
+	},
+	recommendation_marker_image: {
+		height: 35,
+		width: 35,
+		zIndex: 999,
 	},
 	callout: {
 		flex: -1,
@@ -470,6 +491,8 @@ const styles = StyleSheet.create({
 		borderRadius: 4,
 		padding: 2,
 		marginBottom: 4,
+		borderColor: COLORS.light,
+		borderWidth: 1,
 	},
 	icon: {
 		width: 30,
@@ -478,6 +501,7 @@ const styles = StyleSheet.create({
 		left: 3,
 		alignContent: "center",
 		tintColor: COLORS.light,
+		zIndex: 999,
 	},
 });
 
