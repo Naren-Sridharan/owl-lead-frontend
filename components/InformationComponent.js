@@ -23,10 +23,16 @@ const renderIcon = ({ item }) => (
 );
 
 const renderCard = ({ item }) => (
-	<Card containerStyle={styles.card}>
-		<Card.Title style={styles.cardTitle}>{item.title}</Card.Title>
+	<Card containerStyle={styles.card} testID={`section${item.id}`}>
+		<Card.Title style={styles.cardTitle} testID={`title${item.id}`}>
+			{item.title}
+		</Card.Title>
 		<Card.Divider />
-		{item.text && <Text style={styles.cardText}>{item.text}</Text>}
+		{item.text && (
+			<Text style={styles.cardText} testID={`text`}>
+				{item.text}
+			</Text>
+		)}
 		{item.icons && (
 			<FlatList
 				nestedScrollEnabled
@@ -34,6 +40,7 @@ const renderCard = ({ item }) => (
 				style={styles.cardList}
 				renderItem={renderIcon}
 				keyExtractor={(item) => item.id}
+				testID={`icons`}
 			/>
 		)}
 		{item.content && item.content}
@@ -109,7 +116,7 @@ const Information = ({ page }) => {
 				id: "3",
 				title: "FAQS",
 				content: (
-					<>
+					<View testID="FAQs">
 						<Text style={[styles.cardText, styles.tip]}>
 							1. Are you in immediate danger?
 						</Text>
@@ -166,7 +173,7 @@ const Information = ({ page }) => {
 							Recommendations are made only when you can walk to the calculated
 							recommendation within 20 minutes
 						</Text>
-					</>
+					</View>
 				),
 			},
 		],
@@ -237,7 +244,7 @@ const Information = ({ page }) => {
 				id: "3",
 				title: "FAQS",
 				content: (
-					<>
+					<View testID="FAQs">
 						<Text style={[styles.cardText, styles.tip]}>
 							1. Are you in immediate danger?
 						</Text>
@@ -300,7 +307,7 @@ const Information = ({ page }) => {
 							Recommendations are made only when you can walk to the calculated
 							recommendation within 20 minutes
 						</Text>
-					</>
+					</View>
 				),
 			},
 		],
@@ -340,7 +347,7 @@ const Information = ({ page }) => {
 				id: "3",
 				title: "FAQS",
 				content: (
-					<>
+					<View testID="FAQs">
 						<Text style={[styles.cardText, styles.tip]}>
 							1. Are you in immediate danger?
 						</Text>
@@ -415,7 +422,7 @@ const Information = ({ page }) => {
 						>
 							www.owllead.live
 						</Text>
-					</>
+					</View>
 				),
 			},
 		],
@@ -455,7 +462,7 @@ const Information = ({ page }) => {
 				id: "3",
 				title: "FAQS",
 				content: (
-					<>
+					<View testID="FAQs">
 						<Text style={[styles.cardText, styles.tip]}>
 							1. Are you in immediate danger?
 						</Text>
@@ -509,7 +516,7 @@ const Information = ({ page }) => {
 						<Text style={[styles.cardText, styles.tipText]}>
 							e. Family Contact Information
 						</Text>
-					</>
+					</View>
 				),
 			},
 		],

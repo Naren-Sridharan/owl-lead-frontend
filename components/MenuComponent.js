@@ -183,7 +183,7 @@ const Menu = ({ navigation, route, info = false }) => {
 				}}
 				button_style={{ top: "87.5%", left: "3%" }}
 				source={IMAGES.emergency}
-				testID="emergencyButton"
+				testID="emergencyMenuButton"
 			/>
 
 			{show_emergency_options && emergency_buttons}

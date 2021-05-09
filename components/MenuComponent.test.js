@@ -7,7 +7,7 @@ import { Actions } from "../redux/actions";
 
 const mockStore = configureStore([]);
 
-describe("<Loading />", () => {
+describe("<Menu />", () => {
 	let component;
 	let store;
 	let navigation;
@@ -20,17 +20,18 @@ describe("<Loading />", () => {
 		store = mockStore(() => state);
 		store.dispatch = jest.fn();
 		navigation = { navigate: jest.fn((page) => page) };
+		route = { name: "Home" };
 
 		component = render(
 			<Provider store={store}>
-				<Menu navigation={navigation} />
+				<Menu navigation={navigation} route={route} />
 			</Provider>
 		);
 	});
 
-	it("has 2 elements", () => {
+	it("has 3 elements", () => {
 		const tree = component.toJSON();
-		expect(tree.length).toBe(2);
+		expect(tree.length).toBe(3);
 	});
 
 	it("has a child called menuButton", () => {
@@ -40,7 +41,7 @@ describe("<Loading />", () => {
 
 	it("has a child called emergencyButton", () => {
 		const { getByTestId } = component;
-		expect(getByTestId("emergencyButton")).toBeTruthy();
+		expect(getByTestId("emergencyMenuButton")).toBeTruthy();
 	});
 
 	it("should dispatch an showOptions on menuButton click", () => {
@@ -48,15 +49,16 @@ describe("<Loading />", () => {
 
 		fireEvent.press(getByTestId("menuButton"));
 
-		expect(store.dispatch).toHaveBeenCalledTimes(1);
+		expect(store.dispatch).toHaveBeenCalledTimes(2);
 		expect(store.dispatch).toHaveBeenCalledWith(Actions.showOptions());
 	});
 
-	it("should navigate on emergency button click", () => {
+	it("should dispatch an showEmergencyOptions on emergencyMenuButton click", () => {
 		const { getByTestId } = component;
 
-		fireEvent.press(getByTestId("emergencyButton"));
+		fireEvent.press(getByTestId("emergencyMenuButton"));
 
-		expect(navigation.navigate).toHaveBeenCalledTimes(1);
+		expect(store.dispatch).toHaveBeenCalledTimes(2);
+		expect(store.dispatch).toHaveBeenCalledWith(Actions.showEmergencyOptions());
 	});
 });
