@@ -585,9 +585,6 @@ const styles = StyleSheet.create({
 		borderColor: COLORS.dark,
 		borderWidth: 1,
 	},
-	cardContent: {
-		alignSelf: "stretch",
-	},
 	link: {
 		fontWeight: "bold",
 		textDecorationLine: "underline",

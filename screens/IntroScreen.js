@@ -175,7 +175,6 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		borderColor: COLORS.light,
 		borderWidth: 2,
-		borderColor: "white",
 		backgroundColor: COLORS.light,
 	},
 	image: {

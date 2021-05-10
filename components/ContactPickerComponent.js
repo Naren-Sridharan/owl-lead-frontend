@@ -9,6 +9,7 @@ import {
 	Text,
 	View,
 	Linking,
+	Platform,
 } from "react-native";
 import { Actions } from "../redux/actions";
 import * as Contacts from "expo-contacts";
@@ -32,67 +33,67 @@ const ContactPicker = () => {
 
 	const dispatch = useDispatch();
 
-	const getContactsAsync = async () => {
-		try {
-			const { status } = await Contacts.requestPermissionsAsync();
-			if (status === "granted") {
-				dispatch(Actions.allowContactsAccess());
-				const { data } = await Contacts.getContactsAsync({
-					fields: [
-						Contacts.Fields.FirstName,
-						Contacts.Fields.LastName,
-						Contacts.Fields.PhoneNumbers,
-					],
-				});
-
-				dispatch(
-					Actions.setContacts(
-						data
-							.filter((contact) => contact.phoneNumbers)
-							.map((contact) =>
-								contact.phoneNumbers
-									.filter((phone_number) => !phone_number.number.includes(" "))
-									.map((phone_number) => ({
-										id: contact.id,
-										name: contact.firstName,
-										surname: contact.lastName ? contact.lastName : "",
-										phone_number: phone_number.number
-											.replace(" ", "")
-											.replace("-", ""),
-									}))
-							)
-							.flat(Infinity)
-					)
-				);
-			} else {
-				if (contacts_access == null) {
-					dispatch(Actions.denyContactsAccess());
-				} else if (!contacts_access) {
-					Alert.alert(
-						"No Permission for Accessing Contacts",
-						"Permission to access contacts was denied, emergency contact feature will be disabled unless contact access is reactivated in settings. Do you wish to change settings?",
-						[
-							{
-								text: "Yes",
-								onPress: openSetting,
-							},
-							{
-								text: "No",
-								onPress: () => console.log("Cancel Pressed"),
-								style: "cancel",
-							},
-						]
-					);
-				}
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
 	useEffect(() => {
 		if (contacts_access == null || contacts_access) {
-			getContactsAsync();
+			(async () => {
+				try {
+					const { status } = await Contacts.requestPermissionsAsync();
+					if (status === "granted") {
+						dispatch(Actions.allowContactsAccess());
+						const { data } = await Contacts.getContactsAsync({
+							fields: [
+								Contacts.Fields.FirstName,
+								Contacts.Fields.LastName,
+								Contacts.Fields.PhoneNumbers,
+							],
+						});
+
+						dispatch(
+							Actions.setContacts(
+								data
+									.filter((contact) => contact.phoneNumbers)
+									.map((contact) =>
+										contact.phoneNumbers
+											.filter(
+												(phone_number) => !phone_number.number.includes(" ")
+											)
+											.map((phone_number) => ({
+												id: contact.id,
+												name: contact.firstName,
+												surname: contact.lastName ? contact.lastName : "",
+												phone_number: phone_number.number
+													.replace(" ", "")
+													.replace("-", ""),
+											}))
+									)
+									.flat(Infinity)
+							)
+						);
+					} else {
+						if (contacts_access == null) {
+							dispatch(Actions.denyContactsAccess());
+						} else if (!contacts_access) {
+							Alert.alert(
+								"No Permission for Accessing Contacts",
+								"Permission to access contacts was denied, emergency contact feature will be disabled unless contact access is reactivated in settings. Do you wish to change settings?",
+								[
+									{
+										text: "Yes",
+										onPress: openSetting,
+									},
+									{
+										text: "No",
+										onPress: () => console.log("Cancel Pressed"),
+										style: "cancel",
+									},
+								]
+							);
+						}
+					}
+				} catch (error) {
+					console.log(error);
+				}
+			})();
 		}
 	}, [contacts_access]);
 
