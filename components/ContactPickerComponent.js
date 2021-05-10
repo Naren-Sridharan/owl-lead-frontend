@@ -54,13 +54,9 @@ const ContactPicker = () => {
 								contact.phoneNumbers
 									.map((phone_number) => {
 										phone_number = phone_number.number
-											.replace(/\s/g, "")
-											.replace(/-/g, "")
+											.replace(/[^0-9]/g, "")
 											.trim();
-										if (
-											phone_number.length > 10 &&
-											!phone_number.startsWith("+")
-										) {
+										if (phone_number.length > 10) {
 											phone_number = "+" + phone_number;
 										}
 										return {
