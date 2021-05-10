@@ -31,7 +31,6 @@ const EmergencyContact = ({ navigation, route }) => {
 					},
 					{
 						text: "No",
-						onPress: () => console.log("Cancel Pressed"),
 						style: "cancel",
 					},
 				]

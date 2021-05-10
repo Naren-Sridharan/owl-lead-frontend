@@ -41,7 +41,6 @@ const ContactPicker = () => {
 				const { data } = await Contacts.getContactsAsync({
 					fields: [Contacts.Fields.PhoneNumbers],
 				});
-				console.log(data.filter((contact) => contact.phoneNumbers)[0]);
 
 				dispatch(
 					Actions.setContacts(
@@ -66,10 +65,13 @@ const ContactPicker = () => {
 										};
 									})
 									.filter(
-										(thing, index, self) =>
+										(contact, index, self) =>
 											self.findIndex(
-												(t) => t.phone_number === thing.phone_number
-											) === index
+												(ct) => ct.phone_number === contact.phone_number
+											) === index &&
+											contact.phone_number.length >= 10 &&
+											(contact.phone_number.startsWith("+61") ||
+												contact.phone_number.startsWith("04"))
 									)
 							)
 							.flat(Infinity)
@@ -89,7 +91,6 @@ const ContactPicker = () => {
 							},
 							{
 								text: "No",
-								onPress: () => console.log("Cancel Pressed"),
 								style: "cancel",
 							},
 						]

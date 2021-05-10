@@ -34,7 +34,6 @@ const Main = () => {
 				},
 				{
 					text: "No",
-					onPress: () => console.log("Cancel Pressed"),
 					style: "cancel",
 				},
 			]

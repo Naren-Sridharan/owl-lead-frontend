@@ -8,6 +8,5 @@ describe("<ContactPicker />", () => {
 		const tree = component.toJSON();
 		expect(component).toBeTruthy();
 		expect(tree.children.length).toBe(1);
-		console.log(tree.children[0]);
 	});
 });

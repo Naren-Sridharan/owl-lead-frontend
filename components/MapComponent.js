@@ -55,6 +55,9 @@ const Map = (props) => {
 	const [region, setRegion] = useState(INITIAL_REGION);
 	const [markers, setMarkers] = useState(!props.markers ? [] : props.markers);
 	const [best, setBest] = useState(null);
+	const [tracksViewChanges, setTrackViewChanges] = useState(true);
+
+	const stopTrackViewChanges = () => setTrackViewChanges(false);
 
 	// redux actions
 	const dispatch = useDispatch();
@@ -107,6 +110,7 @@ const Map = (props) => {
 					: markers[closest].id;
 
 			if (markers[local_best].duration <= 20) {
+				setTrackViewChanges(true);
 				setBest(local_best);
 			}
 		};
@@ -186,7 +190,6 @@ const Map = (props) => {
 							},
 							{
 								text: "No",
-								onPress: () => console.log("Cancel Pressed"),
 								style: "cancel",
 							},
 						]
@@ -222,6 +225,8 @@ const Map = (props) => {
 				);
 				return;
 			}
+
+			setTrackViewChanges(true);
 
 			// set location globally
 			setLocation(current_location);
@@ -275,7 +280,7 @@ const Map = (props) => {
 								key={marker.id}
 								coordinate={marker.latlng}
 								onPress={hideOptions}
-								tracksViewChanges={false}
+								tracksViewChanges={tracksViewChanges}
 							>
 								{/*Make markers have a customized image with color*/}
 								<TouchableOpacity
@@ -288,6 +293,7 @@ const Map = (props) => {
 									]}
 								>
 									<Image
+										onLoad={stopTrackViewChanges}
 										source={props.marker_icon}
 										style={[
 											best && marker.id == best
@@ -295,6 +301,7 @@ const Map = (props) => {
 												: styles.marker_image,
 											{ tintColor: COLORS.levels[marker.level] },
 										]}
+										fadeDuration={0}
 									/>
 								</TouchableOpacity>
 								{/*Create a popup with details for marker and with redirection button to google maps for directions*/}
@@ -350,7 +357,7 @@ const Map = (props) => {
 					<Marker
 						coordinate={location}
 						onPress={hideOptions}
-						tracksViewChanges={false}
+						tracksViewChanges={tracksViewChanges}
 					>
 						<TouchableOpacity
 							style={[
@@ -368,6 +375,7 @@ const Map = (props) => {
 									styles.recommendation_marker_image,
 									{ tintColor: COLORS.light },
 								]}
+								onLoad={stopTrackViewChanges}
 							/>
 						</TouchableOpacity>
 					</Marker>
@@ -407,6 +415,8 @@ const Map = (props) => {
 					listView: { width: "95%" },
 				}}
 				onPress={(data, details = null) => {
+					setTrackViewChanges(true);
+
 					// On selecting suggestion, Set location to that suggestion
 					setLocation({
 						latitude: details.geometry.location.lat,
