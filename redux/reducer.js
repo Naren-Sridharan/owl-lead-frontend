@@ -11,7 +11,7 @@ const initialState = {
 	pedestrian_counts: [],
 	pso_stations: [],
 	emergency_contacts: [],
-	contacts: [],
+	contacts: null,
 	contacts_access: null,
 	intro_shown: false,
 };

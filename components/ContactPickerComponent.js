@@ -33,69 +33,77 @@ const ContactPicker = () => {
 
 	const dispatch = useDispatch();
 
-	useEffect(() => {
-		if (contacts_access == null || contacts_access) {
-			(async () => {
-				try {
-					const { status } = await Contacts.requestPermissionsAsync();
-					if (status === "granted") {
-						dispatch(Actions.allowContactsAccess());
-						const { data } = await Contacts.getContactsAsync({
-							fields: [
-								Contacts.Fields.FirstName,
-								Contacts.Fields.LastName,
-								Contacts.Fields.PhoneNumbers,
-							],
-						});
+	const getContactsAsync = async () => {
+		try {
+			const { status } = await Contacts.requestPermissionsAsync();
+			if (status === "granted") {
+				dispatch(Actions.allowContactsAccess());
+				const { data } = await Contacts.getContactsAsync({
+					fields: [Contacts.Fields.PhoneNumbers],
+				});
+				console.log(data.filter((contact) => contact.phoneNumbers)[0]);
 
-						dispatch(
-							Actions.setContacts(
-								data
-									.filter((contact) => contact.phoneNumbers)
-									.map((contact) =>
-										contact.phoneNumbers
-											.filter(
-												(phone_number) => !phone_number.number.includes(" ")
-											)
-											.map((phone_number) => ({
-												id: contact.id,
-												name: contact.firstName,
-												surname: contact.lastName ? contact.lastName : "",
-												phone_number: phone_number.number
-													.replace(" ", "")
-													.replace("-", ""),
-											}))
-									)
-									.flat(Infinity)
+				dispatch(
+					Actions.setContacts(
+						data
+							.filter(
+								(contact) =>
+									contact.phoneNumbers && contact.contactType === "person"
 							)
-						);
-					} else {
-						if (contacts_access == null) {
-							dispatch(Actions.denyContactsAccess());
-						} else if (!contacts_access) {
-							Alert.alert(
-								"No Permission for Accessing Contacts",
-								"Permission to access contacts was denied, emergency contact feature will be disabled unless contact access is reactivated in settings. Do you wish to change settings?",
-								[
-									{
-										text: "Yes",
-										onPress: openSetting,
-									},
-									{
-										text: "No",
-										onPress: () => console.log("Cancel Pressed"),
-										style: "cancel",
-									},
-								]
-							);
-						}
-					}
-				} catch (error) {
-					console.log(error);
+							.map((contact) =>
+								contact.phoneNumbers
+									.map((phone_number) => {
+										phone_number = phone_number.number
+											.replace(/\s/g, "")
+											.replace(/-/g, "")
+											.trim();
+										if (
+											phone_number.length > 10 &&
+											!phone_number.startsWith("+")
+										) {
+											phone_number = "+" + phone_number;
+										}
+										return {
+											id: contact.id,
+											name: contact.name,
+											phone_number: phone_number,
+										};
+									})
+									.filter(
+										(thing, index, self) =>
+											self.findIndex(
+												(t) => t.phone_number === thing.phone_number
+											) === index
+									)
+							)
+							.flat(Infinity)
+					)
+				);
+			} else {
+				if (contacts_access == null) {
+					dispatch(Actions.denyContactsAccess());
+				} else if (!contacts_access) {
+					Alert.alert(
+						"No Permission for Accessing Contacts",
+						"Permission to access contacts was denied, emergency contact feature will be disabled unless contact access is reactivated in settings. Do you wish to change settings?",
+						[
+							{
+								text: "Yes",
+								onPress: openSetting,
+							},
+							{
+								text: "No",
+								onPress: () => console.log("Cancel Pressed"),
+								style: "cancel",
+							},
+						]
+					);
 				}
-			})();
+			}
+		} catch (error) {
+			console.log(error);
 		}
-	}, [contacts_access]);
+	};
 
 	const onAddEmergencyContact = () => {
 		if (emergency_contacts.length == 3) {
@@ -127,13 +135,14 @@ const ContactPicker = () => {
 					itemStyle={styles.picker_item}
 					onValueChange={setSelectedContact}
 				>
-					{contacts.map((contact, index) => (
-						<Picker.Item
-							key={index}
-							label={`${contact.name} ${contact.surname} (${contact.phone_number})`}
-							value={index}
-						/>
-					))}
+					{contacts &&
+						contacts.map((contact, index) => (
+							<Picker.Item
+								key={index}
+								label={`${contact.name} (${contact.phone_number})`}
+								value={index}
+							/>
+						))}
 				</Picker>
 			</View>
 			<TouchableOpacity onPress={onAddEmergencyContact} style={styles.button}>
@@ -144,9 +153,11 @@ const ContactPicker = () => {
 	);
 
 	const access_button = (
-		<TouchableOpacity onPress={getContactsAsync} style={styles.button}>
-			<Text>Access Existing Contacts</Text>
-		</TouchableOpacity>
+		<View style={styles.container}>
+			<TouchableOpacity onPress={getContactsAsync} style={[styles.button, {}]}>
+				<Text style={styles.text}>Access Existing Contacts</Text>
+			</TouchableOpacity>
+		</View>
 	);
 
 	return contacts_access ? existing_contacts : access_button;
