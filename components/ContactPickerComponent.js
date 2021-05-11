@@ -70,7 +70,7 @@ const ContactPicker = () => {
 												(ct) => ct.phone_number === contact.phone_number
 											) === index &&
 											contact.phone_number.length >= 10 &&
-											(contact.phone_number.startsWith("+61") ||
+											(contact.phone_number.startsWith("+614") ||
 												contact.phone_number.startsWith("04"))
 									)
 							)
