@@ -250,6 +250,8 @@ const Map = (props) => {
 
 			setTrackViewChanges(true);
 
+			setSelectedMarker(null);
+
 			// set location globally
 			setLocation(current_location);
 
@@ -442,6 +444,7 @@ const Map = (props) => {
 						hideOptions();
 						searchRef.current?.setAddressText("");
 						selectedMarker && markerRefs[selectedMarker.id].hideCallout();
+						setSelectedMarker(null);
 					},
 				}}
 				placeholder="Search" // Show 'Search' in location search bar
