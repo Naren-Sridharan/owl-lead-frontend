@@ -1,5 +1,6 @@
 import { API_KEY, distance_server_address, server_address } from "./constants";
 import { Actions } from "../redux/actions";
+import { getDistance } from "geolib";
 
 export const fetchPedestrianCounts = () => (dispatch) => {
 	dispatch(Actions.pedestrianCountsLoading());
@@ -56,7 +57,11 @@ export const fetchPSOStations = () => (dispatch) => {
 		});
 };
 
-export const fetchDistances = async (start, ends) => {
+export const fetchDistances = async (start, ends, google = false) => {
+	if (!google) {
+		return ends.map((end) => ({ distance: getDistance(start, end) / 1000 }));
+	}
+
 	var i,
 		j,
 		temparray,
@@ -95,7 +100,6 @@ export const fetchDistances = async (start, ends) => {
 			.then((response) => response.json())
 			.then((json) => {
 				return json.rows[0].elements.map((element) => ({
-					duration: Math.ceil(element.duration.value / 60),
 					distance: element.distance.value,
 				}));
 			});

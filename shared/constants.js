@@ -51,8 +51,8 @@ export const COLORS = {
 	light: "#f6eea9",
 	highlight: "lawngreen",
 	levels: {
-		LOW: "lightcyan",
-		MODERATE: "gold",
+		LOW: "dodgerblue",
+		MODERATE: "sandybrown",
 		HIGH: "limegreen",
 	},
 	intro: "#6d42c2",

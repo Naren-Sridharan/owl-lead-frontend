@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, memo } from "react";
+import React, { useCallback, useRef, useState, useEffect, memo } from "react";
 import {
 	StyleSheet,
 	Image,
@@ -11,10 +11,12 @@ import {
 	Platform,
 	Alert,
 } from "react-native";
+import { Card } from "react-native-elements";
 import { useSelector, useDispatch } from "react-redux";
 import { Actions } from "../redux/actions";
 import MapView, { Marker, Callout } from "react-native-maps";
-import { isPointWithinRadius } from "geolib";
+import MapViewDirections from "react-native-maps-directions";
+import { isPointWithinRadius, getDistance } from "geolib";
 import * as Location from "expo-location";
 import * as IntentLauncherAndroid from "expo-intent-launcher";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -56,6 +58,9 @@ const Map = (props) => {
 	const [markers, setMarkers] = useState(!props.markers ? [] : props.markers);
 	const [best, setBest] = useState(null);
 	const [tracksViewChanges, setTrackViewChanges] = useState(true);
+	const [selectedMarker, setSelectedMarker] = useState(null);
+	const [distance, setDistance] = useState(null);
+	const [duration, setDuration] = useState(null);
 
 	const stopTrackViewChanges = () => setTrackViewChanges(false);
 
@@ -73,6 +78,7 @@ const Map = (props) => {
 	// references to search bar and mapview components
 	let searchRef = useRef(null);
 	let mapRef = useRef(null);
+	let markerRefs = {};
 
 	Location.setGoogleApiKey(API_KEY);
 
@@ -87,7 +93,7 @@ const Map = (props) => {
 
 			let betters = markers.filter(
 				(x) =>
-					x.duration <= 20 &&
+					x.distance <= 1 &&
 					x.id !== markers[closest].id &&
 					(levelValue[x.level] > levelValue[markers[closest].level] ||
 						(levelValue[x.level] == 1 &&
@@ -101,17 +107,17 @@ const Map = (props) => {
 							betters.reduce(
 								(iSafe, x, i, arr) =>
 									x.level >= arr[iSafe].level &&
-									x.duration < arr[iSafe].duration
+									x.distance < arr[iSafe].distance
 										? i
 										: iSafe,
 								0
 							)
-					  ].id
-					: markers[closest].id;
+					  ]
+					: markers[closest];
 
-			if (markers[local_best].duration <= 20) {
+			if (local_best.distance <= 1) {
 				setTrackViewChanges(true);
-				setBest(local_best);
+				setBest(local_best.id);
 			}
 		};
 
@@ -126,7 +132,6 @@ const Map = (props) => {
 					markers.map((marker, index) => ({
 						...marker,
 						distance: results[index].distance,
-						duration: results[index].duration,
 					}))
 				);
 			} catch (error) {
@@ -145,6 +150,17 @@ const Map = (props) => {
 			...INITIAL_REGION,
 			...location,
 		});
+
+		location &&
+			selectedMarker &&
+			mapRef.fitToCoordinates([location, selectedMarker.latlng], {
+				edgePadding: {
+					right: width / 5,
+					bottom: height / 5,
+					left: width / 5,
+					top: height / 5,
+				},
+			});
 	}, [location]);
 
 	useEffect(() => {
@@ -154,6 +170,10 @@ const Map = (props) => {
 	useEffect(() => {
 		address && searchRef.current?.setAddressText(address);
 	}, [address]);
+
+	useEffect(() => {
+		distance && duration && markerRefs[selectedMarker.id].showCallout();
+	}, [distance, duration]);
 
 	useEffect(() => {
 		location && mapRef.animateToRegion(region);
@@ -274,12 +294,16 @@ const Map = (props) => {
 			>
 				{
 					// set up markers from state onto the map view
-					markers.map((marker) => {
+					markers.map((marker, index) => {
 						return (
 							<Marker
 								key={marker.id}
 								coordinate={marker.latlng}
-								onPress={hideOptions}
+								onPress={() => {
+									hideOptions();
+									setSelectedMarker(marker);
+								}}
+								ref={(markerRef) => (markerRefs[marker.id] = markerRef)}
 								tracksViewChanges={tracksViewChanges}
 							>
 								{/*Make markers have a customized image with color*/}
@@ -306,6 +330,8 @@ const Map = (props) => {
 								</TouchableOpacity>
 								{/*Create a popup with details for marker and with redirection button to google maps for directions*/}
 								<Callout
+									tooltip
+									alphaHitTest
 									style={styles.callout}
 									onPress={() =>
 										Linking.openURL(
@@ -317,14 +343,16 @@ const Map = (props) => {
 										)
 									}
 								>
-									<View style={{ flex: 1 }}>
-										<Text>{marker.place}</Text>
+									<Card containerStyle={styles.calloutCard}>
+										<Card.Title style={styles.calloutTitle}>
+											{marker.place}
+										</Card.Title>
 										{props.value_name && (
-											<Text>
+											<Text style={styles.calloutCardText}>
 												{props.value_name}: {marker.value}
 											</Text>
 										)}
-										<Text>
+										<Text style={styles.calloutCardText}>
 											{props.level_name}:{" "}
 											<Text
 												style={{
@@ -335,25 +363,34 @@ const Map = (props) => {
 												{marker.level}
 											</Text>
 										</Text>
-										{marker.distance && (
-											<Text>Distance: {marker.distance} meters</Text>
+										{distance && (
+											<Text style={styles.calloutCardText}>
+												Distance: {distance} kms
+											</Text>
 										)}
-										{marker.duration && (
-											<Text>Duration: {marker.duration} minutes</Text>
+										{duration && (
+											<Text style={styles.calloutCardText}>
+												Duration: {duration} minutes
+											</Text>
 										)}
-										{marker.time && <Text>Last updated: {marker.time}</Text>}
+										{marker.time && (
+											<Text style={styles.calloutCardText}>
+												Last updated: {marker.time}
+											</Text>
+										)}
 										<Button
+											style={styles.calloutCardButton}
 											title="Directions"
 											color={COLORS.dark}
 											accessibilityLabel="This button redirects you to google maps for directions to the location"
 										/>
-									</View>
+									</Card>
 								</Callout>
 							</Marker>
 						);
 					})
 				}
-				{location ? (
+				{location && (
 					<Marker
 						coordinate={location}
 						onPress={hideOptions}
@@ -379,8 +416,20 @@ const Map = (props) => {
 							/>
 						</TouchableOpacity>
 					</Marker>
-				) : (
-					<></>
+				)}
+				{location && selectedMarker && (
+					<MapViewDirections
+						origin={location}
+						destination={selectedMarker.latlng}
+						apikey={API_KEY}
+						strokeWidth={5}
+						strokeColor={COLORS.dark}
+						mode="WALKING"
+						onReady={(result) => {
+							setDistance(result.distance);
+							setDuration(Math.ceil(result.duration));
+						}}
+					/>
 				)}
 			</MapView>
 			{/* Show search bar for places autocomplete */}
@@ -390,6 +439,7 @@ const Map = (props) => {
 					onFocus: () => {
 						hideOptions();
 						searchRef.current?.setAddressText("");
+						selectedMarker && markerRefs[selectedMarker.id].hideCallout();
 					},
 				}}
 				placeholder="Search" // Show 'Search' in location search bar
@@ -488,10 +538,37 @@ const styles = StyleSheet.create({
 		zIndex: 999,
 	},
 	callout: {
-		flex: -1,
+		height: height / 3,
+		width: (3 * width) / 4,
+		backgroundColor: "transparent",
+	},
+	calloutCard: {
 		position: "absolute",
-		width: 250,
-		alignContent: "space-around",
+		width: "90%",
+		bottom: 10,
+		backgroundColor: "white",
+		borderWidth: 2,
+		borderColor: COLORS.dark,
+		borderRadius: 5,
+		padding: 10,
+		flexDirection: "column",
+		alignContent: "space-between",
+		alignSelf: "stretch",
+	},
+	calloutTitle: {
+		fontWeight: "bold",
+		alignSelf: "stretch",
+		textAlign: "center",
+		color: COLORS.dark,
+	},
+	calloutCardText: {
+		alignSelf: "stretch",
+		color: COLORS.dark,
+		marginBottom: 2,
+	},
+	calloutCardButton: {
+		alignSelf: "stretch",
+		marginHorizontal: 5,
 	},
 	button: {
 		backgroundColor: COLORS.dark,
