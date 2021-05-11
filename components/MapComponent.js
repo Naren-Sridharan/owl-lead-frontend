@@ -150,7 +150,9 @@ const Map = (props) => {
 			...INITIAL_REGION,
 			...location,
 		});
+	}, [location]);
 
+	useEffect(() => {
 		location &&
 			selectedMarker &&
 			mapRef.fitToCoordinates([location, selectedMarker.latlng], {
@@ -161,7 +163,7 @@ const Map = (props) => {
 					top: height / 5,
 				},
 			});
-	}, [location]);
+	}, [location, selectedMarker]);
 
 	useEffect(() => {
 		mapRef.animateToRegion(region);
