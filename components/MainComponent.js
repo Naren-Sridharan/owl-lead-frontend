@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import * as React from "react";
+import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -12,18 +12,16 @@ import EmergencyContact from "../screens/EmergencyContactScreen";
 import Intro from "../screens/IntroScreen";
 
 import { fetchPedestrianCounts, fetchPSOStations } from "../shared/loaders";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Alert, Linking } from "react-native";
 import { EMERGENCY_NUMBER } from "../shared/constants";
 
 const Tab = createBottomTabNavigator();
 
 const Main = () => {
-	const pedestrian_counts = useSelector((state) => state.pedestrian_counts);
-
 	const dispatch = useDispatch();
 
-	React.useEffect(() => {
+	useEffect(() => {
 		Alert.alert(
 			"ARE YOU IN IMMEDIATE DANGER?",
 			"If you are in immmediate danger, please click yes to be redirected to 000",

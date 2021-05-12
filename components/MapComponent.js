@@ -83,7 +83,14 @@ const Map = (props) => {
 	Location.setGoogleApiKey(API_KEY);
 
 	useEffect(() => {
-		const getDistances = async () => {
+		location && mapRef.animateToRegion(region);
+	}, []);
+
+	useEffect(() => {
+		(async () => {
+			if (!location || markers.length == 0) {
+				return;
+			}
 			try {
 				let results = await fetchDistances(
 					location,
@@ -100,11 +107,7 @@ const Map = (props) => {
 				alert("Error getting distances");
 				console.log(error);
 			}
-		};
-
-		if (location && markers.length > 0) {
-			getDistances();
-		}
+		})();
 
 		// Center the map on the location we just fetched.
 		setRegion({
@@ -127,47 +130,49 @@ const Map = (props) => {
 	}, [location, selectedMarker]);
 
 	useEffect(() => {
-		location &&
-			markers.length > 0 &&
-			(async () => {
-				const levelValue = { LOW: -1, MODERATE: 0, HIGH: 1 };
+		(async () => {
+			if (!location || markers.length == 0) {
+				return;
+			}
+			const levelValue = { LOW: -1, MODERATE: 0, HIGH: 1 };
 
-				const closest = markers.reduce(
-					(iMin, x, i, arr) => (x.distance < arr[iMin].distance ? i : iMin),
-					0
-				);
+			const closest = markers.reduce(
+				(iMin, x, i, arr) => (x.distance < arr[iMin].distance ? i : iMin),
+				0
+			);
 
-				let betters = markers.filter(
-					(x) =>
-						x.distance <= 1 &&
-						x.id !== markers[closest].id &&
-						(levelValue[x.level] > levelValue[markers[closest].level] ||
-							(levelValue[x.level] == 1 &&
-								x.value &&
-								x.value > markers[closest].value))
-				);
+			let betters = markers.filter(
+				(x) =>
+					x.distance <= 1 &&
+					x.id !== markers[closest].id &&
+					(levelValue[x.level] > levelValue[markers[closest].level] ||
+						(levelValue[x.level] == 1 &&
+							x.value &&
+							x.value > markers[closest].value))
+			);
 
-				console.log(betters);
+			let local_best =
+				betters.length > 0
+					? betters[
+							betters.reduce(
+								(iSafe, x, i, arr) =>
+									x.level >= arr[iSafe].level &&
+									x.distance < arr[iSafe].distance
+										? i
+										: iSafe,
+								0
+							)
+					  ]
+					: markers[closest];
 
-				let local_best =
-					betters.length > 0
-						? betters[
-								betters.reduce(
-									(iSafe, x, i, arr) =>
-										x.level >= arr[iSafe].level &&
-										x.distance < arr[iSafe].distance
-											? i
-											: iSafe,
-									0
-								)
-						  ]
-						: markers[closest];
+			if (local_best.distance <= 1) {
+				setTrackViewChanges(true);
 
-				if (local_best.distance <= 1) {
-					setTrackViewChanges(true);
-					setBest(local_best.id);
-				}
-			})();
+				setBest(local_best.id);
+
+				setSelectedMarker(local_best);
+			}
+		})();
 	}, [markers]);
 
 	useEffect(() => {
@@ -179,12 +184,13 @@ const Map = (props) => {
 	}, [address]);
 
 	useEffect(() => {
-		distance && duration && markerRefs[selectedMarker.id].showCallout();
+		(async () => {
+			if (!selectedMarker || !distance || !duration) {
+				return;
+			}
+			markerRefs[selectedMarker.id].showCallout();
+		})();
 	}, [distance, duration]);
-
-	useEffect(() => {
-		location && mapRef.animateToRegion(region);
-	}, []);
 
 	// Function to get user location asynchornously
 	const getLocationAsync = async () => {
@@ -253,8 +259,6 @@ const Map = (props) => {
 				return;
 			}
 
-			setTrackViewChanges(true);
-
 			setSelectedMarker(null);
 
 			// set location globally
@@ -286,6 +290,14 @@ const Map = (props) => {
 				onPress={hideOptions}
 				ref={(ref) => (mapRef = ref)}
 				minZoomLevel={13}
+				loadingEnabled
+				showsPointsOfInterest={false}
+				showsCompass={false}
+				showsScale={false}
+				showsIndoors={false}
+				showsMyLocationButton={false}
+				toolbarEnabled={false}
+				pitchEnabled={false}
 				onLayout={() =>
 					mapRef.setMapBoundaries(
 						{
@@ -303,7 +315,7 @@ const Map = (props) => {
 			>
 				{
 					// set up markers from state onto the map view
-					markers.map((marker, index) => {
+					markers.map((marker) => {
 						return (
 							<Marker
 								key={marker.id}
@@ -334,6 +346,7 @@ const Map = (props) => {
 												: styles.marker_image,
 											{ tintColor: COLORS.levels[marker.level] },
 										]}
+										resizeMode="contain"
 										fadeDuration={0}
 									/>
 								</TouchableOpacity>
@@ -475,16 +488,13 @@ const Map = (props) => {
 					listView: { width: "95%" },
 				}}
 				onPress={(data, details = null) => {
-					setTrackViewChanges(true);
-
+					// update address on search bar to current location
+					setAddress(data.description);
 					// On selecting suggestion, Set location to that suggestion
 					setLocation({
 						latitude: details.geometry.location.lat,
 						longitude: details.geometry.location.lng,
 					});
-
-					// update address on search bar to current location
-					setAddress(data.description);
 				}}
 				query={{
 					// for querying

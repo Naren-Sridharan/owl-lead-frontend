@@ -20,6 +20,8 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		flex: 1,
+		backgroundColor: "white",
+		opacity: 1,
 	},
 	loadingText: {
 		color: COLORS.dark,
