@@ -83,44 +83,6 @@ const Map = (props) => {
 	Location.setGoogleApiKey(API_KEY);
 
 	useEffect(() => {
-		const findBest = async () => {
-			const levelValue = { LOW: -1, MODERATE: 0, HIGH: 1 };
-
-			const closest = markers.reduce(
-				(iMin, x, i, arr) => (x.distance < arr[iMin].distance ? i : iMin),
-				0
-			);
-
-			let betters = markers.filter(
-				(x) =>
-					x.distance <= 1 &&
-					x.id !== markers[closest].id &&
-					(levelValue[x.level] > levelValue[markers[closest].level] ||
-						(levelValue[x.level] == 1 &&
-							x.value &&
-							x.value > markers[closest].value))
-			);
-
-			let local_best =
-				betters.length > 0
-					? betters[
-							betters.reduce(
-								(iSafe, x, i, arr) =>
-									x.level >= arr[iSafe].level &&
-									x.distance < arr[iSafe].distance
-										? i
-										: iSafe,
-								0
-							)
-					  ]
-					: markers[closest];
-
-			if (local_best.distance <= 1) {
-				setTrackViewChanges(true);
-				setBest(local_best.id);
-			}
-		};
-
 		const getDistances = async () => {
 			try {
 				let results = await fetchDistances(
@@ -142,7 +104,6 @@ const Map = (props) => {
 
 		if (location && markers.length > 0) {
 			getDistances();
-			findBest();
 		}
 
 		// Center the map on the location we just fetched.
@@ -164,6 +125,50 @@ const Map = (props) => {
 				},
 			});
 	}, [location, selectedMarker]);
+
+	useEffect(() => {
+		location &&
+			markers.length > 0 &&
+			(async () => {
+				const levelValue = { LOW: -1, MODERATE: 0, HIGH: 1 };
+
+				const closest = markers.reduce(
+					(iMin, x, i, arr) => (x.distance < arr[iMin].distance ? i : iMin),
+					0
+				);
+
+				let betters = markers.filter(
+					(x) =>
+						x.distance <= 1 &&
+						x.id !== markers[closest].id &&
+						(levelValue[x.level] > levelValue[markers[closest].level] ||
+							(levelValue[x.level] == 1 &&
+								x.value &&
+								x.value > markers[closest].value))
+				);
+
+				console.log(betters);
+
+				let local_best =
+					betters.length > 0
+						? betters[
+								betters.reduce(
+									(iSafe, x, i, arr) =>
+										x.level >= arr[iSafe].level &&
+										x.distance < arr[iSafe].distance
+											? i
+											: iSafe,
+									0
+								)
+						  ]
+						: markers[closest];
+
+				if (local_best.distance <= 1) {
+					setTrackViewChanges(true);
+					setBest(local_best.id);
+				}
+			})();
+	}, [markers]);
 
 	useEffect(() => {
 		mapRef.animateToRegion(region);
