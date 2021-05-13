@@ -28,7 +28,8 @@ export const fetchPedestrianCounts = () => (dispatch) => {
 		})
 		.catch((error) => {
 			dispatch(Actions.pedestrianCountsFailed(error.message));
-			throw error;
+			console.log("Trying to Load Pedestrian Counts again");
+			fetchPedestrianCounts();
 		});
 };
 
@@ -53,7 +54,9 @@ export const fetchPSOStations = () => (dispatch) => {
 		.then((response) => response.json())
 		.then((pso_stations) => dispatch(Actions.addPsoStations(pso_stations)))
 		.catch((error) => {
-			dispatch(Actions.distancesFailed(error.message));
+			dispatch(Actions.psoStationsFailed(error.message));
+			console.log("Trying to Load PSO Stations again");
+			fetchPSOStations();
 		});
 };
 

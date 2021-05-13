@@ -14,7 +14,8 @@ import {
 import { Card } from "react-native-elements";
 import { useSelector, useDispatch } from "react-redux";
 import { Actions } from "../redux/actions";
-import MapView, { Marker, Callout } from "react-native-maps";
+import MapView from "react-native-map-clustering";
+import { Marker, Callout } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import { isPointWithinRadius, getDistance } from "geolib";
 import * as Location from "expo-location";
@@ -63,6 +64,7 @@ const Map = (props) => {
 	const [duration, setDuration] = useState(null);
 
 	const stopTrackViewChanges = () => setTrackViewChanges(false);
+	const updateMarkers = () => setTrackViewChanges(true);
 
 	// redux actions
 	const dispatch = useDispatch();
@@ -70,20 +72,22 @@ const Map = (props) => {
 	const setLocation = (location) => dispatch(Actions.setLocation(location));
 	const allowLocationAccess = () => dispatch(Actions.allowLocationAccess());
 	const denyLocationAccess = () => dispatch(Actions.denyLocationAccess());
+
+	// references to search bar and mapview components
+	let searchRef = useRef(null);
+	let mapRef = useRef(null);
+	let superClusterRef = useRef(null);
+	let markerRefs = {};
+
 	const hideOptions = () => {
 		dispatch(Actions.hideOptions());
 		dispatch(Actions.hideEmergencyOptions());
 	};
 
-	// references to search bar and mapview components
-	let searchRef = useRef(null);
-	let mapRef = useRef(null);
-	let markerRefs = {};
-
 	Location.setGoogleApiKey(API_KEY);
 
 	useEffect(() => {
-		location && mapRef.animateToRegion(region);
+		location && mapRef.current.animateToRegion(region);
 	}, []);
 
 	useEffect(() => {
@@ -119,7 +123,7 @@ const Map = (props) => {
 	useEffect(() => {
 		location &&
 			selectedMarker &&
-			mapRef.fitToCoordinates([location, selectedMarker.latlng], {
+			mapRef.current.fitToCoordinates([location, selectedMarker.latlng], {
 				edgePadding: {
 					right: width / 5,
 					bottom: height / 5,
@@ -166,7 +170,7 @@ const Map = (props) => {
 					: markers[closest];
 
 			if (local_best.distance <= 1) {
-				setTrackViewChanges(true);
+				updateMarkers();
 
 				setBest(local_best.id);
 
@@ -176,7 +180,7 @@ const Map = (props) => {
 	}, [markers]);
 
 	useEffect(() => {
-		mapRef.animateToRegion(region);
+		mapRef.current.animateToRegion(region);
 	}, [region]);
 
 	useEffect(() => {
@@ -283,13 +287,24 @@ const Map = (props) => {
 		<>
 			{/*create a map view component with region focusing on melbourne*/}
 			<MapView
+				clusterColor={COLORS.dark}
+				clusterTextColor={COLORS.light}
+				superClusterRef={superClusterRef}
 				style={styles.map}
-				provider={MapView.PROVIDER_GOOGLE}
+				provider="google"
 				initialRegion={INITIAL_REGION}
 				zoomControlEnabled={false}
-				onPress={hideOptions}
-				ref={(ref) => (mapRef = ref)}
+				onPress={() => {
+					hideOptions();
+					setSelectedMarker(null);
+				}}
+				ref={mapRef}
+				minZoom={11}
+				maxZoom={13}
+				minPoints={4}
 				minZoomLevel={13}
+				onRegionChangeComplete={updateMarkers}
+				onClusterPress={updateMarkers}
 				loadingEnabled
 				showsPointsOfInterest={false}
 				showsCompass={false}
@@ -299,7 +314,7 @@ const Map = (props) => {
 				toolbarEnabled={false}
 				pitchEnabled={false}
 				onLayout={() =>
-					mapRef.setMapBoundaries(
+					mapRef.current.setMapBoundaries(
 						{
 							latitude: INITIAL_REGION.latitude + INITIAL_REGION.latitudeDelta,
 							longitude:
@@ -414,6 +429,7 @@ const Map = (props) => {
 				}
 				{location && (
 					<Marker
+						cluster={false}
 						coordinate={location}
 						onPress={hideOptions}
 						tracksViewChanges={tracksViewChanges}
@@ -461,11 +477,10 @@ const Map = (props) => {
 					onFocus: () => {
 						hideOptions();
 						searchRef.current?.setAddressText("");
-						selectedMarker && markerRefs[selectedMarker.id].hideCallout();
 						setSelectedMarker(null);
 					},
 				}}
-				placeholder="Search" // Show 'Search' in location search bar
+				placeholder="Search for places in the city" // Show 'Search' in location search bar
 				minLength={2} // Show autocomplete after 2 letters
 				autoFocus={false} // Don't focus on searchbar when page loads
 				returnKeyType={"search"} // return search results
