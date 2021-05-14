@@ -1,11 +1,11 @@
-import React, { useCallback, useRef, useState, useEffect, memo } from "react";
+import React, { useRef, useState, useEffect, memo } from "react";
 import {
+	View,
 	StyleSheet,
 	Image,
 	Dimensions,
 	Button,
 	Text,
-	View,
 	Linking,
 	TouchableOpacity,
 	Platform,
@@ -14,10 +14,9 @@ import {
 import { Card } from "react-native-elements";
 import { useSelector, useDispatch } from "react-redux";
 import { Actions } from "../redux/actions";
-import MapView from "react-native-map-clustering";
-import { Marker, Callout } from "react-native-maps";
+import MapView, { Marker, Callout } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
-import { isPointWithinRadius, getDistance } from "geolib";
+import { isPointWithinRadius } from "geolib";
 import * as Location from "expo-location";
 import * as IntentLauncherAndroid from "expo-intent-launcher";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -35,8 +34,8 @@ const { width, height } = Dimensions.get("window");
 const INITIAL_REGION = {
 	latitude: -37.8138,
 	longitude: 144.9578,
-	latitudeDelta: 0.03,
-	longitudeDelta: 0.03 * (width / height),
+	latitudeDelta: 0.04,
+	longitudeDelta: 0.04 * (width / height),
 };
 
 const openSetting = () => {
@@ -58,13 +57,10 @@ const Map = (props) => {
 	const [region, setRegion] = useState(INITIAL_REGION);
 	const [markers, setMarkers] = useState(!props.markers ? [] : props.markers);
 	const [best, setBest] = useState(null);
-	const [tracksViewChanges, setTrackViewChanges] = useState(true);
 	const [selectedMarker, setSelectedMarker] = useState(null);
 	const [distance, setDistance] = useState(null);
 	const [duration, setDuration] = useState(null);
-
-	const stopTrackViewChanges = () => setTrackViewChanges(false);
-	const updateMarkers = () => setTrackViewChanges(true);
+	const [tracksViewChanges, setTracksViewChanges] = useState(true);
 
 	// redux actions
 	const dispatch = useDispatch();
@@ -76,18 +72,26 @@ const Map = (props) => {
 	// references to search bar and mapview components
 	let searchRef = useRef(null);
 	let mapRef = useRef(null);
-	let superClusterRef = useRef(null);
 	let markerRefs = {};
+	const updateMarkers = () => setTracksViewChanges(true);
+	const stopMarkerUpdates = () => setTracksViewChanges(false);
 
 	const hideOptions = () => {
 		dispatch(Actions.hideOptions());
 		dispatch(Actions.hideEmergencyOptions());
 	};
 
+	const hidePopup = () =>
+		selectedMarker &&
+		markerRefs.hasOwnProperty(selectedMarker.id) &&
+		markerRefs[selectedMarker.id].hideCallout();
+
 	Location.setGoogleApiKey(API_KEY);
 
 	useEffect(() => {
-		location && mapRef.current.animateToRegion(region);
+		location && !selectedMarker && mapRef.animateToRegion(region);
+		// blinker.start();
+		// return () => blinker.stop();
 	}, []);
 
 	useEffect(() => {
@@ -121,16 +125,14 @@ const Map = (props) => {
 	}, [location]);
 
 	useEffect(() => {
-		location &&
-			selectedMarker &&
-			mapRef.current.fitToCoordinates([location, selectedMarker.latlng], {
-				edgePadding: {
-					right: width / 5,
-					bottom: height / 5,
-					left: width / 5,
-					top: height / 5,
-				},
+		(async () => {
+			if (!location || !selectedMarker) {
+				return;
+			}
+			mapRef.fitToCoordinates([location, selectedMarker.latlng], {
+				edgePadding: styles.edgePadding,
 			});
+		})();
 	}, [location, selectedMarker]);
 
 	useEffect(() => {
@@ -170,7 +172,7 @@ const Map = (props) => {
 					: markers[closest];
 
 			if (local_best.distance <= 1) {
-				updateMarkers();
+				!local_best && updateMarkers();
 
 				setBest(local_best.id);
 
@@ -180,7 +182,7 @@ const Map = (props) => {
 	}, [markers]);
 
 	useEffect(() => {
-		mapRef.current.animateToRegion(region);
+		mapRef.animateToRegion(region);
 	}, [region]);
 
 	useEffect(() => {
@@ -189,7 +191,7 @@ const Map = (props) => {
 
 	useEffect(() => {
 		(async () => {
-			if (!selectedMarker || !distance || !duration) {
+			if (!selectedMarker || !distance || !duration || !markerRefs) {
 				return;
 			}
 			markerRefs[selectedMarker.id].showCallout();
@@ -263,6 +265,8 @@ const Map = (props) => {
 				return;
 			}
 
+			!location && updateMarkers();
+
 			setSelectedMarker(null);
 
 			// set location globally
@@ -287,24 +291,13 @@ const Map = (props) => {
 		<>
 			{/*create a map view component with region focusing on melbourne*/}
 			<MapView
-				clusterColor={COLORS.dark}
-				clusterTextColor={COLORS.light}
-				superClusterRef={superClusterRef}
+				ref={(ref) => (mapRef = ref)}
 				style={styles.map}
-				provider="google"
+				provider={MapView.PROVIDER_GOOGLE}
 				initialRegion={INITIAL_REGION}
 				zoomControlEnabled={false}
-				onPress={() => {
-					hideOptions();
-					setSelectedMarker(null);
-				}}
-				ref={mapRef}
-				minZoom={11}
-				maxZoom={13}
-				minPoints={4}
+				onPress={() => setSelectedMarker(null)}
 				minZoomLevel={13}
-				onRegionChangeComplete={updateMarkers}
-				onClusterPress={updateMarkers}
 				loadingEnabled
 				showsPointsOfInterest={false}
 				showsCompass={false}
@@ -314,7 +307,7 @@ const Map = (props) => {
 				toolbarEnabled={false}
 				pitchEnabled={false}
 				onLayout={() =>
-					mapRef.current.setMapBoundaries(
+					mapRef.setMapBoundaries(
 						{
 							latitude: INITIAL_REGION.latitude + INITIAL_REGION.latitudeDelta,
 							longitude:
@@ -334,26 +327,26 @@ const Map = (props) => {
 						return (
 							<Marker
 								key={marker.id}
+								zIndex={best && best == marker.id ? 998 : marker.id}
 								coordinate={marker.latlng}
-								onPress={() => {
-									hideOptions();
-									setSelectedMarker(marker);
-								}}
+								onPress={() => setSelectedMarker(marker)}
 								ref={(markerRef) => (markerRefs[marker.id] = markerRef)}
 								tracksViewChanges={tracksViewChanges}
 							>
 								{/*Make markers have a customized image with color*/}
-								<TouchableOpacity
+								<View
 									style={[
 										styles.marker,
 										best && marker.id == best
 											? styles.recommendation_marker
 											: {},
-										{ borderColor: COLORS.levels[marker.level] },
+										{
+											borderColor: COLORS.levels[marker.level],
+										},
 									]}
 								>
 									<Image
-										onLoad={stopTrackViewChanges}
+										onLoadEnd={stopMarkerUpdates}
 										source={props.marker_icon}
 										style={[
 											best && marker.id == best
@@ -364,7 +357,7 @@ const Map = (props) => {
 										resizeMode="contain"
 										fadeDuration={0}
 									/>
-								</TouchableOpacity>
+								</View>
 								{/*Create a popup with details for marker and with redirection button to google maps for directions*/}
 								<Callout
 									tooltip
@@ -429,12 +422,12 @@ const Map = (props) => {
 				}
 				{location && (
 					<Marker
+						zIndex={999}
 						cluster={false}
 						coordinate={location}
-						onPress={hideOptions}
 						tracksViewChanges={tracksViewChanges}
 					>
-						<TouchableOpacity
+						<View
 							style={[
 								styles.marker,
 								{
@@ -445,20 +438,22 @@ const Map = (props) => {
 							]}
 						>
 							<Image
+								onLoadEnd={stopMarkerUpdates}
 								source={IMAGES.location}
 								style={[
 									styles.recommendation_marker_image,
 									{ tintColor: COLORS.light },
 								]}
-								onLoad={stopTrackViewChanges}
+								fadeDuration={0}
 							/>
-						</TouchableOpacity>
+						</View>
 					</Marker>
 				)}
 				{location && selectedMarker && (
 					<MapViewDirections
 						origin={location}
 						destination={selectedMarker.latlng}
+						optimizeWaypoints={true}
 						apikey={API_KEY}
 						strokeWidth={5}
 						strokeColor={COLORS.dark}
@@ -476,6 +471,7 @@ const Map = (props) => {
 				textInputProps={{
 					onFocus: () => {
 						hideOptions();
+						hidePopup();
 						searchRef.current?.setAddressText("");
 						setSelectedMarker(null);
 					},
@@ -503,6 +499,7 @@ const Map = (props) => {
 					listView: { width: "95%" },
 				}}
 				onPress={(data, details = null) => {
+					!location && updateMarkers();
 					// update address on search bar to current location
 					setAddress(data.description);
 					// On selecting suggestion, Set location to that suggestion
@@ -565,7 +562,7 @@ const styles = StyleSheet.create({
 	marker_image: {
 		height: 25,
 		width: 25,
-		zIndex: 999,
+		zIndex: 990,
 	},
 	recommendation_marker_image: {
 		height: 35,
@@ -624,6 +621,12 @@ const styles = StyleSheet.create({
 		alignContent: "center",
 		tintColor: COLORS.light,
 		zIndex: 999,
+	},
+	edgePadding: {
+		right: width / 5,
+		bottom: height / 5,
+		left: width / 5,
+		top: height / 5,
 	},
 });
 
