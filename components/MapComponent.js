@@ -88,57 +88,56 @@ const Map = (props) => {
 
 	Location.setGoogleApiKey(API_KEY);
 
-	useEffect(() => {
-		location && !selectedMarker && mapRef.animateToRegion(region);
-		// blinker.start();
-		// return () => blinker.stop();
-	}, []);
+	const getDistances = async () => {
+		if (!location || markers.length == 0) {
+			return;
+		}
+		try {
+			let results = await fetchDistances(
+				location,
+				markers.map((marker) => marker.latlng)
+			);
+
+			setMarkers(
+				markers.map((marker, index) => ({
+					...marker,
+					distance: results[index].distance,
+				}))
+			);
+		} catch (error) {
+			alert("Error getting distances");
+			console.log(error);
+		}
+	};
 
 	useEffect(() => {
-		(async () => {
-			if (!location || markers.length == 0) {
-				return;
-			}
-			try {
-				let results = await fetchDistances(
-					location,
-					markers.map((marker) => marker.latlng)
-				);
-
-				setMarkers(
-					markers.map((marker, index) => ({
-						...marker,
-						distance: results[index].distance,
-					}))
-				);
-			} catch (error) {
-				alert("Error getting distances");
-				console.log(error);
-			}
-		})();
+		getDistances();
 
 		// Center the map on the location we just fetched.
 		setRegion({
-			...INITIAL_REGION,
+			longitudeDelta: INITIAL_REGION.longitudeDelta / 3.5,
+			latitudeDelta: INITIAL_REGION.latitudeDelta / 3.5,
 			...location,
 		});
 	}, [location]);
 
 	useEffect(() => {
-		(async () => {
-			if (!location || !selectedMarker) {
-				return;
-			}
-			mapRef.fitToCoordinates([location, selectedMarker.latlng], {
-				edgePadding: styles.edgePadding,
-			});
-		})();
-	}, [location, selectedMarker]);
+		mapRef.animateToRegion(region);
+	}, [region]);
+
+	useEffect(() => {
+		selectedMarker &&
+			mapRef.animateToRegion({ ...region, ...selectedMarker.latlng });
+	}, [selectedMarker]);
 
 	useEffect(() => {
 		(async () => {
 			if (!location || markers.length == 0) {
 				return;
+			}
+
+			if (!markers[0].distance) {
+				await getDistances();
 			}
 			const levelValue = { LOW: -1, MODERATE: 0, HIGH: 1 };
 
@@ -172,18 +171,11 @@ const Map = (props) => {
 					: markers[closest];
 
 			if (local_best.distance <= 1) {
-				!local_best && updateMarkers();
-
+				updateMarkers();
 				setBest(local_best.id);
-
-				setSelectedMarker(local_best);
 			}
 		})();
 	}, [markers]);
-
-	useEffect(() => {
-		mapRef.animateToRegion(region);
-	}, [region]);
 
 	useEffect(() => {
 		address && searchRef.current?.setAddressText(address);
@@ -291,6 +283,7 @@ const Map = (props) => {
 		<>
 			{/*create a map view component with region focusing on melbourne*/}
 			<MapView
+				key={best}
 				ref={(ref) => (mapRef = ref)}
 				style={styles.map}
 				provider={MapView.PROVIDER_GOOGLE}
@@ -306,7 +299,8 @@ const Map = (props) => {
 				showsMyLocationButton={false}
 				toolbarEnabled={false}
 				pitchEnabled={false}
-				onLayout={() =>
+				onMapReady={() => mapRef.animateToRegion(region)}
+				onLayout={() => {
 					mapRef.setMapBoundaries(
 						{
 							latitude: INITIAL_REGION.latitude + INITIAL_REGION.latitudeDelta,
@@ -318,8 +312,8 @@ const Map = (props) => {
 							longitude:
 								INITIAL_REGION.longitude - INITIAL_REGION.longitudeDelta,
 						}
-					)
-				}
+					);
+				}}
 			>
 				{
 					// set up markers from state onto the map view
@@ -377,11 +371,6 @@ const Map = (props) => {
 										<Card.Title style={styles.calloutTitle}>
 											{marker.place}
 										</Card.Title>
-										{props.value_name && (
-											<Text style={styles.calloutCardText}>
-												{props.value_name}: {marker.value}
-											</Text>
-										)}
 										<Text style={styles.calloutCardText}>
 											{props.level_name}:{" "}
 											<Text
@@ -393,6 +382,19 @@ const Map = (props) => {
 												{marker.level}
 											</Text>
 										</Text>
+										{props.value_name && (
+											<Text style={styles.calloutCardText}>
+												{props.value_name}:{" "}
+												<Text
+													style={{
+														color: COLORS.levels[marker.level],
+														fontWeight: "bold",
+													}}
+												>
+													{marker.value}
+												</Text>
+											</Text>
+										)}
 										{distance && (
 											<Text style={styles.calloutCardText}>
 												Distance: {distance} kms
@@ -401,11 +403,6 @@ const Map = (props) => {
 										{duration && (
 											<Text style={styles.calloutCardText}>
 												Duration: {duration} minutes
-											</Text>
-										)}
-										{marker.time && (
-											<Text style={styles.calloutCardText}>
-												Last updated: {marker.time}
 											</Text>
 										)}
 										<Button
@@ -545,9 +542,9 @@ const styles = StyleSheet.create({
 		...StyleSheet.absoluteFillObject,
 	},
 	marker: {
-		height: 30,
-		width: 30,
-		borderRadius: 30,
+		height: 25,
+		width: 25,
+		borderRadius: 25,
 		alignItems: "center",
 		justifyContent: "center",
 		borderWidth: 1,
@@ -560,8 +557,8 @@ const styles = StyleSheet.create({
 		backgroundColor: COLORS.highlight,
 	},
 	marker_image: {
-		height: 25,
-		width: 25,
+		height: 20,
+		width: 20,
 		zIndex: 990,
 	},
 	recommendation_marker_image: {
@@ -570,8 +567,8 @@ const styles = StyleSheet.create({
 		zIndex: 999,
 	},
 	callout: {
-		height: height / 3,
-		width: (3 * width) / 4,
+		height: 0.3 * height,
+		width: 0.6 * width,
 		backgroundColor: "transparent",
 	},
 	calloutCard: {
@@ -592,15 +589,19 @@ const styles = StyleSheet.create({
 		alignSelf: "stretch",
 		textAlign: "center",
 		color: COLORS.dark,
+		fontSize: 12,
+		margin: 2,
 	},
 	calloutCardText: {
 		alignSelf: "stretch",
 		color: COLORS.dark,
 		marginBottom: 2,
+		fontSize: 12,
 	},
 	calloutCardButton: {
 		alignSelf: "stretch",
 		marginHorizontal: 5,
+		fontSize: 12,
 	},
 	button: {
 		backgroundColor: COLORS.dark,
@@ -623,10 +624,10 @@ const styles = StyleSheet.create({
 		zIndex: 999,
 	},
 	edgePadding: {
-		right: width / 5,
-		bottom: height / 5,
-		left: width / 5,
-		top: height / 5,
+		right: width / 20,
+		bottom: height / 20,
+		left: width / 20,
+		top: height / 20,
 	},
 });
 

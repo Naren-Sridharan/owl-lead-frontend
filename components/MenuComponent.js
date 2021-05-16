@@ -6,6 +6,7 @@ import {
 	Linking,
 	Modal,
 	View,
+	Dimensions,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { COLORS, EMERGENCY_NUMBER } from "../shared/constants";
@@ -15,6 +16,8 @@ import Information from "./InformationComponent";
 import * as SMS from "expo-sms";
 import { BlurView } from "expo-blur";
 import { IMAGES } from "../shared/constants";
+
+const { width, height } = Dimensions.get("window");
 
 const MenuButton = ({
 	name,
@@ -191,8 +194,8 @@ const Menu = ({ navigation, route, info = false }) => {
 			{info && (
 				<MenuButton
 					onPress={toggleShowInformation}
-					button_style={{ top: "4.5%", right: "3%", width: 45, height: 45 }}
-					icon_style={{ tintColor: COLORS.dark }}
+					button_style={{ top: "5.5%", right: "3%", width: 30, height: 30 }}
+					icon_style={{ tintColor: COLORS.dark, width: 30, height: 30 }}
 					source={IMAGES.information}
 					testID="informationButton"
 				/>

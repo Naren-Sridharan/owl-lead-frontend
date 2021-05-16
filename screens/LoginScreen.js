@@ -3,11 +3,12 @@ import {
 	Alert,
 	Text,
 	TextInput,
-	View,
 	StyleSheet,
 	TouchableOpacity,
 	Image,
 	Keyboard,
+	KeyboardAvoidingView,
+	Platform,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { COLORS, actual_password, IMAGES } from "../shared/constants";
@@ -17,7 +18,10 @@ const Login = ({ navigation }) => {
 	const intro_shown = useSelector((state) => state.intro_shown);
 
 	return (
-		<View style={styles.container}>
+		<KeyboardAvoidingView
+			behaviour={Platform.OS === "ios" ? "padding" : "height"}
+			style={styles.container}
+		>
 			<Image source={IMAGES.owl_lead} style={styles.logo} />
 			<TextInput
 				value={password}
@@ -42,7 +46,7 @@ const Login = ({ navigation }) => {
 			>
 				<Text style={styles.button_text}>Login</Text>
 			</TouchableOpacity>
-		</View>
+		</KeyboardAvoidingView>
 	);
 };
 

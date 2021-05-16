@@ -26,7 +26,7 @@ const AnyoneAround = ({ navigation, route }) => {
 				<Map
 					markers={pedestrian_counts}
 					marker_icon={IMAGES.anyone_around}
-					value_name="Pedestrian Counts"
+					value_name="Past Hour Count"
 					level_name="Pedestrian Traffic"
 				/>
 				<Menu navigation={navigation} route={route} info={true} />

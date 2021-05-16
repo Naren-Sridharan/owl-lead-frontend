@@ -31,7 +31,7 @@ TaskManager.defineTask(FETCH_PEDESTRIAN_COUNTS, async () => {
 const registerBackgroundPedestrianCountsTask = async () => {
 	try {
 		await BackgroundFetch.registerTaskAsync(FETCH_PEDESTRIAN_COUNTS, {
-			minimumInterval: 15 * 60, // seconds
+			minimumInterval: 10 * 60, // seconds
 		});
 	} catch (err) {
 		console.log("Background Fetch Pedestrian Counts Registration Failed:", err);
