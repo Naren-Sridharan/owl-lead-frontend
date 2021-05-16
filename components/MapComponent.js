@@ -111,6 +111,15 @@ const Map = (props) => {
 	};
 
 	useEffect(() => {
+		location &&
+			setRegion({
+				longitudeDelta: INITIAL_REGION.longitudeDelta / 3.5,
+				latitudeDelta: INITIAL_REGION.latitudeDelta / 3.5,
+				...location,
+			});
+	}, []);
+
+	useEffect(() => {
 		getDistances();
 
 		// Center the map on the location we just fetched.
@@ -310,7 +319,6 @@ const Map = (props) => {
 								INITIAL_REGION.longitude - INITIAL_REGION.longitudeDelta,
 						}
 					);
-					location && mapRef.animateToRegion({ ...region, ...location });
 				}}
 			>
 				{
