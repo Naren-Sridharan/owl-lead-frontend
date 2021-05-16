@@ -177,6 +177,8 @@ const Map = (props) => {
 		address && searchRef.current?.setAddressText(address);
 	}, [address]);
 
+	useEffect(() => mapRef.animateToRegion(region), [region]);
+
 	useEffect(() => {
 		(async () => {
 			if (!selectedMarker || !distance || !duration || !markerRefs) {
