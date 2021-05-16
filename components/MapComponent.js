@@ -118,6 +118,10 @@ const Map = (props) => {
 	};
 
 	useEffect(() => {
+		best && setSelectedMarker(markers.filter((marker) => marker.id == best)[0]);
+	}, [best]);
+
+	useEffect(() => {
 		getDistances();
 		focusOnLocation();
 	}, [location]);
@@ -173,7 +177,6 @@ const Map = (props) => {
 
 			if (local_best.distance <= 1) {
 				setBest(local_best.id);
-				setSelectedMarker(local_best);
 			}
 		})();
 	}, [markers]);
