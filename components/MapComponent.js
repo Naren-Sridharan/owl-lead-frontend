@@ -53,8 +53,7 @@ const Map = (props) => {
 	const location_access = useSelector((state) => state.location_access);
 	const address = useSelector((state) => state.address);
 
-	// initialize state with region, markers, user location and type of value being displayed
-	const [region, setRegion] = useState(INITIAL_REGION);
+	// initialize state with markers, user location and type of value being displayed
 	const [markers, setMarkers] = useState(!props.markers ? [] : props.markers);
 	const [best, setBest] = useState(null);
 	const [selectedMarker, setSelectedMarker] = useState(null);
@@ -73,6 +72,14 @@ const Map = (props) => {
 	let searchRef = useRef(null);
 	let mapRef = useRef(null);
 	let markerRefs = {};
+
+	const focusOnLocation = () =>
+		location &&
+		mapRef.animateToRegion({
+			latitudeDelta: INITIAL_REGION.latitudeDelta / 3,
+			longitudeDelta: INITIAL_REGION.longitudeDelta / 3,
+			...location,
+		});
 	const updateMarkers = () => setTracksViewChanges(true);
 	const stopMarkerUpdates = () => setTracksViewChanges(false);
 
@@ -111,28 +118,17 @@ const Map = (props) => {
 	};
 
 	useEffect(() => {
-		location &&
-			setRegion({
-				longitudeDelta: INITIAL_REGION.longitudeDelta / 3.5,
-				latitudeDelta: INITIAL_REGION.latitudeDelta / 3.5,
-				...location,
-			});
-	}, []);
-
-	useEffect(() => {
 		getDistances();
-
-		// Center the map on the location we just fetched.
-		setRegion({
-			longitudeDelta: INITIAL_REGION.longitudeDelta / 3.5,
-			latitudeDelta: INITIAL_REGION.latitudeDelta / 3.5,
-			...location,
-		});
+		focusOnLocation();
 	}, [location]);
 
 	useEffect(() => {
 		selectedMarker &&
-			mapRef.animateToRegion({ ...region, ...selectedMarker.latlng });
+			mapRef.animateToRegion({
+				latitudeDelta: INITIAL_REGION.latitudeDelta / 4,
+				longitudeDelta: INITIAL_REGION.longitudeDelta / 4,
+				...selectedMarker.latlng,
+			});
 	}, [selectedMarker]);
 
 	useEffect(() => {
@@ -176,8 +172,8 @@ const Map = (props) => {
 					: markers[closest];
 
 			if (local_best.distance <= 1) {
-				updateMarkers();
 				setBest(local_best.id);
+				setSelectedMarker(local_best);
 			}
 		})();
 	}, [markers]);
@@ -185,8 +181,6 @@ const Map = (props) => {
 	useEffect(() => {
 		address && searchRef.current?.setAddressText(address);
 	}, [address]);
-
-	useEffect(() => mapRef.animateToRegion(region), [region]);
 
 	useEffect(() => {
 		(async () => {
@@ -290,7 +284,6 @@ const Map = (props) => {
 		<>
 			{/*create a map view component with region focusing on melbourne*/}
 			<MapView
-				key={best}
 				ref={(ref) => (mapRef = ref)}
 				style={styles.map}
 				provider={MapView.PROVIDER_GOOGLE}
@@ -319,6 +312,7 @@ const Map = (props) => {
 								INITIAL_REGION.longitude - INITIAL_REGION.longitudeDelta,
 						}
 					);
+					focusOnLocation();
 				}}
 			>
 				{
@@ -327,9 +321,12 @@ const Map = (props) => {
 						return (
 							<Marker
 								key={marker.id}
-								zIndex={best && best == marker.id ? 998 : marker.id}
+								zIndex={marker.id}
 								coordinate={marker.latlng}
-								onPress={() => setSelectedMarker(marker)}
+								onPress={() => {
+									markerRefs[marker.id].hideCallout();
+									setSelectedMarker(marker);
+								}}
 								ref={(markerRef) => (markerRefs[marker.id] = markerRef)}
 								tracksViewChanges={tracksViewChanges}
 							>
@@ -337,7 +334,7 @@ const Map = (props) => {
 								<View
 									style={[
 										styles.marker,
-										best && marker.id == best
+										best && marker.id === best
 											? styles.recommendation_marker
 											: {},
 										{
@@ -349,7 +346,7 @@ const Map = (props) => {
 										onLoadEnd={stopMarkerUpdates}
 										source={props.marker_icon}
 										style={[
-											best && marker.id == best
+											best && marker.id === best
 												? styles.recommendation_marker_image
 												: styles.marker_image,
 											{ tintColor: COLORS.levels[marker.level] },
@@ -565,12 +562,10 @@ const styles = StyleSheet.create({
 	marker_image: {
 		height: 20,
 		width: 20,
-		zIndex: 990,
 	},
 	recommendation_marker_image: {
 		height: 35,
 		width: 35,
-		zIndex: 999,
 	},
 	callout: {
 		height: 0.3 * height,
@@ -628,12 +623,6 @@ const styles = StyleSheet.create({
 		alignContent: "center",
 		tintColor: COLORS.light,
 		zIndex: 999,
-	},
-	edgePadding: {
-		right: width / 20,
-		bottom: height / 20,
-		left: width / 20,
-		top: height / 20,
 	},
 });
 
