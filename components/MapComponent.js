@@ -188,6 +188,8 @@ const Map = (props) => {
 				return;
 			}
 			markerRefs[selectedMarker.id].showCallout();
+			setDistance(null);
+			setDuration(null);
 		})();
 	}, [distance, duration]);
 
@@ -323,10 +325,7 @@ const Map = (props) => {
 								key={marker.id}
 								zIndex={marker.id}
 								coordinate={marker.latlng}
-								onPress={() => {
-									markerRefs[marker.id].hideCallout();
-									setSelectedMarker(marker);
-								}}
+								onPress={() => setSelectedMarker(marker)}
 								ref={(markerRef) => (markerRefs[marker.id] = markerRef)}
 								tracksViewChanges={tracksViewChanges}
 							>
