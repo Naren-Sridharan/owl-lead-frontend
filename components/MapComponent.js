@@ -122,10 +122,6 @@ const Map = (props) => {
 	}, [location]);
 
 	useEffect(() => {
-		mapRef.animateToRegion(region);
-	}, [region]);
-
-	useEffect(() => {
 		selectedMarker &&
 			mapRef.animateToRegion({ ...region, ...selectedMarker.latlng });
 	}, [selectedMarker]);
@@ -299,7 +295,6 @@ const Map = (props) => {
 				showsMyLocationButton={false}
 				toolbarEnabled={false}
 				pitchEnabled={false}
-				onMapReady={() => mapRef.animateToRegion(region)}
 				onLayout={() => {
 					mapRef.setMapBoundaries(
 						{
@@ -313,6 +308,7 @@ const Map = (props) => {
 								INITIAL_REGION.longitude - INITIAL_REGION.longitudeDelta,
 						}
 					);
+					location && mapRef.animateToRegion({ ...region, ...location });
 				}}
 			>
 				{
