@@ -264,6 +264,7 @@ const Map = (props) => {
 			!location && updateMarkers();
 
 			setSelectedMarker(null);
+			setBest(null);
 
 			// set location globally
 			setLocation(current_location);
@@ -503,6 +504,7 @@ const Map = (props) => {
 				}}
 				onPress={(data, details = null) => {
 					!location && updateMarkers();
+					setBest(null);
 					// update address on search bar to current location
 					setAddress(data.description);
 					// On selecting suggestion, Set location to that suggestion
