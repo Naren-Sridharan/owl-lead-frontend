@@ -127,7 +127,6 @@ const Map = (props) => {
 	}, [location]);
 
 	useEffect(() => {
-		console.log(JSON.stringify(selectedMarker));
 		selectedMarker &&
 			mapRef.animateToRegion({
 				latitudeDelta: INITIAL_REGION.latitudeDelta / 4,
@@ -192,8 +191,6 @@ const Map = (props) => {
 				return;
 			}
 			markerRefs[selectedMarker.id].showCallout();
-			setDistance(null);
-			setDuration(null);
 		})();
 	}, [distance, duration]);
 
@@ -463,9 +460,10 @@ const Map = (props) => {
 						strokeColor={COLORS.dark}
 						mode="WALKING"
 						onReady={(result) => {
+							setDistance(null);
+							setDuration(null);
 							setDistance(result.distance);
 							setDuration(Math.ceil(result.duration));
-							console.log(JSON.stringify(result));
 						}}
 					/>
 				)}
