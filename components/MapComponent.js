@@ -127,6 +127,7 @@ const Map = (props) => {
 	}, [location]);
 
 	useEffect(() => {
+		console.log(JSON.stringify(selectedMarker));
 		selectedMarker &&
 			mapRef.animateToRegion({
 				latitudeDelta: INITIAL_REGION.latitudeDelta / 4,
@@ -331,6 +332,7 @@ const Map = (props) => {
 								onPress={() => setSelectedMarker(marker)}
 								ref={(markerRef) => (markerRefs[marker.id] = markerRef)}
 								tracksViewChanges={tracksViewChanges}
+								stopPropagation={true}
 							>
 								{/*Make markers have a customized image with color*/}
 								<View
@@ -463,6 +465,7 @@ const Map = (props) => {
 						onReady={(result) => {
 							setDistance(result.distance);
 							setDuration(Math.ceil(result.duration));
+							console.log(JSON.stringify(result));
 						}}
 					/>
 				)}

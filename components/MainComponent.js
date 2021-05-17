@@ -12,7 +12,7 @@ import EmergencyContact from "../screens/EmergencyContactScreen";
 import Intro from "../screens/IntroScreen";
 
 import { fetchPedestrianCounts, fetchPSOStations } from "../shared/loaders";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Alert, Linking } from "react-native";
 import { EMERGENCY_NUMBER } from "../shared/constants";
 
@@ -20,6 +20,7 @@ const Tab = createBottomTabNavigator();
 
 const Main = () => {
 	const dispatch = useDispatch();
+	const intro_shown = useSelector((state) => state.intro_shown);
 
 	useEffect(() => {
 		Alert.alert(
@@ -44,9 +45,13 @@ const Main = () => {
 		tabBarVisible: false,
 	};
 
+	const show_login = false;
+
 	return (
 		<NavigationContainer>
-			<Tab.Navigator initialRouteName="Login">
+			<Tab.Navigator
+				initialRouteName={show_login ? "Login" : intro_shown ? "Home" : "Intro"}
+			>
 				<Tab.Screen name="Login" component={Login} options={options} />
 				<Tab.Screen name="Intro" component={Intro} options={options} />
 				<Tab.Screen name="Home" component={Home} options={options} />
