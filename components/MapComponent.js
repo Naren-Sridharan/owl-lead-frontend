@@ -257,22 +257,23 @@ const Map = (props) => {
 				return;
 			}
 
-			!location && updateMarkers();
-
 			setSelectedMarker(null);
 
-			// set location globally
-			setLocation(current_location);
+			!location && updateMarkers();
 
 			let current_address = (
-				await Location.reverseGeocodeAsync(location, {
+				await Location.reverseGeocodeAsync(current_location, {
 					useGoogleMaps: true,
 				})
 			)[0];
 
 			current_address = `${current_address.name}, ${current_address.city}, ${current_address.region}, ${current_address.country}`;
-
 			setAddress(current_address);
+
+			// set location globally
+			setLocation(current_location);
+
+			focusOnLocation();
 		} catch (error) {
 			location_access == null && getLocationAsync();
 		}
@@ -450,7 +451,6 @@ const Map = (props) => {
 					<MapViewDirections
 						origin={location}
 						destination={selectedMarker.latlng}
-						optimizeWaypoints={true}
 						apikey={API_KEY}
 						strokeWidth={5}
 						strokeColor={COLORS.dark}
@@ -475,7 +475,7 @@ const Map = (props) => {
 						setSelectedMarker(null);
 					},
 				}}
-				placeholder="Search for places in the city" // Show 'Search' in location search bar
+				placeholder="Search for Places in Melbourne CBD" // Show 'Search' in location search bar
 				minLength={2} // Show autocomplete after 2 letters
 				autoFocus={false} // Don't focus on searchbar when page loads
 				returnKeyType={"search"} // return search results
@@ -483,7 +483,11 @@ const Map = (props) => {
 				renderDescription={(row) => row.description} // show place name in each row of list
 				styles={{
 					// set styles
-					textInputContainer: { width: "100%" },
+					textInputContainer: { width: "100%", paddingHorizontal: 5 },
+					textInput: {
+						color: COLORS.dark,
+						fontSize: 13,
+					},
 					description: { fontWeight: "bold" },
 					container: {
 						position: "absolute",
