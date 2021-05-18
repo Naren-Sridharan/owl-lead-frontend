@@ -119,6 +119,7 @@ const Map = (props) => {
 
 	useEffect(() => {
 		best && setSelectedMarker(markers.filter((marker) => marker.id == best)[0]);
+		best && stopMarkerUpdates();
 	}, [best]);
 
 	useEffect(() => {
@@ -176,6 +177,7 @@ const Map = (props) => {
 					: markers[closest];
 
 			if (local_best.distance <= 1) {
+				!best && updateMarkers();
 				setBest(local_best.id);
 			}
 		})();
@@ -265,7 +267,6 @@ const Map = (props) => {
 
 			setSelectedMarker(null);
 			setBest(null);
-
 			// set location globally
 			setLocation(current_location);
 
