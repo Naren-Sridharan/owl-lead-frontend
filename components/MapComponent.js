@@ -118,10 +118,6 @@ const Map = (props) => {
 	};
 
 	useEffect(() => {
-		best && setSelectedMarker(markers.filter((marker) => marker.id == best)[0]);
-	}, [best]);
-
-	useEffect(() => {
 		getDistances();
 		focusOnLocation();
 	}, [location]);
@@ -323,7 +319,7 @@ const Map = (props) => {
 					markers.map((marker) => {
 						return (
 							<Marker
-								key={marker.id}
+								key={best && best == marker.id ? "best" : marker.id}
 								zIndex={marker.id}
 								coordinate={marker.latlng}
 								onPress={() => setSelectedMarker(marker)}
