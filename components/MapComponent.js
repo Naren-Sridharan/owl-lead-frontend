@@ -270,7 +270,7 @@ const Map = (props) => {
 				})
 			)[0];
 
-			current_address = `${address.name}, ${address.city}, ${address.region}, ${address.country}`;
+			current_address = `${current_address.name}, ${current_address.city}, ${current_address.region}, ${current_address.country}`;
 
 			setAddress(current_address);
 		} catch (error) {
