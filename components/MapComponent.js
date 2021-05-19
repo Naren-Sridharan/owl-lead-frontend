@@ -398,7 +398,7 @@ const Map = (props) => {
 										)}
 										{distance && (
 											<Text style={styles.calloutCardText}>
-												Distance: {distance} kms
+												Distance: {distance} metres
 											</Text>
 										)}
 										{duration && (
@@ -458,7 +458,7 @@ const Map = (props) => {
 						onReady={(result) => {
 							setDistance(null);
 							setDuration(null);
-							setDistance(result.distance);
+							setDistance(Math.ceil(result.distance * 1000));
 							setDuration(Math.ceil(result.duration));
 						}}
 					/>

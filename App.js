@@ -7,17 +7,17 @@ import Main from "./components/MainComponent";
 import * as TaskManager from "expo-task-manager";
 import * as BackgroundFetch from "expo-background-fetch";
 import { fetchPedestrianCounts } from "./shared/loaders";
-import { FETCH_PEDESTRIAN_COUNTS } from "./shared/constants";
+import { BACKGROUND_FETCH_PEDESTRIAN_COUNTS } from "./shared/constants";
 
 export const { persistor, store } = ConfigureStore();
 
-TaskManager.defineTask(FETCH_PEDESTRIAN_COUNTS, async () => {
+TaskManager.defineTask(BACKGROUND_FETCH_PEDESTRIAN_COUNTS, async () => {
 	try {
 		console.log("Background Fetch Pedestrian Counts initiated");
 		const newData = store.dispatch(fetchPedestrianCounts());
 		console.log(
 			"Background Fetch Pedestrian Counts Completed: ",
-			newData ? "Sucessful" : "Unsuccessful"
+			newData ? "Successful" : "Unsuccessful"
 		);
 		return newData
 			? BackgroundFetch.Result.NewData
@@ -30,9 +30,13 @@ TaskManager.defineTask(FETCH_PEDESTRIAN_COUNTS, async () => {
 
 const registerBackgroundPedestrianCountsTask = async () => {
 	try {
-		await BackgroundFetch.registerTaskAsync(FETCH_PEDESTRIAN_COUNTS, {
-			minimumInterval: 10 * 60, // seconds
-		});
+		await BackgroundFetch.registerTaskAsync(
+			BACKGROUND_FETCH_PEDESTRIAN_COUNTS,
+			{
+				minimumInterval: 10 * 60, // seconds
+			}
+		);
+		console.log("Background Fetch Pedestrian Counts Registration Successful");
 	} catch (err) {
 		console.log("Background Fetch Pedestrian Counts Registration Failed:", err);
 	}
@@ -41,6 +45,21 @@ const registerBackgroundPedestrianCountsTask = async () => {
 const App = () => {
 	useEffect(() => {
 		registerBackgroundPedestrianCountsTask();
+		const interval = setInterval(async () => {
+			try {
+				console.log("Foreground Fetch Pedestrian Counts initiated");
+				const newData = store.dispatch(fetchPedestrianCounts());
+				console.log(
+					"Foreground Fetch Pedestrian Counts Completed: ",
+					newData ? "Successful" : "Unsuccessful"
+				);
+				return newData ? true : false;
+			} catch (error) {
+				console.log(error);
+				return false;
+			}
+		}, 10 * 60 * 1000);
+		return clearInterval(interval);
 	}, []);
 
 	return (
