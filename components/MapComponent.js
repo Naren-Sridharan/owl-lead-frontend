@@ -88,11 +88,6 @@ const Map = (props) => {
 		dispatch(Actions.hideEmergencyOptions());
 	};
 
-	const hidePopup = () =>
-		selectedMarker &&
-		markerRefs.hasOwnProperty(selectedMarker.id) &&
-		markerRefs[selectedMarker.id].hideCallout();
-
 	Location.setGoogleApiKey(API_KEY);
 
 	const getDistances = async () => {
@@ -123,12 +118,16 @@ const Map = (props) => {
 	}, [location]);
 
 	useEffect(() => {
-		selectedMarker &&
-			mapRef.animateToRegion({
-				latitudeDelta: INITIAL_REGION.latitudeDelta / 4,
-				longitudeDelta: INITIAL_REGION.longitudeDelta / 4,
-				...selectedMarker.latlng,
-			});
+		selectedMarker
+			? mapRef.animateToRegion({
+					latitudeDelta: INITIAL_REGION.latitudeDelta / 4,
+					longitudeDelta: INITIAL_REGION.longitudeDelta / 4,
+					...selectedMarker.latlng,
+			  })
+			: (() => {
+					setDistance(null);
+					setDuration(null);
+			  })();
 	}, [selectedMarker]);
 
 	useEffect(() => {
@@ -456,10 +455,15 @@ const Map = (props) => {
 						strokeColor={COLORS.dark}
 						mode="WALKING"
 						onReady={(result) => {
-							setDistance(null);
-							setDuration(null);
 							setDistance(Math.ceil(result.distance * 1000));
 							setDuration(Math.ceil(result.duration));
+							if (
+								selectedMarker &&
+								markerRefs.hasOwnProperty(selectedMarker.id)
+							) {
+								markerRefs[selectedMarker.id].redrawCallout();
+								markerRefs[selectedMarker.id].showCallout();
+							}
 						}}
 					/>
 				)}
@@ -470,7 +474,9 @@ const Map = (props) => {
 				textInputProps={{
 					onFocus: () => {
 						hideOptions();
-						hidePopup();
+						selectedMarker &&
+							markerRefs.hasOwnProperty(selectedMarker.id) &&
+							markerRefs[selectedMarker.id].hideCallout();
 						searchRef.current?.setAddressText("");
 						setSelectedMarker(null);
 					},

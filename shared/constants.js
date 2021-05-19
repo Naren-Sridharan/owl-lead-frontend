@@ -61,8 +61,5 @@ export const COLORS = {
 // Emergency Number
 export const EMERGENCY_NUMBER = "000";
 
-// Task name for fetching Pedestrian Counts
-export const BACKGROUND_FETCH_PEDESTRIAN_COUNTS =
-	"BACKGROUND_FETCH_PEDESTRIAN_COUNTS";
 //actual password
 export const actual_password = "teamMA26";

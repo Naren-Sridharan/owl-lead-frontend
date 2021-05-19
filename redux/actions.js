@@ -1,6 +1,10 @@
 import * as Types from "./types";
 
 const Actions = {
+	setUpdateTime: (update_time) => ({
+		type: Types.SET_UPDATE_TIME,
+		payload: update_time,
+	}),
 	setAddress: (address) => ({ type: Types.SET_ADDRESS, payload: address }),
 	setLocation: (location) => ({ type: Types.SET_LOCATION, payload: location }),
 	allowLocationAccess: () => ({ type: Types.ALLOW_LOCATION_ACCESS }),

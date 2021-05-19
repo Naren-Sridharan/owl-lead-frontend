@@ -14,6 +14,7 @@ const initialState = {
 	contacts: null,
 	contacts_access: null,
 	intro_shown: false,
+	update_time: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -146,6 +147,12 @@ const reducer = (state = initialState, action) => {
 			return {
 				...state,
 				intro_shown: true,
+			};
+
+		case Types.SET_UPDATE_TIME:
+			return {
+				...state,
+				update_time: action.payload,
 			};
 
 		default:

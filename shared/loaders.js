@@ -24,6 +24,7 @@ export const fetchPedestrianCounts = () => (dispatch) => {
 		.then((response) => response.json())
 		.then((pedestrian_counts) => {
 			dispatch(Actions.addPedestrianCounts(pedestrian_counts));
+			dispatch(Actions.setUpdateTime(Date.now()));
 			return pedestrian_counts;
 		})
 		.catch((error) => {

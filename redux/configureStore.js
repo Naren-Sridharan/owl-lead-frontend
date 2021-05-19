@@ -21,6 +21,7 @@ export const ConfigureStore = () => {
 			"pso_stations",
 			"contacts",
 			"contacts_access",
+			"update_time",
 		],
 		debug: false,
 	};
